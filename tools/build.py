@@ -84,7 +84,12 @@ T = {
         p_about="על הפרויקט", p_render="הדמיה להמחשה בלבד", p_more="פרויקטים נוספים", p_or_call="או התקשרו:",
         p_ext_note="לפרויקט זה קיים אתר ייעודי נפרד:", p_ext_todo="בהמתנה להחלטה",
         m_apts="הדירות", m_apts_note="3 דירות בקומה, 2 כיווני אוויר ומרפסת שמש לכל דירה.",
-        m_th=["דירה", "סוג", "חדרים", "שטח", "חוץ", "הערות"],
+        m_th=["דירה", "סוג", "חדרים", "שטח", "חוץ", "הערות", "תכנית"],
+        m_pdf="PDF", m_pdf_label="הורדת תכנית הדירה",
+        m_tours="סיור וירטואלי", m_tours_note="הסיור נטען רק בלחיצה, כדי לא להכביד על הדף.",
+        m_pano="סיור פנורמי בדירה", m_pano_btn="פתיחת הסיור הפנורמי", m_pano_p="סיור 360° בדירה לדוגמה. גררו כדי להסתובב בחלל.",
+        m_3d="מודל תלת-ממדי", m_3d_btn="פתיחת המודל התלת-ממדי", m_3d_p="הדירה במודל תלת-ממדי אינטראקטיבי. ניתן להסתובב, להתקרב ולעבור בין החללים.",
+        m_ext_open="פתיחה בחלון מלא",
         m_notice="הפרטים בדף זה הינם להמחשה ולמסירת מידע בלבד, ואינם מהווים התחייבות מצד החברה. את החברה יחייבו הסכם המכר והמפרט הטכני לפי חוק המכר עליו יחתמו החברה והרוכשים. תכניות המכירה כוללות פרטי ריהוט ומוצרי חשמל להמחשה בלבד, שאינם כלולים בממכר. ט.ל.ח.",
         m_gallery="הדמיות פנים", m_gallery_note="להמחשה בלבד", m_spec="מפרט טכני",
         m_spec_items=[
@@ -182,7 +187,12 @@ T = {
         p_about="About the project", p_render="Rendering for illustration only", p_more="More projects", p_or_call="or call:",
         p_ext_note="This project has a separate dedicated website:", p_ext_todo="pending decision",
         m_apts="The apartments", m_apts_note="Three apartments per floor, two exposures and a sun balcony for every apartment.",
-        m_th=["Apartment", "Type", "Rooms", "Area", "Outdoor", "Notes"],
+        m_th=["Apartment", "Type", "Rooms", "Area", "Outdoor", "Notes", "Plan"],
+        m_pdf="PDF", m_pdf_label="Download the apartment plan",
+        m_tours="Virtual tour", m_tours_note="The tour loads only when you open it, so the page stays fast.",
+        m_pano="360° apartment tour", m_pano_btn="Open the panoramic tour", m_pano_p="A 360° walk through a sample apartment. Drag to look around.",
+        m_3d="3D model", m_3d_btn="Open the 3D model", m_3d_p="The apartment as an interactive 3D model. Rotate, zoom and move between rooms.",
+        m_ext_open="Open full screen",
         m_notice="The details on this page are for illustration and information only and do not constitute a commitment by the company. The company is bound only by the sale agreement and the technical specification under the Sale Law, as signed by the company and the buyers. Sales plans include furniture and appliances for illustration only, which are not included in the sale. E&OE.",
         m_gallery="Interior renderings", m_gallery_note="For illustration only", m_spec="Technical specification",
         m_spec_items=[
@@ -528,6 +538,11 @@ MARSHALL_APTS = L([
     ("19+20 combined", "Penthouse", "4 rooms", "120 sqm", "20 sqm terrace", ""),
 ])
 SOLD = {"he": "נמכרה", "en": "Sold"}
+# Apartment plan PDFs (row index in MARSHALL_APTS -> file under /assets/pdf/louis-marshall-11/)
+MARSHALL_PDFS = ["apt-1", "apt-2", "apt-3", "apt-4", "apt-5", "apt-17", "apt-18", "apt-19", "apt-20", "penthouse-19-20"]
+# Virtual tours (loaded only when the visitor asks for them)
+MARSHALL_PANORAMA = "https://reelook-public.s3.eu-west-1.amazonaws.com/panoramas/LuiMarshel11/tour.html"
+MARSHALL_3D = "https://www.theasys.io/viewer/pd9r6wvGUtRFF7JIuHks3KeXBsT8LP/"
 
 # --------------------------------------------------------------------------
 # Helpers
@@ -932,8 +947,25 @@ def page_project(p, lang):
     if p.get("marshall"):
         sold = SOLD[lang]
         trs = "".join(
-            f'<tr class="{"sold" if n == sold else ""}"><td>{a}</td><td>{ty}</td><td>{r}</td><td>{s}</td><td>{o}</td><td>{"<span class=tag>" + n + "</span>" if n and n != sold else n}</td></tr>'
-            for a, ty, r, s, o, n in v(MARSHALL_APTS, lang))
+            f'<tr class="{"sold" if n == sold else ""}"><td>{a}</td><td>{ty}</td><td>{r}</td><td>{s}</td><td>{o}</td><td>{"<span class=tag>" + n + "</span>" if n and n != sold else n}</td>'
+            f'<td><a class="pdf" href="/assets/pdf/louis-marshall-11/{pdf}.pdf" download aria-label="{t["m_pdf_label"]}: {a}">{t["m_pdf"]}</a></td></tr>'
+            for (a, ty, r, s, o, n), pdf in zip(v(MARSHALL_APTS, lang), MARSHALL_PDFS))
+        tours = f"""
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>{t['m_tours']}</h2><span class="small muted">{t['m_tours_note']}</span></div>
+  <div class="grid tours">
+    <div class="tour rv-img" data-embed="{MARSHALL_PANORAMA}" data-title="{t['m_pano']}">
+      <div class="frame">{picture("apt-8", t['m_pano'], "(max-width:900px) 92vw, 48vw")}<button type="button" class="btn btn--light tour-open">{t['m_pano_btn']}</button></div>
+      <h3>{t['m_pano']}</h3>
+      <p class="small muted">{t['m_pano_p']} <a class="link" href="{MARSHALL_PANORAMA}" target="_blank" rel="noopener">{t['m_ext_open']}</a></p>
+    </div>
+    <div class="tour rv-img" data-embed="{MARSHALL_3D}" data-title="{t['m_3d']}">
+      <div class="frame">{picture("apt-4", t['m_3d'], "(max-width:900px) 92vw, 48vw")}<button type="button" class="btn btn--light tour-open">{t['m_3d_btn']}</button></div>
+      <h3>{t['m_3d']}</h3>
+      <p class="small muted">{t['m_3d_p']} <a class="link" href="{MARSHALL_3D}" target="_blank" rel="noopener">{t['m_ext_open']}</a></p>
+    </div>
+  </div>
+</section>"""
         gallery = "".join(
             f'<figure class="rv-img"><div class="frame">{picture(f"apt-{i}", f"{name}: {t['m_gallery']} {i}", "(max-width:640px) 92vw, 48vw")}</div></figure>'
             for i in range(1, 9))
@@ -948,6 +980,7 @@ def page_project(p, lang):
   </table></div>
   <p class="notice">{t['m_notice']}</p>
 </section>
+{tours}
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>{t['m_gallery']}</h2><span class="small muted">{t['m_gallery_note']}</span></div>
   <div class="gallery">{gallery}</div>

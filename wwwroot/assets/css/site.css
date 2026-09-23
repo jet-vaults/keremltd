@@ -349,3 +349,22 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* 404 */
 .err{min-height:60vh;display:grid;place-items:center;text-align:center;padding-block:var(--section)}
 .err h1{font-size:var(--fs-display)}
+
+/* apartment plan downloads */
+.apts .pdf{display:inline-block;padding:4px 10px;border:1px solid var(--line-strong);font-size:.8rem;font-weight:500;color:var(--navy);transition:border-color .2s,background .2s}
+.apts .pdf:hover{border-color:var(--navy);background:var(--bg-2)}
+.apts .sold .pdf{opacity:.6}
+
+/* virtual tours: click-to-load facades */
+.tours{align-items:start}
+.tour{grid-column:span 6}
+@media (max-width:900px){.tour{grid-column:1 / -1}}
+.tour .frame{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--navy)}
+.tour .frame picture{width:100%;height:100%}
+.tour .frame img{width:100%;height:100%;object-fit:cover;opacity:.85;transition:opacity .4s var(--ease),transform 1.2s var(--ease)}
+.tour:hover .frame img{opacity:.7}
+.tour-open{position:absolute;inset-inline-start:24px;bottom:24px;z-index:2}
+.tour .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+.tour.is-open .frame{aspect-ratio:16/10}
+.tour h3{margin-top:16px;font-size:1.125rem;font-weight:500}
+.tour p{margin:6px 0 0}

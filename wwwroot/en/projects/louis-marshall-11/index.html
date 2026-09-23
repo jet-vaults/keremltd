@@ -373,6 +373,25 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* 404 */
 .err{min-height:60vh;display:grid;place-items:center;text-align:center;padding-block:var(--section)}
 .err h1{font-size:var(--fs-display)}
+
+/* apartment plan downloads */
+.apts .pdf{display:inline-block;padding:4px 10px;border:1px solid var(--line-strong);font-size:.8rem;font-weight:500;color:var(--navy);transition:border-color .2s,background .2s}
+.apts .pdf:hover{border-color:var(--navy);background:var(--bg-2)}
+.apts .sold .pdf{opacity:.6}
+
+/* virtual tours: click-to-load facades */
+.tours{align-items:start}
+.tour{grid-column:span 6}
+@media (max-width:900px){.tour{grid-column:1 / -1}}
+.tour .frame{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--navy)}
+.tour .frame picture{width:100%;height:100%}
+.tour .frame img{width:100%;height:100%;object-fit:cover;opacity:.85;transition:opacity .4s var(--ease),transform 1.2s var(--ease)}
+.tour:hover .frame img{opacity:.7}
+.tour-open{position:absolute;inset-inline-start:24px;bottom:24px;z-index:2}
+.tour .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+.tour.is-open .frame{aspect-ratio:16/10}
+.tour h3{margin-top:16px;font-size:1.125rem;font-weight:500}
+.tour p{margin:6px 0 0}
 </style>
 <script>document.documentElement.classList.remove('no-js')</script>
 </head>
@@ -423,10 +442,26 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div class="sec-head rv"><h2>The apartments</h2></div>
   <p class="rv" style="margin-top:-16px;margin-bottom:24px">Three apartments per floor, two exposures and a sun balcony for every apartment.</p>
   <div class="table-wrap"><table class="apts">
-    <thead><tr><th>Apartment</th><th>Type</th><th>Rooms</th><th>Area</th><th>Outdoor</th><th>Notes</th></tr></thead>
-    <tbody><tr class=""><td>Apt. 1</td><td>Garden apartment</td><td>2 rooms</td><td>67 sqm</td><td>55 sqm garden</td><td></td></tr><tr class=""><td>Apt. 2</td><td>Apartment</td><td>3 rooms</td><td>70 sqm</td><td>11 sqm balcony</td><td><span class=tag>Limited-time offer</span></td></tr><tr class=""><td>Apt. 3</td><td>Apartment</td><td>3 rooms</td><td>76 sqm</td><td>11 sqm balcony</td><td><span class=tag>NIS 4,820,300, limited-time offer</span></td></tr><tr class="sold"><td>Apt. 4</td><td>Apartment</td><td>3 rooms</td><td>62 sqm</td><td>14 sqm balcony</td><td>Sold</td></tr><tr class=""><td>Apt. 5</td><td>Apartment</td><td>3 rooms</td><td>70 sqm</td><td>11 sqm balcony</td><td><span class=tag>Limited-time offer</span></td></tr><tr class=""><td>Apt. 17</td><td>Penthouse</td><td>3 rooms</td><td>80 sqm</td><td>50 sqm terrace</td><td></td></tr><tr class="sold"><td>Apt. 18</td><td>Mini penthouse</td><td>2 rooms</td><td>60 sqm</td><td>21 sqm terrace</td><td>Sold</td></tr><tr class=""><td>Apt. 19</td><td>Apartment</td><td>3 rooms</td><td>73 sqm</td><td>6 sqm balcony</td><td></td></tr><tr class=""><td>Apt. 20</td><td>Apartment</td><td>2 rooms</td><td>56 sqm</td><td>5.5 sqm balcony</td><td></td></tr><tr class=""><td>19+20 combined</td><td>Penthouse</td><td>4 rooms</td><td>120 sqm</td><td>20 sqm terrace</td><td></td></tr></tbody>
+    <thead><tr><th>Apartment</th><th>Type</th><th>Rooms</th><th>Area</th><th>Outdoor</th><th>Notes</th><th>Plan</th></tr></thead>
+    <tbody><tr class=""><td>Apt. 1</td><td>Garden apartment</td><td>2 rooms</td><td>67 sqm</td><td>55 sqm garden</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-1.pdf" download aria-label="Download the apartment plan: Apt. 1">PDF</a></td></tr><tr class=""><td>Apt. 2</td><td>Apartment</td><td>3 rooms</td><td>70 sqm</td><td>11 sqm balcony</td><td><span class=tag>Limited-time offer</span></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-2.pdf" download aria-label="Download the apartment plan: Apt. 2">PDF</a></td></tr><tr class=""><td>Apt. 3</td><td>Apartment</td><td>3 rooms</td><td>76 sqm</td><td>11 sqm balcony</td><td><span class=tag>NIS 4,820,300, limited-time offer</span></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-3.pdf" download aria-label="Download the apartment plan: Apt. 3">PDF</a></td></tr><tr class="sold"><td>Apt. 4</td><td>Apartment</td><td>3 rooms</td><td>62 sqm</td><td>14 sqm balcony</td><td>Sold</td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-4.pdf" download aria-label="Download the apartment plan: Apt. 4">PDF</a></td></tr><tr class=""><td>Apt. 5</td><td>Apartment</td><td>3 rooms</td><td>70 sqm</td><td>11 sqm balcony</td><td><span class=tag>Limited-time offer</span></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-5.pdf" download aria-label="Download the apartment plan: Apt. 5">PDF</a></td></tr><tr class=""><td>Apt. 17</td><td>Penthouse</td><td>3 rooms</td><td>80 sqm</td><td>50 sqm terrace</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-17.pdf" download aria-label="Download the apartment plan: Apt. 17">PDF</a></td></tr><tr class="sold"><td>Apt. 18</td><td>Mini penthouse</td><td>2 rooms</td><td>60 sqm</td><td>21 sqm terrace</td><td>Sold</td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-18.pdf" download aria-label="Download the apartment plan: Apt. 18">PDF</a></td></tr><tr class=""><td>Apt. 19</td><td>Apartment</td><td>3 rooms</td><td>73 sqm</td><td>6 sqm balcony</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-19.pdf" download aria-label="Download the apartment plan: Apt. 19">PDF</a></td></tr><tr class=""><td>Apt. 20</td><td>Apartment</td><td>2 rooms</td><td>56 sqm</td><td>5.5 sqm balcony</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-20.pdf" download aria-label="Download the apartment plan: Apt. 20">PDF</a></td></tr><tr class=""><td>19+20 combined</td><td>Penthouse</td><td>4 rooms</td><td>120 sqm</td><td>20 sqm terrace</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/penthouse-19-20.pdf" download aria-label="Download the apartment plan: 19+20 combined">PDF</a></td></tr></tbody>
   </table></div>
   <p class="notice">The details on this page are for illustration and information only and do not constitute a commitment by the company. The company is bound only by the sale agreement and the technical specification under the Sale Law, as signed by the company and the buyers. Sales plans include furniture and appliances for illustration only, which are not included in the sale. E&OE.</p>
+</section>
+
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>Virtual tour</h2><span class="small muted">The tour loads only when you open it, so the page stays fast.</span></div>
+  <div class="grid tours">
+    <div class="tour rv-img" data-embed="https://reelook-public.s3.eu-west-1.amazonaws.com/panoramas/LuiMarshel11/tour.html" data-title="360° apartment tour">
+      <div class="frame"><picture><source type="image/avif" srcset="/assets/img/apt-8-480.avif 480w, /assets/img/apt-8-800.avif 800w, /assets/img/apt-8-1200.avif 1200w, /assets/img/apt-8-1600.avif 1600w" sizes="(max-width:900px) 92vw, 48vw"><img src="/assets/img/apt-8-800.webp" srcset="/assets/img/apt-8-480.webp 480w, /assets/img/apt-8-800.webp 800w, /assets/img/apt-8-1200.webp 1200w, /assets/img/apt-8-1600.webp 1600w" sizes="(max-width:900px) 92vw, 48vw" width="1600" height="900" alt="360° apartment tour" loading="lazy" decoding="async"></picture><button type="button" class="btn btn--light tour-open">Open the panoramic tour</button></div>
+      <h3>360° apartment tour</h3>
+      <p class="small muted">A 360° walk through a sample apartment. Drag to look around. <a class="link" href="https://reelook-public.s3.eu-west-1.amazonaws.com/panoramas/LuiMarshel11/tour.html" target="_blank" rel="noopener">Open full screen</a></p>
+    </div>
+    <div class="tour rv-img" data-embed="https://www.theasys.io/viewer/pd9r6wvGUtRFF7JIuHks3KeXBsT8LP/" data-title="3D model">
+      <div class="frame"><picture><source type="image/avif" srcset="/assets/img/apt-4-480.avif 480w, /assets/img/apt-4-800.avif 800w, /assets/img/apt-4-1200.avif 1200w, /assets/img/apt-4-1600.avif 1600w" sizes="(max-width:900px) 92vw, 48vw"><img src="/assets/img/apt-4-800.webp" srcset="/assets/img/apt-4-480.webp 480w, /assets/img/apt-4-800.webp 800w, /assets/img/apt-4-1200.webp 1200w, /assets/img/apt-4-1600.webp 1600w" sizes="(max-width:900px) 92vw, 48vw" width="1600" height="900" alt="3D model" loading="lazy" decoding="async"></picture><button type="button" class="btn btn--light tour-open">Open the 3D model</button></div>
+      <h3>3D model</h3>
+      <p class="small muted">The apartment as an interactive 3D model. Rotate, zoom and move between rooms. <a class="link" href="https://www.theasys.io/viewer/pd9r6wvGUtRFF7JIuHks3KeXBsT8LP/" target="_blank" rel="noopener">Open full screen</a></p>
+    </div>
+  </div>
 </section>
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>Interior renderings</h2><span class="small muted">For illustration only</span></div>

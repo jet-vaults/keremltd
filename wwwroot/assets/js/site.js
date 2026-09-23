@@ -23,6 +23,19 @@
     rv.forEach(function (el) { io.observe(el); });
   } else { rv.forEach(function (el) { el.classList.add('in'); }); }
 
+  /* virtual tours: load the embed only when asked */
+  d.querySelectorAll('.tour[data-embed]').forEach(function (tour) {
+    var btn = tour.querySelector('.tour-open');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var frame = tour.querySelector('.frame');
+      var f = d.createElement('iframe');
+      f.src = tour.dataset.embed; f.title = tour.dataset.title || ''; f.loading = 'eager';
+      f.setAttribute('allow', 'fullscreen; gyroscope; accelerometer'); f.setAttribute('allowfullscreen', '');
+      frame.innerHTML = ''; frame.appendChild(f); tour.classList.add('is-open'); f.focus();
+    });
+  });
+
   /* forms (Web3Forms JSON endpoint) */
   d.querySelectorAll('form.form').forEach(function (form) {
     form.addEventListener('submit', function (e) {
