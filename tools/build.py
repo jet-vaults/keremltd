@@ -47,8 +47,8 @@ T = {
         hero_h1="בונים את העיר מחדש. כבר ארבעה דורות.",
         hero_lead="חברה משפחתית בבעלות פרטית, המתמחה בתמ״א 38, פינוי־בינוי ושימור במרכזי הערים של גוש דן.",
         hero_caption="מזא״ה 71, תל אביב-יפו. בניין לשימור בשלבי תכנון.",
-        claim="<em>ארבעה דורות</em> של יזמות ובנייה. <em>{n}&nbsp;פרויקטים</em> בשיווק, בתכנון ובאכלוס. <em>אלפי</em> יחידות דיור ומסחר במרכזי הערים.",
-        claim_sub="תל אביב, רמת גן ובני ברק",
+        strip=["ארבעה דורות של יזמות ובנייה", "{n} פרויקטים בשיווק, בתכנון ובאכלוס", "תל אביב, רמת גן ובני ברק"],
+        stick_title="מעוניינים שנחזור אליכם?", stick_name="שם מלא", stick_phone="טלפון", stick_send="השאירו פרטים", stick_close="סגירה",
         projects_h2="פרויקטים המשתבחים עם השנים",
         projects_lead="בניינים במרכזי הערים של גוש דן: הריסה ובנייה מחדש, שימור והשבחה ופרויקטים חדשים, מסודרים לפי שלב.",
         groups={"marketing": ("בשיווק", "היתרים, בנייה ושיווק פעיל"), "planning": ("פרויקטים לפני החלטת וועדה מחירי הנחה והטבות", "בשלבי תכנון"), "done": ("בביצוע ואכלוס", "בנייה, מסירה ואכלוס")},
@@ -112,7 +112,7 @@ T = {
         about_mgmt_h2="חברה משפחתית, מנוהלת מקרוב",
         about_mgmt_lead="כל פרויקט מלווה אישית, מהפגישה הראשונה עם הדיירים ועד מסירת המפתחות.",
         about_mgmt_p="הקבוצה פועלת בתל אביב, רמת גן ובני ברק, ומשלבת יזמות, תכנון, מימון, ייצוג משפטי וניהול נכסים תחת קורת גג אחת.",
-        about_caption3="דרך יפו 13, תל אביב. שימור ושחזור, הסתיים ואוכלס.",
+        about_caption3="פינסקר 53+55, תל אביב. תמ״א 38/2, הריסה ובנייה, בשלבי תכנון.",
         group_h2="חברות נוספות בבעלות המשפחה",
         how_title="איך מתחילים פרויקט?",
         how_desc="הצעד הראשון בפרויקט תמ״א 38 או פינוי־בינוי: שיטה סדורה ופשוטה, צעד אחר צעד, בלי חתימות ובלי התחייבות. כך מתחילים עם כרם.",
@@ -153,8 +153,8 @@ T = {
         hero_h1="Rebuilding the city. For four generations.",
         hero_lead="A privately held family company specialising in TAMA 38, urban renewal and heritage preservation in the city centres of greater Tel Aviv.",
         hero_caption="Mazeh 71, Tel Aviv-Jaffa. Heritage building in planning.",
-        claim="<em>Four generations</em> of development and building. <em>{n}&nbsp;projects</em> in marketing, planning and occupancy. <em>Thousands</em> of residential and commercial units in the city centres.",
-        claim_sub="Tel Aviv, Ramat Gan and Bnei Brak",
+        strip=["Four generations of development and building", "{n} projects in marketing, planning and occupancy", "Tel Aviv, Ramat Gan and Bnei Brak"],
+        stick_title="Would you like us to call you?", stick_name="Full name", stick_phone="Phone", stick_send="Leave your details", stick_close="Close",
         projects_h2="Projects that improve with the years",
         projects_lead="Buildings in the city centres of greater Tel Aviv: demolition and rebuilding, preservation and upgrading, and new construction, ordered by stage.",
         groups={"marketing": ("In marketing", "Permits, construction and active sales"), "planning": ("Projects before committee approval, discounted prices and benefits", "In planning"), "done": ("Under construction and occupied", "Construction, delivery and occupancy")},
@@ -218,7 +218,7 @@ T = {
         about_mgmt_h2="A family company, closely managed",
         about_mgmt_lead="Every project is personally accompanied, from the first meeting with residents to handing over the keys.",
         about_mgmt_p="The group works in Tel Aviv, Ramat Gan and Bnei Brak, combining development, planning, finance, legal representation and property management under one roof.",
-        about_caption3="Jaffa Road 13, Tel Aviv. Preservation and restoration, completed and occupied.",
+        about_caption3="Pinsker 53+55, Tel Aviv. TAMA 38/2, demolition and rebuilding, in planning.",
         group_h2="Other family-owned companies",
         how_title="How a project starts",
         how_desc="The first step in a TAMA 38 or urban renewal project: a clear, simple method, step by step, with no signatures and no commitment. This is how it starts with Kerem.",
@@ -849,6 +849,24 @@ def footer(lang, path):
     </div>
   </div>
 </footer>
+<div class="stick" id="stick" hidden>
+  <div class="wrap stick-row">
+    <p class="stick-title">{t['stick_title']}</p>
+    <form class="form stick-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+      <input type="hidden" name="access_key" value="{WEB3FORMS_KEY}">
+      <input type="hidden" name="subject" value="{t['f_subject']}">
+      <input type="hidden" name="from_name" value="keremltd.co.il">
+      <input type="hidden" name="redirect" value="{SITE}{px}/contact/?sent=1">
+      <label class="hp" aria-hidden="true">{t['f_hp']} <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label>
+      <label class="sr" for="s-name">{t['stick_name']}</label><input id="s-name" name="name" type="text" autocomplete="name" placeholder="{t['stick_name']}">
+      <label class="sr" for="s-phone">{t['stick_phone']}</label><input id="s-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="{t['stick_phone']}" required minlength="7" pattern="[0-9+\\-\\s()]{{7,}}">
+      <button class="btn btn--light" type="submit">{t['stick_send']}</button>
+      <p class="form__msg" aria-live="polite" tabindex="-1"></p>
+    </form>
+    <a class="stick-phone" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a>
+    <button class="stick-close" type="button" aria-label="{t['stick_close']}">×</button>
+  </div>
+</div>
 <script src="/assets/js/site.js" defer></script>
 <script src="/assets/js/a11y.js" defer></script>
 </body>
@@ -952,9 +970,8 @@ def page_home(lang):
   </div>
 </section>
 
-<section class="wrap claim">
-  <p class="claim-text rv">{t['claim'].replace('{n}', str(len(PROJECTS)))}</p>
-  <p class="claim-sub rv">{t['claim_sub']}</p>
+<section class="wrap">
+  <ul class="strip rv">{"".join(f"<li>{x.replace('{n}', str(len(PROJECTS)))}</li>" for x in t['strip'])}</ul>
 </section>
 
 <section class="section" id="projects">
@@ -1202,7 +1219,7 @@ def page_about(lang):
 </section>
 <section class="bleed rv-img">
   <figure>
-    <div class="frame">{picture("yafo", t['about_caption3'], "100vw")}</div>
+    <div class="frame">{picture("pinsker", t['about_caption3'], "100vw")}</div>
     <figcaption class="wrap">{t['about_caption3']}</figcaption>
   </figure>
   <div class="wrap bleed-text rv">

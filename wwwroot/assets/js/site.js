@@ -42,6 +42,20 @@
   if (preselect && sel) { var opt = sel.querySelector('option[data-slug="' + preselect.replace(/[^a-z0-9-]/g, '') + '"]'); if (opt) opt.selected = true; }
   if (params.get('sent') === '1') { var m0 = d.querySelector('.form__msg'); if (m0) { m0.textContent = m0.dataset.sent || ''; m0.className = 'form__msg ok'; } }
 
+  /* sticky contact bar: show unless dismissed this session */
+  var stick = d.getElementById('stick');
+  if (stick) {
+    var dismissed = false;
+    try { dismissed = sessionStorage.getItem('kerem-stick') === '1'; } catch (e) {}
+    var fit = function () { if (!stick.hidden) d.documentElement.style.setProperty('--stick-h', stick.offsetHeight + 'px'); };
+    if (!dismissed) { stick.hidden = false; b.classList.add('has-stick'); fit(); window.addEventListener('resize', fit); }
+    var closeBtn = stick.querySelector('.stick-close');
+    if (closeBtn) closeBtn.addEventListener('click', function () {
+      stick.hidden = true; b.classList.remove('has-stick'); d.documentElement.style.removeProperty('--stick-h');
+      try { sessionStorage.setItem('kerem-stick', '1'); } catch (e) {}
+    });
+  }
+
   /* forms (Web3Forms JSON endpoint) */
   d.querySelectorAll('form.form').forEach(function (form) {
     form.addEventListener('submit', function (e) {
