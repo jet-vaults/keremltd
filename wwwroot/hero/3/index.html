@@ -74,6 +74,8 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;caret-color:var(--navy
 body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--fs-body)/1.65 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 img,picture,svg{display:block;max-width:100%}
 .frame picture{width:100%;height:100%}
+.frame{border:3px solid var(--navy);box-sizing:border-box}
+.frame img{display:block}
 img{height:auto}
 a{color:inherit;text-decoration:none}
 p{margin:0 0 1em}
@@ -297,18 +299,18 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* sticky contact bar */
 body{padding-bottom:var(--stick-h,0px)}
-body.has-stick{--stick-h:72px}
+body.has-stick{--stick-h:73px}
 html[style*="--stick-h"] body.has-stick{--stick-h:inherit}
 .stick{position:fixed;inset-inline:0;bottom:0;z-index:60;background:var(--navy);color:#fff;box-shadow:0 -8px 24px rgba(11,27,58,.12)}
-.stick-row{display:flex;align-items:center;gap:clamp(12px,2vw,28px);min-height:72px;padding-block:10px}
+.stick-row{display:flex;align-items:center;gap:clamp(12px,2vw,28px);padding-block:14px}
 .stick-title{margin:0;font-weight:500;white-space:nowrap}
 .stick .stick-form{display:flex;align-items:center;gap:12px;flex:1;margin:0}
-.stick .stick-form input{width:auto;flex:1;min-width:0;max-width:260px;color:#fff;background:rgba(26,169,222,.16);border:1px solid rgba(127,201,234,.55);padding:10px 14px;transition:background .2s,border-color .2s}
+.stick .stick-form input{width:auto;flex:1;min-width:0;max-width:260px;height:44px;box-sizing:border-box;color:#fff;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.22);border-radius:4px;padding:0 14px;transition:background .2s,border-color .2s}
 .stick .stick-form input::placeholder{color:rgba(255,255,255,.7)}
-.stick .stick-form input:focus{border-color:#fff;background:rgba(26,169,222,.26)}
+.stick .stick-form input:focus{border-color:rgba(255,255,255,.7);background:rgba(0,0,0,.4)}
 .stick .stick-form input[type=tel]{direction:ltr;text-align:right}
 [dir=ltr] .stick .stick-form input[type=tel]{text-align:left}
-.stick .stick-form .btn{min-height:44px;padding-inline:22px;white-space:nowrap}
+.stick .stick-form .btn{height:44px;min-height:0;padding-inline:22px;white-space:nowrap;border-radius:4px}
 .stick .stick-form .form__msg{flex-basis:100%;margin:0;min-height:0;color:#e7ebf3}
 .stick-form .form__msg:empty{display:none}
 .stick-form .form__msg.err{color:#f3b3a4}
@@ -318,9 +320,9 @@ html[style*="--stick-h"] body.has-stick{--stick-h:inherit}
 .stick-close:hover{opacity:1}
 body.has-stick #jv-a11y{bottom:calc(var(--stick-h) + 18px)}
 @media (max-width:900px){
-  body.has-stick{--stick-h:64px}
+  body.has-stick{--stick-h:69px}
   .stick-title,.stick-phone,.stick .stick-form #s-name{display:none}
-  .stick-row{min-height:64px;gap:8px;padding-block:8px}
+  .stick-row{gap:8px;padding-block:12px}
   .stick .stick-form{gap:10px}
   .stick .stick-form input{max-width:none}
   .stick .stick-form .btn{padding-inline:14px;font-size:.9rem}
