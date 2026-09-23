@@ -28,3 +28,17 @@ sureena.ns.cloudflare.com
 Edit files in `wwwroot/` and push to `main` - Cloudflare Pages auto-deploys.
 
 Only the `wwwroot/` directory is served. Everything else stays in the repo.
+
+## Build
+
+Pages are generated from `tools/build.py` (content + templates, no dependencies):
+
+```
+python tools/build.py
+```
+
+It rewrites every HTML file under `wwwroot/` and inlines `wwwroot/assets/css/site.css`.
+Responsive AVIF/WebP images are produced by `tools/optimize_images.py <source-dir>`
+(source originals are not committed; they live on the previous WordPress site).
+
+Contact forms post to Web3Forms. Replace `WEB3FORMS_KEY` in `tools/build.py` and rebuild.
