@@ -940,33 +940,169 @@ def write(path, html):
 # Pages
 # --------------------------------------------------------------------------
 
-def page_home(lang):
+
+# --------------------------------------------------------------------------
+# Hero variants (preview pages under /hero/N/ until one is chosen)
+# --------------------------------------------------------------------------
+
+HERO_VARIANTS = {
+    1: dict(img="hoshea", sizes="100vw", name=L("תמונה ברוחב מלא ולוח טקסט", "Full-bleed photo with a text plate"),
+            desc=L("הצילום נמתח מקצה לקצה, וכותרת הפתיחה יושבת על לוח בהיר שחופף לתחתית התמונה. פתיחה קולנועית ושקטה.",
+                   "The photograph runs edge to edge and the headline sits on a light plate overlapping its lower edge. Cinematic and quiet.")),
+    2: dict(img="herut", sizes="(max-width:1280px) 92vw, 1184px", name=L("טיפוגרפיה קודם, תמונה רחבה מתחת", "Typography first, wide photo beneath"),
+            desc=L("כותרת ענקית ברוחב הדף, כמו שער של מגזין אדריכלות, ומתחתיה צילום פנורמי עם כיתוב. הכי עיתונאי.",
+                   "A page-wide headline like an architecture magazine cover, with a panoramic photograph and caption below. The most editorial.")),
+    3: dict(img="bernstein", sizes="(max-width:900px) 92vw, 50vw", name=L("חצי־חצי עם תמונה לגובה המסך", "Half and half, image to full height"),
+            desc=L("הטקסט ממורכז לגובה מול הדמיה אנכית שממלאת את כל גובה המסך ונצמדת לקצה. שער ספר, לא באנר.",
+                   "Vertically centred text against a portrait rendering that fills the full viewport height and meets the edge. A book cover, not a banner.")),
+    4: dict(img="hero", sizes="(max-width:900px) 92vw, 58vw", name=L("שתי תמונות בקומפוזיציה א־סימטרית", "Two photographs, asymmetric composition"),
+            desc=L("כותרת ברוחב הדף, ומתחתיה תמונה גדולה ותמונה קטנה מוסטת כלפי מטה, כל אחת עם כתובת. עמוד מתוך ספר פרויקטים.",
+                   "A page-wide headline, then a large and a small photograph offset downward, each with its address. A spread from a project book.")),
+    5: dict(img="hero", sizes="(max-width:1280px) 92vw, 1184px", name=L("פתיחה בכחול כהה, תמונה פורצת מתחת", "Navy opening, photo breaking out beneath"),
+            desc=L("הכותרת בלבן על משטח כחול כהה ברוחב מלא, והצילום חופף לקצה התחתון של המשטח. יציב, ממסדי, בטוח בעצמו.",
+                   "The headline in white on a full-width navy field, with the photograph overlapping the field's lower edge. Solid, established, assured.")),
+}
+
+
+def hero_html(lang, variant=0):
     t = T[lang]
     px = pfx(lang)
-    path = px + "/"
-    hero_sizes = "(max-width:900px) 92vw, 52vw"
-    marketing = [p for p in PROJECTS if p["group"] == "marketing"]
-    planning = [p for p in PROJECTS if p["group"] == "planning"]
-    done = [p for p in PROJECTS if p["group"] == "done"]
-    steps = "".join(f"<li>{s}</li>" for s in v(FIRST_STEP, lang)[:4])
-    html = head(lang, t["brand"], t["site_desc"], path, preload("hero", hero_sizes))
-    html += header(lang, path, path)
-    html += f"""<section class="hero">
-  <div class="wrap grid">
-    <div class="hero-text">
-      <span class="eyebrow">{t['hero_eyebrow']}</span>
+    text = f"""<span class="eyebrow">{t['hero_eyebrow']}</span>
       <h1>{t['hero_h1']}</h1>
       <p class="lead">{t['hero_lead']}</p>
-      <div class="cta-row"><a class="btn" href="{px}/projects/">{t['cta_projects']}</a><a class="btn btn--ghost" href="{px}/how-we-start/">{t['cta_how']}</a></div>
+      <div class="cta-row"><a class="btn" href="{px}/projects/">{t['cta_projects']}</a><a class="btn btn--ghost" href="{px}/how-we-start/">{t['cta_how']}</a></div>"""
+    if variant == 0:
+        sizes = "(max-width:900px) 92vw, 52vw"
+        return f"""<section class="hero">
+  <div class="wrap grid">
+    <div class="hero-text">
+      {text}
     </div>
     <div class="hero-media">
       <figure>
-        <div class="frame">{picture("hero", t['hero_caption'], hero_sizes, eager=True)}</div>
+        <div class="frame">{picture("hero", t['hero_caption'], sizes, eager=True)}</div>
         <figcaption>{t['hero_caption']}</figcaption>
       </figure>
     </div>
   </div>
+</section>"""
+    hv = HERO_VARIANTS[variant]
+    cap_hoshea = t['about_caption']
+    cap_herut = t['how_caption']
+    cap_bern = L("אדוארד ברנשטיין 11, תל אביב. אושר בוועדה המקומית.", "Eduard Bernstein 11, Tel Aviv. Approved by the local committee.")[lang]
+    cap_yafo = L("דרך יפו 13, תל אביב. שימור ושחזור, הסתיים ואוכלס.", "Jaffa Road 13, Tel Aviv. Preservation and restoration, completed.")[lang]
+    if variant == 1:
+        return f"""<section class="hero hero--v1">
+  <div class="frame">{picture("hoshea", cap_hoshea, "100vw", eager=True)}</div>
+  <div class="wrap"><div class="plate">
+      {text}
+  </div></div>
+  <p class="wrap hero-cap">{cap_hoshea}</p>
+</section>"""
+    if variant == 2:
+        text_light = f"""<span class="eyebrow">{t['hero_eyebrow']}</span>
+      <h1>{t['hero_h1']}</h1>"""
+        return f"""<section class="hero hero--v2">
+  <div class="wrap">
+    {text_light}
+    <div class="v2-row">
+      <p class="lead">{t['hero_lead']}</p>
+      <div class="cta-row"><a class="btn" href="{px}/projects/">{t['cta_projects']}</a><a class="btn btn--ghost" href="{px}/how-we-start/">{t['cta_how']}</a></div>
+    </div>
+    <figure>
+      <div class="frame">{picture("herut", cap_herut, hv['sizes'], eager=True)}</div>
+      <figcaption>{cap_herut}</figcaption>
+    </figure>
+  </div>
+</section>"""
+    if variant == 3:
+        return f"""<section class="hero hero--v3">
+  <div class="wrap grid">
+    <div class="hero-text">
+      {text}
+    </div>
+    <div class="hero-media">
+      <figure>
+        <div class="frame">{picture("bernstein", cap_bern, hv['sizes'], eager=True)}</div>
+        <figcaption>{cap_bern}</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>"""
+    if variant == 4:
+        return f"""<section class="hero hero--v4">
+  <div class="wrap">
+    <div class="v4-head"><span class="eyebrow">{t['hero_eyebrow']}</span><h1>{t['hero_h1']}</h1></div>
+    <div class="grid v4-grid">
+      <figure class="v4-big">
+        <div class="frame">{picture("hero", t['hero_caption'], hv['sizes'], eager=True)}</div>
+        <figcaption>{t['hero_caption']}</figcaption>
+      </figure>
+      <figure class="v4-small">
+        <div class="frame">{picture("yafo", cap_yafo, "(max-width:900px) 44vw, 30vw")}</div>
+        <figcaption>{cap_yafo}</figcaption>
+      </figure>
+      <div class="v4-text">
+        <p class="lead">{t['hero_lead']}</p>
+        <div class="cta-row"><a class="btn" href="{px}/projects/">{t['cta_projects']}</a><a class="btn btn--ghost" href="{px}/how-we-start/">{t['cta_how']}</a></div>
+      </div>
+    </div>
+  </div>
+</section>"""
+    if variant == 5:
+        return f"""<section class="hero hero--v5">
+  <div class="band band--navy v5-band">
+    <div class="wrap">
+      <span class="eyebrow">{t['hero_eyebrow']}</span>
+      <h1>{t['hero_h1']}</h1>
+      <p class="lead">{t['hero_lead']}</p>
+      <div class="cta-row"><a class="btn btn--light" href="{px}/projects/">{t['cta_projects']}</a><a class="btn btn--outline-light" href="{px}/how-we-start/">{t['cta_how']}</a></div>
+    </div>
+  </div>
+  <div class="wrap v5-media">
+    <figure>
+      <div class="frame">{picture("hero", t['hero_caption'], hv['sizes'], eager=True)}</div>
+      <figcaption>{t['hero_caption']}</figcaption>
+    </figure>
+  </div>
+</section>"""
+
+
+def page_hero_index(lang):
+    t = T[lang]
+    px = pfx(lang)
+    path = f"{px}/hero/"
+    items = "".join(
+        f"""<li><a class="link" href="{px}/hero/{n}/">{'אפשרות' if lang == 'he' else 'Option'} {n}: {v(hv['name'], lang)}</a><p class="small muted">{v(hv['desc'], lang)}</p></li>"""
+        for n, hv in HERO_VARIANTS.items())
+    html = head(lang, "Hero options", "Hero design options for review.", path, '<meta name="robots" content="noindex">')
+    html += header(lang, "", path)
+    html += f"""<section class="wrap page-head">
+  <h1>{'חמש אפשרויות לפתיחת דף הבית' if lang == 'he' else 'Five options for the home page opening'}</h1>
+  <p class="lead">{'כל אפשרות היא דף הבית המלא עם פתיחה אחרת. הטקסט זהה; רק הקומפוזיציה משתנה.' if lang == 'he' else 'Each option is the full home page with a different opening. Same copy, different composition.'}</p>
 </section>
+<section class="wrap prose" style="padding-bottom:var(--section)">
+  <ol class="hero-list">{items}</ol>
+  <p><a class="link" href="{px}/">{'הגרסה הנוכחית' if lang == 'he' else 'Current version'}</a></p>
+</section>
+"""
+    html += footer(lang, path)
+    write(path, html)
+
+
+def page_home(lang, variant=0):
+    t = T[lang]
+    px = pfx(lang)
+    path = px + "/" if not variant else f"{px}/hero/{variant}/"
+    marketing = [p for p in PROJECTS if p["group"] == "marketing"]
+    planning = [p for p in PROJECTS if p["group"] == "planning"]
+    done = [p for p in PROJECTS if p["group"] == "done"]
+    steps = "".join(f"<li>{s}</li>" for s in v(FIRST_STEP, lang)[:4])
+    hv = HERO_VARIANTS.get(variant, {"img": "hero", "sizes": "(max-width:900px) 92vw, 52vw"})
+    extra = preload(hv["img"], hv["sizes"]) + ('\n<meta name="robots" content="noindex">' if variant else "")
+    html = head(lang, t["brand"], t["site_desc"], px + "/", extra)
+    html += header(lang, px + "/", px + "/")
+    html += hero_html(lang, variant) + """
 
 <section class="section" id="projects">
   <div class="wrap">
@@ -1021,7 +1157,7 @@ def page_home(lang):
 
 {contact_section(lang)}
 """
-    html += footer(lang, path)
+    html += footer(lang, px + "/")
     write(path, html)
 
 
@@ -1466,6 +1602,9 @@ def sitemap():
 def main():
     for lang in ("he", "en"):
         page_home(lang)
+        for n in HERO_VARIANTS:
+            page_home(lang, n)
+        page_hero_index(lang)
         page_projects(lang)
         for p in PROJECTS:
             if not p.get("redirect"):
