@@ -158,7 +158,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .menu-open .burger span::after{transform:translateY(-7px) rotate(-45deg)}
 @media (max-width:900px){
   .head-row{gap:16px}
-  .head-phone{font-size:.9rem;margin-inline-start:auto}
+  .head-phone{display:none}
   .burger{display:block}
   body.menu-open{overflow:hidden}
   .menu{display:none;position:absolute;inset-inline:0;top:100%;flex-direction:column;align-items:stretch;gap:0;background:var(--bg);border-bottom:1px solid var(--line);padding:8px var(--gutter) 20px}
@@ -256,6 +256,44 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero--v5 figcaption{padding-top:10px;font-size:var(--fs-small);color:var(--muted)}
 @media (max-width:900px){.hero--v5 .v5-band{padding-bottom:110px}.hero--v5 .v5-media{margin-top:-80px}.hero--v5 .v5-media .frame{aspect-ratio:4/3}}
 
+/* apartments on mobile: three preview layouts (desktop keeps the table) */
+.apts-cards{display:none}
+@media (max-width:640px){
+  .apts-v1 .table-wrap,.apts-v1 .table-hint,.apts-v2 .table-wrap,.apts-v2 .table-hint,.apts-v3 .table-wrap,.apts-v3 .table-hint{display:none}
+  .apts-v1 .apts-cards,.apts-v2 .apts-cards,.apts-v3 .apts-cards{display:block;border-top:1px solid var(--line-strong)}
+  .apt{border-bottom:1px solid var(--line)}
+  .apt summary{list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:16px 0;cursor:default}
+  .apt summary::-webkit-details-marker{display:none}
+  .apt-name{font-weight:500;color:var(--navy)}
+  .apt-name .sold-tag{margin-inline-start:8px}
+  .apt-key{font-size:var(--fs-small);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .apt.sold .apt-name,.apt.sold .apt-key{color:var(--muted)}
+  .apt-body dl{margin:0}
+  .apt-body .pdf{display:inline-block;margin-top:12px;padding:8px 14px;border:1px solid var(--line-strong);font-size:.85rem;font-weight:500;color:var(--navy)}
+  /* 1: open blocks, two-column details, full-width PDF */
+  .apts-v1 .apt-body{padding:0 0 18px}
+  .apts-v1 .apt-body dl{display:grid;grid-template-columns:1fr 1fr;gap:10px var(--gap)}
+  .apts-v1 .apt-body dt{font-size:.75rem;color:var(--muted)}
+  .apts-v1 .apt-body dd{margin:2px 0 0;color:var(--ink)}
+  .apts-v1 .apt-body .pdf{display:block;text-align:center;margin-top:14px}
+  /* 2: compact, one line of details */
+  .apts-v2 .apt summary{padding:12px 0 4px}
+  .apts-v2 .apt-body{padding:0 0 12px;font-size:var(--fs-small);color:var(--muted)}
+  .apts-v2 .apt-body dl{display:flex;flex-wrap:wrap;gap:4px 14px}
+  .apts-v2 .apt-body dt{display:none}
+  .apts-v2 .apt-body dd{margin:0}
+  .apts-v2 .apt-body dd:not(:last-child)::after{content:"·";margin-inline-start:14px;color:var(--line-strong)}
+  .apts-v2 .apt-body .pdf{margin-top:8px;padding:4px 10px;font-size:.78rem}
+  /* 3: accordion */
+  .apts-v3 .apt summary{cursor:pointer;padding-inline-end:28px;position:relative}
+  .apts-v3 .apt summary::after{content:"+";position:absolute;inset-inline-end:0;top:14px;font-size:1.3rem;font-weight:300;color:var(--blue-text)}
+  .apts-v3 .apt[open] summary::after{content:"\2212"}
+  .apts-v3 .apt-body{padding:0 0 18px}
+  .apts-v3 .apt-body dl{display:grid;grid-template-columns:1fr 1fr;gap:10px var(--gap)}
+  .apts-v3 .apt-body dt{font-size:.75rem;color:var(--muted)}
+  .apts-v3 .apt-body dd{margin:2px 0 0}
+}
+
 /* sticky contact bar */
 body{padding-bottom:var(--stick-h,0px)}
 body.has-stick{--stick-h:72px}
@@ -264,10 +302,12 @@ html[style*="--stick-h"] body.has-stick{--stick-h:inherit}
 .stick-row{display:flex;align-items:center;gap:clamp(12px,2vw,28px);min-height:72px;padding-block:10px}
 .stick-title{margin:0;font-weight:500;white-space:nowrap}
 .stick .stick-form{display:flex;align-items:center;gap:12px;flex:1;margin:0}
-.stick .stick-form input{width:auto;flex:1;min-width:0;max-width:260px;color:#fff;border-bottom:1px solid rgba(255,255,255,.45);padding:8px 0}
+.stick .stick-form input{width:auto;flex:1;min-width:0;max-width:260px;color:#fff;background:rgba(26,169,222,.16);border:1px solid rgba(127,201,234,.55);padding:10px 14px;transition:background .2s,border-color .2s}
 .stick .stick-form input::placeholder{color:rgba(255,255,255,.7)}
-.stick .stick-form input:focus{border-color:#fff}
-.stick .stick-form .btn{min-height:42px;padding-inline:20px;white-space:nowrap}
+.stick .stick-form input:focus{border-color:#fff;background:rgba(26,169,222,.26)}
+.stick .stick-form input[type=tel]{direction:ltr;text-align:right}
+[dir=ltr] .stick .stick-form input[type=tel]{text-align:left}
+.stick .stick-form .btn{min-height:44px;padding-inline:22px;white-space:nowrap}
 .stick .stick-form .form__msg{flex-basis:100%;margin:0;min-height:0;color:#e7ebf3}
 .stick-form .form__msg:empty{display:none}
 .stick-form .form__msg.err{color:#f3b3a4}
@@ -361,6 +401,8 @@ body.has-stick #jv-a11y{bottom:calc(var(--stick-h) + 18px)}
 .form{display:grid;grid-template-columns:1fr 1fr;gap:18px var(--gap)}
 .form .full{grid-column:1 / -1}
 .form label{display:block;font-size:var(--fs-small);color:var(--muted);margin-bottom:6px}
+input[type=tel]{direction:ltr;text-align:right}
+[dir=ltr] input[type=tel]{text-align:left}
 .form input,.form select,.form textarea{width:100%;font:inherit;color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--line-strong);padding:10px 0;border-radius:0;transition:border-color .2s}
 .form textarea{min-height:110px;resize:vertical}
 .form input:focus,.form select:focus,.form textarea:focus{outline:0;border-color:var(--navy)}
@@ -432,9 +474,11 @@ body.has-stick #jv-a11y{bottom:calc(var(--stick-h) + 18px)}
 .bleed .frame{width:100%;aspect-ratio:16/9;max-height:78vh;overflow:hidden;background:var(--bg-2)}
 .bleed .frame img{width:100%;height:100%;object-fit:cover}
 .bleed figcaption{padding-top:10px;font-size:var(--fs-small);color:var(--muted)}
-.bleed-text{padding-top:clamp(36px,5vw,64px)}
-.bleed-text h2{max-width:22ch;margin-bottom:20px}
-.bleed-text p{max-width:62ch}
+.bleed-text{padding-top:clamp(36px,5vw,64px);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);align-items:start}
+.bleed-text h2{grid-column:1 / span 5;max-width:14ch;margin:0}
+.bleed-text p{grid-column:7 / span 6;max-width:none;margin:0 0 1em}
+.bleed-text p + p{grid-column:7 / span 6}
+@media (max-width:900px){.bleed-text h2,.bleed-text p,.bleed-text p + p{grid-column:1 / -1}.bleed-text h2{margin-bottom:12px}}
 .bleed-text .lead{margin-bottom:.6em}
 .extra-fig{margin:40px 0 0}
 .extra-fig .frame{overflow:hidden;background:var(--bg-2)}
@@ -526,56 +570,174 @@ body.has-stick #jv-a11y{bottom:calc(var(--stick-h) + 18px)}
 
 <section class="section" id="projects">
   <div class="wrap">
-    <div class="sec-head rv"><h2>{t['projects_h2']}</h2><a class="link" href="{px}/projects/">{t['cta_projects']}</a></div>
+    <div class="sec-head rv"><h2>Projects that improve with the years</h2><a class="link" href="/en/projects/">All projects</a></div>
     <div class="group">
-      <div class="group-head"><h3>{t['groups']['marketing'][0]}</h3><span class="note">{t['groups']['marketing'][1]}</span></div>
-      {cards(marketing, 2, lang)}
+      <div class="group-head"><h3>In marketing</h3><span class="note">Permits, construction and active sales</span></div>
+      <div class="cards cards--2">
+<a class="card rv-img" href="/en/projects/louis-marshall-11/" data-status="marketing">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/marshall-480.avif 480w, /assets/img/marshall-800.avif 800w, /assets/img/marshall-1200.avif 1200w, /assets/img/marshall-1256.avif 1256w" sizes="(max-width:560px) 92vw, 46vw"><img src="/assets/img/marshall-800.webp" srcset="/assets/img/marshall-480.webp 480w, /assets/img/marshall-800.webp 800w, /assets/img/marshall-1200.webp 1200w, /assets/img/marshall-1256.webp 1256w" sizes="(max-width:560px) 92vw, 46vw" width="1256" height="1015" alt="Louis Marshall 11, Tel Aviv" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Louis Marshall 11</h3>
+    <div class="sub"><span>Tel Aviv, Old North</span><span class="status">Permit granted</span></div>
+  </div>
+</a>
+<a class="card rv-img" href="/en/projects/grofit-3/" data-status="marketing">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/grofit-480.avif 480w, /assets/img/grofit-800.avif 800w, /assets/img/grofit-1200.avif 1200w, /assets/img/grofit-1600.avif 1600w" sizes="(max-width:560px) 92vw, 46vw"><img src="/assets/img/grofit-800.webp" srcset="/assets/img/grofit-480.webp 480w, /assets/img/grofit-800.webp 800w, /assets/img/grofit-1200.webp 1200w, /assets/img/grofit-1600.webp 1600w" sizes="(max-width:560px) 92vw, 46vw" width="1600" height="1044" alt="Mevo Grofit 3, Tel Aviv" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Mevo Grofit 3</h3>
+    <div class="sub"><span>Tel Aviv, Tzahala</span><span class="status">Under construction</span></div>
+  </div>
+</a>
+<a class="card rv-img" href="https://eduard11.co.il/" data-status="marketing">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/bernstein-480.avif 480w, /assets/img/bernstein-800.avif 800w, /assets/img/bernstein-1200.avif 1200w, /assets/img/bernstein-1510.avif 1510w" sizes="(max-width:560px) 92vw, 46vw"><img src="/assets/img/bernstein-800.webp" srcset="/assets/img/bernstein-480.webp 480w, /assets/img/bernstein-800.webp 800w, /assets/img/bernstein-1200.webp 1200w, /assets/img/bernstein-1510.webp 1510w" sizes="(max-width:560px) 92vw, 46vw" width="1510" height="1888" alt="Eduard Bernstein 11, Tel Aviv" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Eduard Bernstein 11</h3>
+    <div class="sub"><span>Tel Aviv, Historic centre</span><span class="status">Approved by local committee</span></div>
+  </div>
+</a>
+<a class="card rv-img" href="/en/projects/arlozorov-53/" data-status="marketing">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-480.avif 480w, /assets/img/arlozorov-800.avif 800w, /assets/img/arlozorov-1200.avif 1200w, /assets/img/arlozorov-1600.avif 1600w" sizes="(max-width:560px) 92vw, 46vw"><img src="/assets/img/arlozorov-800.webp" srcset="/assets/img/arlozorov-480.webp 480w, /assets/img/arlozorov-800.webp 800w, /assets/img/arlozorov-1200.webp 1200w, /assets/img/arlozorov-1600.webp 1600w" sizes="(max-width:560px) 92vw, 46vw" width="1600" height="1065" alt="Arlozorov 53, Ramat Gan" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Arlozorov 53</h3>
+    <div class="sub"><span>Ramat Gan, Hashmonaim neighbourhood</span><span class="status">In marketing</span></div>
+  </div>
+</a>
+</div>
     </div>
     <div class="group">
-      <div class="group-head"><h3>{t['groups']['planning'][0]}</h3><a class="note link" href="{px}/projects/#planning">{t['more_projects'].format(n=len(planning) - 4)}</a></div>
-      {cards(planning[:4], 4, lang)}
+      <div class="group-head"><h3>Projects before committee approval, discounted prices and benefits</h3><a class="note link" href="/en/projects/#planning">4 more projects in planning</a></div>
+      <div class="cards cards--4">
+<a class="card rv-img" href="/en/projects/pinsker-53-55/" data-status="planning">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/pinsker-480.avif 480w, /assets/img/pinsker-800.avif 800w, /assets/img/pinsker-1200.avif 1200w, /assets/img/pinsker-1600.avif 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw"><img src="/assets/img/pinsker-800.webp" srcset="/assets/img/pinsker-480.webp 480w, /assets/img/pinsker-800.webp 800w, /assets/img/pinsker-1200.webp 1200w, /assets/img/pinsker-1600.webp 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw" width="1600" height="1333" alt="Pinsker 53+55, Tel Aviv" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Pinsker 53+55</h3>
+    <div class="sub"><span>Tel Aviv, City centre</span><span class="status">In planning</span></div>
+  </div>
+</a>
+<a class="card rv-img" href="/en/projects/cordovero-22/" data-status="planning">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/cordovero-480.avif 480w, /assets/img/cordovero-800.avif 800w, /assets/img/cordovero-1200.avif 1200w, /assets/img/cordovero-1600.avif 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw"><img src="/assets/img/cordovero-800.webp" srcset="/assets/img/cordovero-480.webp 480w, /assets/img/cordovero-800.webp 800w, /assets/img/cordovero-1200.webp 1200w, /assets/img/cordovero-1600.webp 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw" width="1600" height="1600" alt="Cordovero 22, Tel Aviv" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Cordovero 22</h3>
+    <div class="sub"><span>Tel Aviv, Florentin</span><span class="status">In planning</span></div>
+  </div>
+</a>
+<a class="card rv-img" href="/en/projects/weisburg-4/" data-status="planning">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/weisburg4-480.avif 480w, /assets/img/weisburg4-800.avif 800w, /assets/img/weisburg4-1200.avif 1200w, /assets/img/weisburg4-1600.avif 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw"><img src="/assets/img/weisburg4-800.webp" srcset="/assets/img/weisburg4-480.webp 480w, /assets/img/weisburg4-800.webp 800w, /assets/img/weisburg4-1200.webp 1200w, /assets/img/weisburg4-1600.webp 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw" width="1600" height="900" alt="Weisburg 4, Tel Aviv" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Weisburg 4</h3>
+    <div class="sub"><span>Tel Aviv, Tzahala</span><span class="status">In planning</span></div>
+  </div>
+</a>
+<a class="card rv-img" href="/en/projects/weisburg-6/" data-status="planning">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/weisburg6-480.avif 480w, /assets/img/weisburg6-800.avif 800w, /assets/img/weisburg6-1200.avif 1200w, /assets/img/weisburg6-1600.avif 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw"><img src="/assets/img/weisburg6-800.webp" srcset="/assets/img/weisburg6-480.webp 480w, /assets/img/weisburg6-800.webp 800w, /assets/img/weisburg6-1200.webp 1200w, /assets/img/weisburg6-1600.webp 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw" width="1600" height="900" alt="Weisburg 6, Tel Aviv" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Weisburg 6</h3>
+    <div class="sub"><span>Tel Aviv, Tzahala</span><span class="status">In planning</span></div>
+  </div>
+</a>
+</div>
     </div>
     <div class="group">
-      <div class="group-head"><h3>{t['groups']['done'][0]}</h3><span class="note">{t['groups']['done'][1]}</span></div>
-      {cards(done, 4, lang)}
+      <div class="group-head"><h3>Under construction and occupied</h3><span class="note">Construction, delivery and occupancy</span></div>
+      <div class="cards cards--4">
+<a class="card rv-img" href="/en/projects/jaffa-road-13/" data-status="done">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/yafo-480.avif 480w, /assets/img/yafo-800.avif 800w, /assets/img/yafo-1200.avif 1200w, /assets/img/yafo-1447.avif 1447w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw"><img src="/assets/img/yafo-800.webp" srcset="/assets/img/yafo-480.webp 480w, /assets/img/yafo-800.webp 800w, /assets/img/yafo-1200.webp 1200w, /assets/img/yafo-1447.webp 1447w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw" width="1447" height="987" alt="Jaffa Road 13, Tel Aviv" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Jaffa Road 13</h3>
+    <div class="sub"><span>Tel Aviv, City centre, near Rothschild</span><span class="status">Completed and occupied</span></div>
+  </div>
+</a>
+<a class="card rv-img" href="/en/projects/rothschild-135/" data-status="done">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/rothschild-480.avif 480w, /assets/img/rothschild-800.avif 800w, /assets/img/rothschild-1200.avif 1200w, /assets/img/rothschild-1447.avif 1447w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw"><img src="/assets/img/rothschild-800.webp" srcset="/assets/img/rothschild-480.webp 480w, /assets/img/rothschild-800.webp 800w, /assets/img/rothschild-1200.webp 1200w, /assets/img/rothschild-1447.webp 1447w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw" width="1447" height="987" alt="Rothschild 135, Tel Aviv" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Rothschild 135</h3>
+    <div class="sub"><span>Tel Aviv, The House on Habima</span><span class="status">Completed and occupied</span></div>
+  </div>
+</a>
+<a class="card rv-img" href="/en/projects/hoshea-21-23/" data-status="done">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/hoshea-480.avif 480w, /assets/img/hoshea-800.avif 800w, /assets/img/hoshea-1200.avif 1200w, /assets/img/hoshea-1600.avif 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw"><img src="/assets/img/hoshea-800.webp" srcset="/assets/img/hoshea-480.webp 480w, /assets/img/hoshea-800.webp 800w, /assets/img/hoshea-1200.webp 1200w, /assets/img/hoshea-1600.webp 1600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw" width="1600" height="880" alt="Hoshea 21+23, Bnei Brak" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Hoshea 21+23</h3>
+    <div class="sub"><span>Bnei Brak</span><span class="status">Under construction</span></div>
+  </div>
+</a>
+<a class="card rv-img" href="/en/projects/bat-shua-8/" data-status="done">
+  <div class="frame"><picture><source type="image/avif" srcset="/assets/img/batshua-480.avif 480w, /assets/img/batshua-600.avif 600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw"><img src="/assets/img/batshua-600.webp" srcset="/assets/img/batshua-480.webp 480w, /assets/img/batshua-600.webp 600w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw" width="600" height="410" alt="Bat Shua 8, Ramat Gan" loading="lazy" decoding="async"></picture></div>
+  <div class="meta">
+    <h3>Bat Shua 8</h3>
+    <div class="sub"><span>Ramat Gan</span><span class="status">Sold out</span></div>
+  </div>
+</a>
+</div>
     </div>
   </div>
 </section>
 
 <section class="bleed rv-img">
   <figure>
-    <div class="frame">{picture("hoshea", t['about_caption'], "100vw")}</div>
-    <figcaption class="wrap">{t['about_caption']}</figcaption>
+    <div class="frame"><picture><source type="image/avif" srcset="/assets/img/hoshea-480.avif 480w, /assets/img/hoshea-800.avif 800w, /assets/img/hoshea-1200.avif 1200w, /assets/img/hoshea-1600.avif 1600w" sizes="100vw"><img src="/assets/img/hoshea-800.webp" srcset="/assets/img/hoshea-480.webp 480w, /assets/img/hoshea-800.webp 800w, /assets/img/hoshea-1200.webp 1200w, /assets/img/hoshea-1600.webp 1600w" sizes="100vw" width="1600" height="880" alt="Hoshea 21+23, Bnei Brak. Demolition and rebuilding, under construction." loading="lazy" decoding="async"></picture></div>
+    <figcaption class="wrap">Hoshea 21+23, Bnei Brak. Demolition and rebuilding, under construction.</figcaption>
   </figure>
   <div class="wrap bleed-text rv">
-    <h2>{t['about_h2']}</h2>
-    <p>{t['about_p']}</p>
-    <p><a class="link" href="{px}/about/">{t['about_link']}</a></p>
+    <h2>A family company. Four generations of building.</h2>
+    <p>Kerem is a team of specialists with four generations of experience in real estate development, planning and construction of thousands of residential and commercial units. In recent years the focus has been residential projects in the city centre: TAMA 38 and urban renewal. The company is fully family owned. CEO: Rani Weinberg.</p>
+    <p><a class="link" href="/en/about/">About the company and the Weinberg group</a></p>
   </div>
 </section>
 
 <section class="section rule">
   <div class="wrap">
-    <div class="sec-head rv"><h2>{t['spec_h2']}</h2></div>
-    <div class="rows">{rows(v(SPECIALTIES, lang))}</div>
+    <div class="sec-head rv"><h2>What we do</h2></div>
+    <div class="rows"><div class="row rv"><span class="num">01</span><h3>Development and planning<small>From planning to handover</small></h3><p>We handle real estate projects in two ways: acquiring the entire project, or managing the development component throughout, from planning through construction to handover.</p></div><div class="row rv"><span class="num">02</span><h3>Urban renewal<small>Renewal and preservation in city centres</small></h3><p>This is the core of our work: real estate projects inside city centres, including listed buildings, where architectural sensitivity has to go together with the ability to deliver.</p></div><div class="row rv"><span class="num">03</span><h3>TAMA 38<small>Demolition and rebuilding</small></h3><p>The company offers its services and experience as developer in TAMA 38/2 projects, with a commitment to a personal, transparent and orderly process with residents.</p></div></div>
   </div>
 </section>
 
 <section class="band band--navy statement">
   <div class="wrap grid">
     <div class="statement-text rv">
-      <h2>{t['statement_h2']}</h2>
-      <p>{t['statement_p1']}</p>
-      <p>{t['statement_p2']}</p>
-      <div class="cta-row"><a class="btn btn--light" href="{px}/contact/">{t['cta_contact']}</a><a class="link link--light" style="align-self:center" href="{px}/how-we-start/">{t['cta_steps']}</a></div>
+      <h2>The first step is getting acquainted. No signatures, no commitment.</h2>
+      <p>For apartment owners, moving something like this forward is not simple: gathering all the residents is hard, judging between many developers making promises is hard, and dealing with a developer and a lawyer without knowing the terms is hard.</p>
+      <p>So we work with a clear, simple method, step by step, for every kind of project. The first step is only about getting acquainted: understanding together, developer and residents, whether the building is a viable project.</p>
+      <div class="cta-row"><a class="btn btn--light" href="/en/contact/">Leave your details</a><a class="link link--light" style="align-self:center" href="/en/how-we-start/">All the steps</a></div>
     </div>
     <div class="statement-aside rv">
-      <ol>{steps}</ol>
+      <ol><li>Send us the name of a contact person. We call and arrange a first meeting to get acquainted.</li><li>Together we prepare a list of the residents in the building with contact details.</li><li>We identify one lead resident to drive the first step. It makes progress at this stage much easier. Later, as the project advances, a committee of three residents is chosen.</li><li>We meet all the residents at an initial residents' meeting.</li></ol>
     </div>
   </div>
 </section>
 
-{contact_section(lang)}
+<section class="section rule" id="contact">
+  <div class="wrap grid">
+    <div class="contact-info rv">
+      <h2>Would you like us to call you?</h2>
+      <p class="lead">Buying an apartment, a building suited to urban renewal, or advice on any real estate matter. Leave your details and a representative will get back to you shortly.</p>
+      <dl class="dl">
+        <div><dt>Phone</dt><dd><a href="tel:+97236121314" dir="ltr">03-6121314</a></dd></div>
+        <div><dt>Email</dt><dd><a href="mailto:office@keremltd.co.il">office@keremltd.co.il</a></dd></div>
+        <div><dt>Office</dt><dd>82 Begin Road, Beit Ofakim, 5th floor, Tel Aviv 67138</dd></div>
+      </dl>
+    </div>
+    <div class="contact-form rv"><form class="form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+    <input type="hidden" name="access_key" value="YOUR-WEB3FORMS-ACCESS-KEY">
+    <input type="hidden" name="subject" value="New enquiry from keremltd.co.il (EN)">
+    <input type="hidden" name="from_name" value="keremltd.co.il">
+    <input type="hidden" name="redirect" value="https://keremltd.co.il/en/contact/?sent=1">
+    <label class="hp" aria-hidden="true">Leave this field empty <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label>
+    <div><label for="f-name">Full name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
+    <div><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required minlength="7" pattern="[0-9+\-\s()]{7,}"></div>
+    <div class="full"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
+    <div class="full"><label for="f-building">Building address (for residents)</label><input id="f-building" name="building" type="text" autocomplete="street-address"></div>
+    <div class="full"><label for="f-topic">Regarding</label>
+      <select id="f-topic" name="topic"><option value="">Choose a topic</option><option>I own an apartment in an existing building</option><option>Buying an apartment</option><option>Urban renewal</option><option>TAMA 38</option><option>Development</option><option>Other</option></select></div>
+    <div class="full"><label for="f-project">Project (if relevant)</label>
+      <select id="f-project" name="project"><option value="">No specific project</option><option value="Louis Marshall 11" data-slug="louis-marshall-11">Louis Marshall 11, Tel Aviv</option><option value="Mevo Grofit 3" data-slug="grofit-3">Mevo Grofit 3, Tel Aviv</option><option value="Eduard Bernstein 11" data-slug="bernstein-11">Eduard Bernstein 11, Tel Aviv</option><option value="Arlozorov 53" data-slug="arlozorov-53">Arlozorov 53, Ramat Gan</option><option value="Pinsker 53+55" data-slug="pinsker-53-55">Pinsker 53+55, Tel Aviv</option><option value="Cordovero 22" data-slug="cordovero-22">Cordovero 22, Tel Aviv</option><option value="Weisburg 4" data-slug="weisburg-4">Weisburg 4, Tel Aviv</option><option value="Weisburg 6" data-slug="weisburg-6">Weisburg 6, Tel Aviv</option><option value="Nahmani 64" data-slug="nahmani-64">Nahmani 64, Tel Aviv</option><option value="Mazeh 71" data-slug="mazeh-71">Mazeh 71, Tel Aviv-Jaffa</option><option value="Herut 40" data-slug="herut-40">Herut 40, Ramat Gan</option><option value="Talpiot 30" data-slug="talpiot-30">Talpiot 30, Ramat Gan</option></select></div>
+    <div class="full"><label for="f-msg">Message</label><textarea id="f-msg" name="message"></textarea></div>
+    <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>I agree to be contacted in accordance with the <a href="/en/privacy/" class="link">privacy policy</a>.</span></label>
+    <div class="actions"><button class="btn" type="submit">Send</button><span class="small muted">or call: <a href="tel:+97236121314" dir="ltr" class="link">03-6121314</a></span></div>
+    <p class="form__msg" aria-live="polite" tabindex="-1" data-sent="Thank you, your enquiry has been received. We will get back to you shortly."></p>
+  </form></div>
+  </div>
+</section>
 </main>
 <footer class="site-foot">
   <div class="wrap">
