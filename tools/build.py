@@ -805,6 +805,7 @@ def header(lang, current, path):
       <a class="menu-phone" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a>
     </nav>
     <a class="head-phone" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a>
+    <a class="lang lang--head" href="{alt_path(path, lang)}" lang="{other_lang}" hreflang="{other_lang}">{t['lang_switch']}</a>
     <button class="burger" type="button" aria-controls="menu" aria-expanded="false" aria-label="{t['menu_open']}"><span></span></button>
   </div>
 </header>

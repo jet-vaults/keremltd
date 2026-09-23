@@ -139,7 +139,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
 
 /* header */
-.site-head{position:relative;z-index:50;background:var(--bg);border-bottom:1px solid var(--line)}
+.site-head{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line)}
 .head-row{display:flex;align-items:center;justify-content:space-between;gap:32px;min-height:78px}
 .brand img{width:150px;height:auto}
 .menu{display:flex;align-items:center;gap:clamp(18px,2.4vw,34px)}
@@ -148,6 +148,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .menu .lang{font-size:.85rem;font-weight:500;letter-spacing:.04em}
 .head-phone{font-weight:500;white-space:nowrap;padding:8px 0;border-bottom:1px solid transparent}
 .head-phone:hover{border-color:var(--navy)}
+.lang--head{display:none}
 .burger{display:none;width:44px;height:44px;margin-inline-end:-10px;position:relative}
 .burger span,.burger span::before,.burger span::after{position:absolute;left:11px;width:22px;height:1.5px;background:var(--navy);transition:transform .3s var(--ease),opacity .2s}
 .burger span{top:21px}
@@ -158,8 +159,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .menu-open .burger span::before{transform:translateY(7px) rotate(45deg)}
 .menu-open .burger span::after{transform:translateY(-7px) rotate(-45deg)}
 @media (max-width:900px){
-  .head-row{gap:16px}
+  .head-row{gap:6px}
   .head-phone{display:none}
+  .brand{margin-inline-end:auto}
+  .lang--head{display:inline-block;font-size:.85rem;font-weight:500;letter-spacing:.04em;padding:10px 12px}
+  .menu .lang{display:none}
   .burger{display:block}
   body.menu-open{overflow:hidden}
   .menu{display:none;position:absolute;inset-inline:0;top:100%;flex-direction:column;align-items:stretch;gap:0;background:var(--bg);border-bottom:1px solid var(--line);padding:8px var(--gutter) 20px}
@@ -183,7 +187,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero-media figure{margin:0;position:relative;z-index:1}
 .hero-media{position:relative}
 .hero-media::before{content:"";position:absolute;border-radius:50%;pointer-events:none;width:clamp(260px,34vw,520px);height:clamp(260px,34vw,520px);top:clamp(-120px,-12vw,-200px);inset-inline-start:clamp(-70px,-7vw,-130px);background:var(--blue);opacity:.1}
-@media (max-width:900px){.hero-media::before{inset-inline-start:-40px;top:-80px}}
+.hero-text{position:relative;z-index:2}
+@media (max-width:900px){.hero-media::before{inset-inline-start:-40px;top:-40px;width:240px;height:240px}}
 .hero-media .frame{aspect-ratio:4/3;overflow:hidden;background:var(--bg-2)}
 .hero-media figcaption{padding-inline-end:var(--gutter)}
 .hero-media img{width:100%;height:100%;object-fit:cover}
@@ -324,13 +329,14 @@ html[style*="--stick-h"] body.has-stick{--stick-h:inherit}
 .stick-close:hover{opacity:1}
 body.has-stick #jv-a11y{bottom:calc(var(--stick-h) + 18px)}
 @media (max-width:900px){
-  body.has-stick{--stick-h:69px}
-  .stick-title,.stick-phone,.stick .stick-form #s-name{display:none}
-  .stick-row{gap:8px;padding-block:12px}
-  .stick .stick-form{gap:10px}
-  .stick .stick-form input{max-width:none}
-  .stick .stick-form .btn{padding-inline:14px;font-size:.9rem}
-  .stick-close{width:32px;height:32px}
+  body.has-stick{--stick-h:120px}
+  .stick-title,.stick-phone{display:none}
+  .stick-row{gap:8px;padding-block:12px;align-items:flex-start}
+  .stick .stick-form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .stick .stick-form input{max-width:none;width:100%}
+  .stick .stick-form .btn{grid-column:1 / -1;width:100%;padding-inline:14px;font-size:.95rem}
+  .stick .stick-form .form__msg{grid-column:1 / -1}
+  .stick-close{width:32px;height:32px;margin-top:6px}
 }
 
 /* project cards */
@@ -503,7 +509,7 @@ input[type=tel]{direction:ltr;text-align:right}
 .foot-col a:hover{color:var(--blue-text)}
 .foot-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:40px;padding-top:18px;border-top:1px solid var(--line)}
 @media (max-width:900px){.foot-brand,.foot-col,.foot-col--wide{grid-column:span 6}}
-@media (max-width:560px){.foot-brand,.foot-col,.foot-col--wide{grid-column:1 / -1}}
+@media (max-width:560px){main > section:last-child{padding-bottom:24px}.form .actions{margin-top:0}.form__msg:empty{display:none}.foot-brand{grid-column:1 / -1}.foot-col,.foot-col--wide{grid-column:span 6}.foot-col a,.foot-col span{padding:3px 0;font-size:.9rem}.foot-col--wide{overflow-wrap:anywhere}.site-foot{padding-block:32px 20px}.foot-bottom{margin-top:24px;flex-direction:column;gap:6px}}
 
 /* reveal: restrained, respects reduced motion, harmless without JS */
 .rv{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
@@ -554,6 +560,7 @@ input[type=tel]{direction:ltr;text-align:right}
       <a class="menu-phone" href="tel:+97236121314" dir="ltr">03-6121314</a>
     </nav>
     <a class="head-phone" href="tel:+97236121314" dir="ltr">03-6121314</a>
+    <a class="lang lang--head" href="/contact/" lang="he" hreflang="he">עב</a>
     <button class="burger" type="button" aria-controls="menu" aria-expanded="false" aria-label="Open menu"><span></span></button>
   </div>
 </header>
