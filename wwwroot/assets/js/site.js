@@ -36,11 +36,18 @@
     });
   });
 
+  /* contact page: preselect a project from ?project=, show success after a no-JS redirect */
+  var params = new URLSearchParams(location.search);
+  var preselect = params.get('project'), sel = d.getElementById('f-project');
+  if (preselect && sel) { var opt = sel.querySelector('option[data-slug="' + preselect.replace(/[^a-z0-9-]/g, '') + '"]'); if (opt) opt.selected = true; }
+  if (params.get('sent') === '1') { var m0 = d.querySelector('.form__msg'); if (m0) { m0.textContent = m0.dataset.sent || ''; m0.className = 'form__msg ok'; } }
+
   /* forms (Web3Forms JSON endpoint) */
   d.querySelectorAll('form.form').forEach(function (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var msg = form.querySelector('.form__msg'), btn = form.querySelector('button[type=submit]');
+      if (!form.checkValidity()) { form.reportValidity(); return; }
       var fd = new FormData(form);
       if (fd.get('botcheck')) return;
       btn.disabled = true; btn.dataset.t = btn.textContent; btn.textContent = EN ? 'Sending…' : 'שולח…';
@@ -48,12 +55,12 @@
       fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(Object.fromEntries(fd)) })
         .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.success, j: j }; }); })
         .then(function (r) {
-          if (r.ok) { form.reset(); msg.textContent = EN ? 'Thank you, your enquiry has been received. We will get back to you shortly.' : 'תודה, פנייתכם התקבלה. נציג יחזור אליכם בהקדם.'; msg.className = 'form__msg ok'; }
+          if (r.ok) { form.reset(); msg.textContent = EN ? 'Thank you, your enquiry has been received. We will get back to you shortly.' : 'תודה, פנייתכם התקבלה. נציג יחזור אליכם בהקדם.'; msg.className = 'form__msg ok'; msg.focus(); }
           else throw new Error(r.j && r.j.message);
         })
         .catch(function () {
           msg.innerHTML = (EN ? 'We could not send the form right now. Call us at <a href="tel:+97236121314" dir="ltr">03-6121314</a> or write to ' : 'לא הצלחנו לשלוח את הטופס כרגע. ניתן להתקשר אלינו: <a href="tel:+97236121314" dir="ltr">03-6121314</a> או לכתוב ל-') + '<a href="mailto:office@keremltd.co.il">office@keremltd.co.il</a>';
-          msg.className = 'form__msg err';
+          msg.className = 'form__msg err'; msg.focus();
         })
         .finally(function () { btn.disabled = false; btn.textContent = btn.dataset.t; });
     });

@@ -26,6 +26,7 @@ FACEBOOK = "https://www.facebook.com/keremltd"
 MAPS = "https://www.google.com/maps/search/?api=1&query=%D7%93%D7%A8%D7%9A+%D7%9E%D7%A0%D7%97%D7%9D+%D7%91%D7%92%D7%99%D7%9F+82+%D7%AA%D7%9C+%D7%90%D7%91%D7%99%D7%91"
 WEB3FORMS_KEY = "YOUR-WEB3FORMS-ACCESS-KEY"
 TODAY = date.today().strftime("%d.%m.%Y")
+STATEMENT_DATE = "23.09.2026"  # legal statements are dated when their text changes, not on every build
 
 # Four projects have (or had) dedicated marketing sites. They are now rendered
 # as internal pages; the dedicated URL is shown as a plain marker, not a link.
@@ -58,7 +59,9 @@ T = {
         facts=[("4", "דורות של יזמות נדל״ן"), ("{n}", "פרויקטים בשיווק, בתכנון ובאכלוס"), ("אלפי", "יחידות דיור ומסחר שתוכננו ונבנו")],
         projects_h2="פרויקטים המשתבחים עם השנים",
         projects_lead="בניינים במרכזי הערים של גוש דן: הריסה ובנייה מחדש, שימור והשבחה ופרויקטים חדשים, מסודרים לפי שלב.",
-        groups={"marketing": ("בשיווק", "היתרים, בנייה ושיווק פעיל"), "planning": ("בתכנון", "לפני החלטת ועדה. מחירי הנחה והטבות למצטרפים מוקדם"), "done": ("הסתיימו", "מסירה ואכלוס")},
+        groups={"marketing": ("בשיווק", "היתרים, בנייה ושיווק פעיל"), "planning": ("בתכנון", "לפני החלטת ועדה. מחירי הנחה והטבות למצטרפים מוקדם"), "done": ("בביצוע ואכלוס", "בנייה, מסירה ואכלוס")},
+        more_projects="עוד {n} פרויקטים בתכנון", projects_h1="הפרויקטים שלנו", m_scroll_hint="ניתן לגלול את הטבלה לצדדים",
+        f_building="כתובת הבניין (לדיירים)", f_sent="תודה, פנייתכם התקבלה. נציג יחזור אליכם בהקדם.",
         about_h2="חברה משפחתית. ארבעה דורות של בנייה.",
         about_p="כרם יזמות נדל״ן והתחדשות עירונית היא חברה של מומחים, עם ניסיון של ארבעה דורות ביזמות נדל״ן, תכנון ובנייה של אלפי יחידות דיור ומסחר. ההתמחות בשנים האחרונות היא בפרויקטי מגורים במרכז העיר: תמ״א 38 ופינוי־בינוי. החברה בבעלות פרטית מלאה של המשפחה. מנכ״ל החברה: רני וינברג.",
         about_link="על החברה ועל קבוצת וינברג",
@@ -72,7 +75,7 @@ T = {
         contact_lead="רכישת דירה, בניין שמתאים להתחדשות עירונית, או התייעצות בכל עניין בנדל״ן. השאירו פרטים ונציג יחזור אליכם בהקדם.",
         phone="טלפון", email="אימייל", office="משרד", address="דרך בגין 82, בית אופקים, קומה 5, תל אביב 67138", maps="פתיחה במפות", facebook="פייסבוק",
         f_name="שם מלא", f_phone="טלפון", f_email="אימייל", f_topic="בנוגע ל", f_topic_pick="בחרו נושא",
-        f_topics=["רכישת דירה", "התחדשות עירונית / פינוי־בינוי", "תמ״א 38", "יזמות", "אחר"],
+        f_topics=["אני בעל/ת דירה בבניין קיים", "רכישת דירה", "התחדשות עירונית / פינוי־בינוי", "תמ״א 38", "יזמות", "אחר"],
         f_project="פרויקט (אם רלוונטי)", f_project_none="ללא פרויקט מסוים", f_msg="הודעה",
         f_consent="אני מאשר/ת יצירת קשר בהתאם ל", f_privacy="מדיניות הפרטיות", f_send="שליחה", f_or="או התקשרו:",
         f_subject="פנייה חדשה מאתר כרם", f_hp="אין למלא שדה זה",
@@ -161,7 +164,9 @@ T = {
         facts=[("4", "generations in real estate development"), ("{n}", "projects in marketing, planning and occupancy"), ("Thousands", "of residential and commercial units planned and built")],
         projects_h2="Projects that improve with the years",
         projects_lead="Buildings in the city centres of greater Tel Aviv: demolition and rebuilding, preservation and upgrading, and new construction, ordered by stage.",
-        groups={"marketing": ("In marketing", "Permits, construction and active sales"), "planning": ("In planning", "Before committee approval. Early-joiner discounts and benefits"), "done": ("Completed", "Delivered and occupied")},
+        groups={"marketing": ("In marketing", "Permits, construction and active sales"), "planning": ("In planning", "Before committee approval. Early-joiner discounts and benefits"), "done": ("Under construction and occupied", "Construction, delivery and occupancy")},
+        more_projects="{n} more projects in planning", projects_h1="Our projects", m_scroll_hint="Scroll the table sideways",
+        f_building="Building address (for residents)", f_sent="Thank you, your enquiry has been received. We will get back to you shortly.",
         about_h2="A family company. Four generations of building.",
         about_p="Kerem is a team of specialists with four generations of experience in real estate development, planning and construction of thousands of residential and commercial units. In recent years the focus has been residential projects in the city centre: TAMA 38 and urban renewal. The company is fully family owned. CEO: Rani Weinberg.",
         about_link="About the company and the Weinberg group",
@@ -175,7 +180,7 @@ T = {
         contact_lead="Buying an apartment, a building suited to urban renewal, or advice on any real estate matter. Leave your details and a representative will get back to you shortly.",
         phone="Phone", email="Email", office="Office", address="82 Begin Road, Beit Ofakim, 5th floor, Tel Aviv 67138", maps="Open in maps", facebook="Facebook",
         f_name="Full name", f_phone="Phone", f_email="Email", f_topic="Regarding", f_topic_pick="Choose a topic",
-        f_topics=["Buying an apartment", "Urban renewal", "TAMA 38", "Development", "Other"],
+        f_topics=["I own an apartment in an existing building", "Buying an apartment", "Urban renewal", "TAMA 38", "Development", "Other"],
         f_project="Project (if relevant)", f_project_none="No specific project", f_msg="Message",
         f_consent="I agree to be contacted in accordance with the ", f_privacy="privacy policy", f_send="Send", f_or="or call:",
         f_subject="New enquiry from keremltd.co.il (EN)", f_hp="Leave this field empty",
@@ -598,9 +603,12 @@ def place(p, lang):
     return f"{city}, {area}" if area else city
 
 
-def card(p, lang):
+CARD_SIZES = {2: "(max-width:560px) 92vw, 46vw", 3: "(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw", 4: "(max-width:560px) 92vw, (max-width:900px) 46vw, 22vw"}
+
+
+def card(p, lang, cols=3):
     return f"""<a class="card rv-img" href="{pfx(lang)}/projects/{p['slug']}/" data-status="{p['group']}">
-  <div class="frame">{picture(p['img'], f"{v(p['name'], lang)}, {v(p['city'], lang)}", "(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw")}</div>
+  <div class="frame">{picture(p['img'], f"{v(p['name'], lang)}, {v(p['city'], lang)}", CARD_SIZES[cols])}</div>
   <div class="meta">
     <h3>{esc(v(p['name'], lang))}</h3>
     <div class="sub"><span>{esc(place(p, lang))}</span><span class="status">{esc(v(p['status'], lang))}</span></div>
@@ -609,17 +617,17 @@ def card(p, lang):
 
 
 def cards(items, cols, lang):
-    return f'<div class="cards cards--{cols}">\n' + "\n".join(card(p, lang) for p in items) + "\n</div>"
+    return f'<div class="cards cards--{cols}">\n' + "\n".join(card(p, lang, cols) for p in items) + "\n</div>"
 
 
-def project_groups(lang, cols):
+def project_groups(lang, cols, level="h3"):
     t = T[lang]
     out = []
     for key in GROUP_ORDER:
         title, note = t["groups"][key]
         items = [p for p in PROJECTS if p["group"] == key]
         out.append(f"""<div class="group" id="{key}">
-  <div class="group-head"><h3>{title}</h3><span class="note">{note}</span></div>
+  <div class="group-head"><{level}>{title}</{level}><span class="note">{note}</span></div>
   {cards(items, cols[key], lang)}
 </div>""")
     return "\n".join(out)
@@ -739,15 +747,17 @@ def contact_form(lang):
     t = T[lang]
     px = pfx(lang)
     topics = "".join(f"<option>{esc(x)}</option>" for x in t["f_topics"])
-    opts = "".join(f'<option value="{esc(v(p["name"], lang))}">{esc(v(p["name"], lang))}, {esc(v(p["city"], lang))}</option>' for p in PROJECTS)
+    opts = "".join(f'<option value="{esc(v(p["name"], lang))}" data-slug="{p["slug"]}">{esc(v(p["name"], lang))}, {esc(v(p["city"], lang))}</option>' for p in PROJECTS if p["group"] != "done")
     return f"""<form class="form" action="https://api.web3forms.com/submit" method="POST" novalidate>
     <input type="hidden" name="access_key" value="{WEB3FORMS_KEY}">
     <input type="hidden" name="subject" value="{t['f_subject']}">
     <input type="hidden" name="from_name" value="keremltd.co.il">
+    <input type="hidden" name="redirect" value="{SITE}{px}/contact/?sent=1">
     <label class="hp" aria-hidden="true">{t['f_hp']} <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label>
     <div><label for="f-name">{t['f_name']}</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
-    <div><label for="f-phone">{t['f_phone']}</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required></div>
+    <div><label for="f-phone">{t['f_phone']}</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required minlength="7" pattern="[0-9+\\-\\s()]{{7,}}"></div>
     <div class="full"><label for="f-email">{t['f_email']}</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
+    <div class="full"><label for="f-building">{t['f_building']}</label><input id="f-building" name="building" type="text" autocomplete="street-address"></div>
     <div class="full"><label for="f-topic">{t['f_topic']}</label>
       <select id="f-topic" name="topic"><option value="">{t['f_topic_pick']}</option>{topics}</select></div>
     <div class="full"><label for="f-project">{t['f_project']}</label>
@@ -755,7 +765,7 @@ def contact_form(lang):
     <div class="full"><label for="f-msg">{t['f_msg']}</label><textarea id="f-msg" name="message"></textarea></div>
     <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>{t['f_consent']}<a href="{px}/privacy/" class="link">{t['f_privacy']}</a>.</span></label>
     <div class="actions"><button class="btn" type="submit">{t['f_send']}</button><span class="small muted">{t['f_or']} <a href="tel:{PHONE_TEL}" dir="ltr" class="link">{PHONE}</a></span></div>
-    <p class="form__msg" aria-live="polite"></p>
+    <p class="form__msg" aria-live="polite" tabindex="-1" data-sent="{t['f_sent']}"></p>
   </form>"""
 
 
@@ -842,7 +852,7 @@ def page_home(lang):
       {cards(marketing, 2, lang)}
     </div>
     <div class="group">
-      <div class="group-head"><h3>{t['groups']['planning'][0]}</h3><span class="note">{t['groups']['planning'][1]}</span></div>
+      <div class="group-head"><h3>{t['groups']['planning'][0]}</h3><a class="note link" href="{px}/projects/#planning">{t['more_projects'].format(n=len(planning) - 4)}</a></div>
       {cards(planning[:4], 4, lang)}
     </div>
     <div class="group">
@@ -874,11 +884,10 @@ def page_home(lang):
 <section class="band band--navy statement">
   <div class="wrap grid">
     <div class="statement-text rv">
-      <span class="eyebrow">{t['statement_eyebrow']}</span>
       <h2>{t['statement_h2']}</h2>
       <p>{t['statement_p1']}</p>
       <p>{t['statement_p2']}</p>
-      <div class="cta-row"><a class="btn btn--light" href="{px}/how-we-start/">{t['cta_steps']}</a><a class="btn btn--outline-light" href="{px}/contact/">{t['cta_contact']}</a></div>
+      <div class="cta-row"><a class="btn btn--light" href="{px}/contact/">{t['cta_contact']}</a><a class="link link--light" style="align-self:center" href="{px}/how-we-start/">{t['cta_steps']}</a></div>
     </div>
     <div class="statement-aside rv">
       <ol>{steps}</ol>
@@ -900,11 +909,11 @@ def page_projects(lang):
     html += header(lang, path, path)
     html += f"""<section class="wrap page-head">
   {crumbs(lang, (t['projects'], None))}
-  <h1>{t['projects_h2']}</h1>
+  <h1>{t['projects_h1']}</h1>
   <p class="lead">{t['projects_lead']}</p>
 </section>
 <section class="wrap" style="padding-bottom:var(--section)">
-  {project_groups(lang, {"marketing": 2, "planning": 4, "done": 4})}
+  {project_groups(lang, {"marketing": 2, "planning": 4, "done": 4}, level="h2")}
 </section>
 {contact_section(lang)}
 """
@@ -932,8 +941,9 @@ def page_project(p, lang):
     spec = "".join(f"<div><dt>{k}</dt><dd>{esc(val)}</dd></div>" for k, val in facts)
     body = "".join(f"<p>{esc(d)}</p>" for d in v(p["desc"], lang))
 
-    idx = PROJECTS.index(p)
-    others = [PROJECTS[(idx + i) % len(PROJECTS)] for i in range(1, 4)]
+    same = [q for q in PROJECTS if q is not p and q["group"] == p["group"]]
+    rest = [q for q in PROJECTS if q is not p and q["group"] != p["group"]]
+    others = (same + rest)[:3]
 
     ext = ""
     if p["slug"] in EXTERNAL_SITES:
@@ -974,6 +984,7 @@ def page_project(p, lang):
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>{t['m_apts']}</h2></div>
   <p class="rv" style="margin-top:-16px;margin-bottom:24px">{t['m_apts_note']}</p>
+  <p class="table-hint">{t['m_scroll_hint']}</p>
   <div class="table-wrap"><table class="apts">
     <thead><tr>{"".join(f"<th>{h}</th>" for h in t['m_th'])}</tr></thead>
     <tbody>{trs}</tbody>
@@ -1002,7 +1013,7 @@ def page_project(p, lang):
 
     html += f"""<section class="wrap page-head">
   {crumbs(lang, (t['projects'], px + '/projects/'), (name, None))}
-  <span class="eyebrow">{esc(v(p['status'], lang))}. {esc(v(p['type'], lang))}</span>
+  <p class="meta">{esc(v(p['status'], lang))}. {esc(v(p['type'], lang))}</p>
   <h1>{esc(name)}, {esc(city)}</h1>
   <p class="lead">{esc(v(p['short'], lang))}</p>
 </section>
@@ -1022,7 +1033,7 @@ def page_project(p, lang):
     </div>
     <aside class="proj-side rv">
       <dl class="spec">{spec}</dl>
-      <div class="cta-row"><a class="btn" href="{px}/contact/">{t['cta_contact']}</a></div>
+      <div class="cta-row"><a class="btn" href="{px}/contact/?project={p['slug']}">{t['cta_contact']}</a></div>
       <p class="small muted" style="margin-top:14px">{t['p_or_call']} <a class="link" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a></p>
     </aside>
   </div>
@@ -1259,7 +1270,7 @@ def page_legal(lang, key, title_key, desc_key, body_map):
     t = T[lang]
     px = pfx(lang)
     path = f"{px}/{key}/"
-    body = body_map[lang].format(tel=PHONE_TEL, phone=PHONE, email=EMAIL, today=TODAY)
+    body = body_map[lang].format(tel=PHONE_TEL, phone=PHONE, email=EMAIL, today=STATEMENT_DATE)
     html = head(lang, t[title_key], t[desc_key], path)
     html += header(lang, path, path)
     html += f"""<section class="wrap page-head">
@@ -1280,7 +1291,7 @@ def page_404(lang):
     path = px + "/404.html"
     html = head(lang, t["nf_title"], t["nf_desc"], path)
     html += header(lang, "", path)
-    html += f"""<section class="wrap err">
+    html += f"""<section class="wrap not-found">
   <div>
     <span class="eyebrow">404</span>
     <h1>{t['nf_title']}</h1>
