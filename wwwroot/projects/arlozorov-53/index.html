@@ -319,10 +319,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .spec dd{margin:0;color:var(--navy);font-weight:500}
 .gallery{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap)}
 .gallery figure{margin:0;grid-column:span 6}
-.gallery figure:nth-child(3n){grid-column:span 12}
+.gallery figure.w12{grid-column:span 12}
+.gallery figure.w4{grid-column:span 4}
 .gallery .frame{aspect-ratio:16/9;overflow:hidden;background:var(--bg-2)}
+.gallery figure.w4 .frame{aspect-ratio:3/4}
 .gallery img{width:100%;height:100%;object-fit:cover}
-@media (max-width:640px){.gallery figure,.gallery figure:nth-child(3n){grid-column:1 / -1}}
+@media (max-width:640px){.gallery figure,.gallery figure.w12{grid-column:1 / -1}.gallery figure.w4{grid-column:span 6}}
 .table-hint{display:none}
 @media (max-width:640px){.table-hint{display:block;margin:-8px 0 10px;font-size:.8rem;color:var(--muted)}}
 .table-wrap{overflow-x:auto}
@@ -353,10 +355,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .bleed-text h2{max-width:22ch;margin-bottom:20px}
 .bleed-text p{max-width:62ch}
 .bleed-text .lead{margin-bottom:.6em}
-/* marker for projects that still have a dedicated external site */
-.ext-note{margin-top:28px;padding:12px 16px;border-inline-start:2px solid var(--blue);background:var(--bg-2);font-size:var(--fs-small);color:var(--muted)}
-.ext-note span[dir=ltr]{color:var(--navy);font-weight:500;unicode-bidi:isolate}
-.ext-note em{font-style:normal;color:var(--blue-text)}
 .extra-fig{margin:40px 0 0}
 .extra-fig .frame{overflow:hidden;background:var(--bg-2)}
 
@@ -394,6 +392,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .apts .pdf{display:inline-block;padding:4px 10px;border:1px solid var(--line-strong);font-size:.8rem;font-weight:500;color:var(--navy);transition:border-color .2s,background .2s}
 .apts .pdf:hover{border-color:var(--navy);background:var(--bg-2)}
 .apts .sold .pdf{opacity:.6}
+.apts .sold-tag{display:inline-block;margin-inline-start:8px;font-size:.72rem;font-weight:500;color:var(--muted);border:1px solid var(--line);padding:1px 6px;vertical-align:middle}
+.side-h{font-size:1.125rem;font-weight:500;margin-bottom:20px}
 
 /* virtual tours: click-to-load facades */
 .tours{align-items:start}
@@ -443,17 +443,44 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="proj-body prose rv">
       <h2 style="margin-top:0">על הפרויקט</h2>
       <p>הזדמנות מגורים חדשה בלב הפועם של רמת גן, במרחק הליכה מתחנת הרכבת הקלה בצומת עלית. הבית בארלוזורוב 53 מעניק לדייריו חוויית מגורים מושלמת, איכות חיים גבוהה, עיצוב לנוחות ושלווה, באווירה שכונתית מקורית.</p><p>השכונה ותיקה ומשפחתית, ממש על גבול תל אביב: סמוך למוקדי הבילוי והתרבות של רמת גן, למרכזי העסקים ולמוסדות החינוך המובילים, במרחק הליכה מרחוב ביאליק וממתחם הבורסה המתחדש, ועם יציאה מהירה לנתיבי איילון, ז׳בוטינסקי ואבא הלל.</p><p>הבניין החדש בן 10 קומות ו־4 קומות מרתף, עם 2 מעליות שקטות, לובי מרווח בעיצוב אדריכלי וגינה מעוצבת על ידי אדריכל נוף. הבנייה על פי תקן בנייה ירוקה ותקני החיזוק מפני רעידות אדמה.</p>
-      <p class="ext-note"><span>לפרויקט זה קיים אתר ייעודי נפרד:</span> <span dir="ltr">arlozorov53.co.il</span> <em>(בהמתנה להחלטה)</em></p>
-      <figure class="rv-img extra-fig"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-interior-480.avif 480w, /assets/img/arlozorov-interior-800.avif 800w, /assets/img/arlozorov-interior-1200.avif 1200w, /assets/img/arlozorov-interior-1600.avif 1600w" sizes="(max-width:900px) 92vw, 58vw"><img src="/assets/img/arlozorov-interior-800.webp" srcset="/assets/img/arlozorov-interior-480.webp 480w, /assets/img/arlozorov-interior-800.webp 800w, /assets/img/arlozorov-interior-1200.webp 1200w, /assets/img/arlozorov-interior-1600.webp 1600w" sizes="(max-width:900px) 92vw, 58vw" width="1600" height="920" alt="ארלוזורוב 53, רמת גן" loading="lazy" decoding="async"></picture></div></figure>
+      
+      
     </div>
     <aside class="proj-side rv">
-      <dl class="spec"><div><dt>סוג הפרויקט</dt><dd>בניין מגורים חדש</dd></div><div><dt>עיר</dt><dd>רמת גן, שכונת חשמונאים</dd></div><div><dt>קומות</dt><dd>10</dd></div><div><dt>סטטוס</dt><dd>בשיווק</dd></div></dl>
+      <dl class="spec"><div><dt>סוג הפרויקט</dt><dd>בניין מגורים חדש</dd></div><div><dt>עיר</dt><dd>רמת גן, שכונת חשמונאים</dd></div><div><dt>קומות</dt><dd>10</dd></div><div><dt>יחידות דיור</dt><dd>31</dd></div><div><dt>סטטוס</dt><dd>בשיווק</dd></div></dl>
       <div class="cta-row"><a class="btn" href="/contact/?project=arlozorov-53">השאירו פרטים</a></div>
       <p class="small muted" style="margin-top:14px">או התקשרו: <a class="link" href="tel:+97236121314" dir="ltr">03-6121314</a></p>
     </aside>
   </div>
 </section>
 
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>הדירות</h2></div>
+  <p class="rv" style="margin-top:-16px;margin-bottom:24px">דירות 2 עד 5 חדרים, דירת גן בקומת הקרקע ושני פנטהאוזים עם נוף לקו הרקיע של תל אביב. 2 כיווני אוויר לכל דירה.</p>
+  <p class="table-hint">ניתן לגלול את הטבלה לצדדים</p>
+  <div class="table-wrap"><table class="apts">
+    <thead><tr><th>דירה</th><th>קומה</th><th>חדרים</th><th>שטח</th><th>תכנית</th></tr></thead>
+    <tbody><tr class=""><td>דירה 1</td><td>1-</td><td>4 חדרים</td><td>103 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-1.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 1">PDF</a></td></tr><tr class=""><td>דירה 2</td><td>קרקע</td><td>2 חדרים</td><td>62.7 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-2.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 2">PDF</a></td></tr><tr class=""><td>דירה 3</td><td>קרקע</td><td>2 חדרים</td><td>64.2 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-3.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 3">PDF</a></td></tr><tr class="sold"><td>דירה 6 <span class="sold-tag">נמכרה</span></td><td>1</td><td>3 חדרים</td><td>69 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-6.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 6">PDF</a></td></tr><tr class="sold"><td>דירה 9 <span class="sold-tag">נמכרה</span></td><td>2</td><td>2 חדרים</td><td>51.2 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-9.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 9">PDF</a></td></tr><tr class=""><td>דירה 10</td><td>2</td><td>4 חדרים</td><td>98.3 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-10.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 10">PDF</a></td></tr><tr class="sold"><td>דירה 11 <span class="sold-tag">נמכרה</span></td><td>2</td><td>2 חדרים</td><td>58.8 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-11.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 11">PDF</a></td></tr><tr class="sold"><td>דירה 15 <span class="sold-tag">נמכרה</span></td><td>4</td><td>3 חדרים</td><td>63.3 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-15.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 15">PDF</a></td></tr><tr class="sold"><td>דירה 18 <span class="sold-tag">נמכרה</span></td><td>5</td><td>3 חדרים</td><td>63.2 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-18.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 18">PDF</a></td></tr><tr class="sold"><td>דירה 22 <span class="sold-tag">נמכרה</span></td><td>6</td><td>2 חדרים</td><td>62.6 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-22.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 22">PDF</a></td></tr><tr class=""><td>דירה 23</td><td>6</td><td>5 חדרים</td><td>111.2 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-23.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 23">PDF</a></td></tr><tr class=""><td>דירה 24</td><td>7</td><td>4 חדרים</td><td>99.4 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-24.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 24">PDF</a></td></tr><tr class="sold"><td>דירה 25 <span class="sold-tag">נמכרה</span></td><td>7</td><td>2 חדרים</td><td>63 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-25.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 25">PDF</a></td></tr><tr class=""><td>דירה 26</td><td>7</td><td>5 חדרים</td><td>111.2 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-26.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 26">PDF</a></td></tr><tr class=""><td>דירה 27</td><td>8</td><td>3 חדרים</td><td>78 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-27.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 27">PDF</a></td></tr><tr class="sold"><td>דירה 28 <span class="sold-tag">נמכרה</span></td><td>8</td><td>3 חדרים</td><td>73.2 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-28.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 28">PDF</a></td></tr><tr class=""><td>דירה 29</td><td>8</td><td>4.5 חדרים</td><td>94.6 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-29.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 29">PDF</a></td></tr><tr class=""><td>דירה 30</td><td>9</td><td>3 חדרים</td><td>66.2 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-30.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 30">PDF</a></td></tr><tr class=""><td>דירה 31</td><td>9</td><td>3 חדרים</td><td>86.3 מ״ר</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-31.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 31">PDF</a></td></tr></tbody>
+  </table></div>
+  
+</section>
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>הדמיות פנים</h2><span class="small muted">להמחשה בלבד</span></div>
+  <div class="gallery"><figure class="rv-img w4"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-front-480.avif 480w, /assets/img/arlozorov-front-800.avif 800w, /assets/img/arlozorov-front-1000.avif 1000w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-front-800.webp" srcset="/assets/img/arlozorov-front-480.webp 480w, /assets/img/arlozorov-front-800.webp 800w, /assets/img/arlozorov-front-1000.webp 1000w" sizes="(max-width:640px) 92vw, 48vw" width="1000" height="1333" alt="ארלוזורוב 53: הדמיות פנים 1" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w4"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-back-480.avif 480w, /assets/img/arlozorov-back-800.avif 800w, /assets/img/arlozorov-back-1000.avif 1000w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-back-800.webp" srcset="/assets/img/arlozorov-back-480.webp 480w, /assets/img/arlozorov-back-800.webp 800w, /assets/img/arlozorov-back-1000.webp 1000w" sizes="(max-width:640px) 92vw, 48vw" width="1000" height="1333" alt="ארלוזורוב 53: הדמיות פנים 2" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w4"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-view-1-480.avif 480w, /assets/img/arlozorov-view-1-800.avif 800w, /assets/img/arlozorov-view-1-1000.avif 1000w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-view-1-800.webp" srcset="/assets/img/arlozorov-view-1-480.webp 480w, /assets/img/arlozorov-view-1-800.webp 800w, /assets/img/arlozorov-view-1-1000.webp 1000w" sizes="(max-width:640px) 92vw, 48vw" width="1000" height="1333" alt="ארלוזורוב 53: הדמיות פנים 3" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w6"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-interior-480.avif 480w, /assets/img/arlozorov-interior-800.avif 800w, /assets/img/arlozorov-interior-1200.avif 1200w, /assets/img/arlozorov-interior-1600.avif 1600w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-interior-800.webp" srcset="/assets/img/arlozorov-interior-480.webp 480w, /assets/img/arlozorov-interior-800.webp 800w, /assets/img/arlozorov-interior-1200.webp 1200w, /assets/img/arlozorov-interior-1600.webp 1600w" sizes="(max-width:640px) 92vw, 48vw" width="1600" height="920" alt="ארלוזורוב 53: הדמיות פנים 4" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w6"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-int-2-480.avif 480w, /assets/img/arlozorov-int-2-800.avif 800w, /assets/img/arlozorov-int-2-1200.avif 1200w, /assets/img/arlozorov-int-2-1600.avif 1600w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-int-2-800.webp" srcset="/assets/img/arlozorov-int-2-480.webp 480w, /assets/img/arlozorov-int-2-800.webp 800w, /assets/img/arlozorov-int-2-1200.webp 1200w, /assets/img/arlozorov-int-2-1600.webp 1600w" sizes="(max-width:640px) 92vw, 48vw" width="1600" height="1040" alt="ארלוזורוב 53: הדמיות פנים 5" loading="lazy" decoding="async"></picture></div></figure></div>
+</section>
+<section class="wrap section rule">
+  <div class="grid">
+    <div class="proj-body prose rv">
+      <h2 style="margin-top:0">מפרט טכני</h2>
+      <h3>הבניין</h3><ul><li>10 קומות ו-4 קומות מרתף, 2 מעליות שקטות וחכמות, לובי מרווח בעיצוב אדריכלי עם פינות נוי, צמחייה, מראה ותאורה דקורטיבית.</li><li>גינה מעוצבת על ידי מומחה נוף, עם השקיה ותאורה חסכונית חכמה.</li><li>בנייה על פי תקן בנייה ירוקה ותקני החיזוק מפני רעידות אדמה (תמ״א 38).</li></ul><h3>הדירה</h3><ul><li>בקומות העליונות 3 דירות בקומה בלבד, בקומות הנמוכות 4 דירות בקומה. לכל דירה 2 כיווני אוויר.</li><li>דלת ביטחון מעוצבת בכניסה לדירה, מערכת אינטרקום עם צפייה במעגל סגור במסך צבעוני. דלתות פנים יוניק פרימיום בגובה 2.1 מ׳.</li><li>חשמל, אביזרי קצה גוויס או ביטיצ׳ינו או שווה ערך.</li><li>מטבח מעוצב מחברת אביבי או סמל או שווה ערך, בגודל לפי התכנון האדריכלי ותכניות הדירה.</li><li>חדרי אמבטיה: חיפוי עד התקרה, ברזים, אסלות, אמבטיות ומקלחונים וניאגרה סמויה. חמת, גרוהה, אידיאל סטנדרט או גיבריט.</li><li>חלונות וויטרינות קליל או אקסטל, תריסים חשמליים עם מנועי סומפי, זיגוג כפול אקוסטי מבודד, רשתות נגד יתושים בכל הפתחים (למעט ממ״ד, על פי תקן).</li><li>לכל דירה מחסן דירתי, מרפסת שמש וחניה אחת במרתף.</li></ul><h3>המרפסת</h3><ul><li>מעקה מסגרות ברזל אומן, או מעקה קל (פלדה או כבלים) לפי בחירת האדריכל.</li><li>תריס גלילה חשמלי (מנוע סומפי) וויטרינות אלומיניום מפרופיל קליל 7000, במידות לפי סוג החלון והנחיות היצרן.</li></ul>
+      <p class="notice">ט.ל.ח. לכל הסעיפים אפשרות לשווה ערך.</p>
+    </div>
+    <div class="proj-side rv">
+      <h2 class="side-h">הצוות</h2>
+      <div class="people"><div><p class="role">האדריכל</p><h3>משה אלפסי אדריכלים</h3><p class="small muted">המשרד, שהוקם בשנת 2013 על ידי האדריכל משה אלפסי, בוגר המחלקה לארכיטקטורה בבצלאל, פועל בפרויקטי מגורים ותכנון עירוני ומגבש בכל פרויקט רעיון אדריכלי מתוך מחקר ותשומת לב למאפייני המקום.</p></div><div><p class="role">עורך דין היזם</p><h3>משרד עו״ד ד״ר משה וינברג</h3><p class="small muted">משרד מוביל בתחום האזרחי: תכנון ובנייה, הפשרת קרקעות, פיתוח והפקעת מקרקעין ומשפט אזרחי. המשרד קידם ויזם פיתוח של אלפי יחידות דיור ברחבי הארץ ומקיים קשר שוטף עם רשויות התכנון.</p></div></div>
+    </div>
+  </div>
+</section>
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>פרויקטים נוספים</h2><a class="link" href="/projects/">כל הפרויקטים</a></div>
   <div class="cards cards--3">
@@ -471,7 +498,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="sub"><span>תל אביב, צהלה</span><span class="status">הבנייה החלה</span></div>
   </div>
 </a>
-<a class="card rv-img" href="/projects/bernstein-11/" data-status="marketing">
+<a class="card rv-img" href="https://eduard11.co.il/" data-status="marketing">
   <div class="frame"><picture><source type="image/avif" srcset="/assets/img/bernstein-480.avif 480w, /assets/img/bernstein-800.avif 800w, /assets/img/bernstein-1200.avif 1200w, /assets/img/bernstein-1510.avif 1510w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw"><img src="/assets/img/bernstein-800.webp" srcset="/assets/img/bernstein-480.webp 480w, /assets/img/bernstein-800.webp 800w, /assets/img/bernstein-1200.webp 1200w, /assets/img/bernstein-1510.webp 1510w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw" width="1510" height="1888" alt="אדוארד ברנשטיין 11, תל אביב" loading="lazy" decoding="async"></picture></div>
   <div class="meta">
     <h3>אדוארד ברנשטיין 11</h3>

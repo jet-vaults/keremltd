@@ -50,6 +50,12 @@ SOURCES = {
     "arlozorov-interior": ("x_Arlozorov-53-Ramat-Gan_INT_View_01.jpg", None),
     "ceo": ("x_rani.jpg", (4, 5)),
     "tel-aviv": ("x_ta.jpg", (21, 9)),
+    "grofit-int-1": ("grofit-int-1.jpg", None),
+    "arlozorov-front": ("arlozorov-front.jpg", None),
+    "arlozorov-back": ("arlozorov-back.jpg", None),
+    "arlozorov-int-2": ("arlozorov-int-2.jpg", None),
+    "arlozorov-view-1": ("arlozorov-view-1.jpg", None),
+    "arlozorov-view-2": ("arlozorov-view-2.jpg", None),
 }
 
 
@@ -68,10 +74,17 @@ def crop_to(im, aspect):
     return im.crop((0, y, w, y + nh))
 
 
-def main(src_dir):
+def main(src_dir, only=None):
+    """only: optional set of names; existing manifest entries for other names are kept."""
     os.makedirs(OUT, exist_ok=True)
+    manifest_path = os.path.join(ROOT, "tools", "images.json")
     manifest = {}
+    if only and os.path.exists(manifest_path):
+        with open(manifest_path, encoding="utf-8") as f:
+            manifest = json.load(f)
     for name, (fn, aspect) in SOURCES.items():
+        if only and name not in only:
+            continue
         path = os.path.join(src_dir, fn)
         if not os.path.exists(path):
             print("missing", fn)
@@ -98,4 +111,5 @@ def main(src_dir):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    names = set(sys.argv[2].split(",")) if len(sys.argv) > 2 else None
+    main(sys.argv[1], names)

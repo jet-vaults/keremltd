@@ -319,10 +319,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .spec dd{margin:0;color:var(--navy);font-weight:500}
 .gallery{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap)}
 .gallery figure{margin:0;grid-column:span 6}
-.gallery figure:nth-child(3n){grid-column:span 12}
+.gallery figure.w12{grid-column:span 12}
+.gallery figure.w4{grid-column:span 4}
 .gallery .frame{aspect-ratio:16/9;overflow:hidden;background:var(--bg-2)}
+.gallery figure.w4 .frame{aspect-ratio:3/4}
 .gallery img{width:100%;height:100%;object-fit:cover}
-@media (max-width:640px){.gallery figure,.gallery figure:nth-child(3n){grid-column:1 / -1}}
+@media (max-width:640px){.gallery figure,.gallery figure.w12{grid-column:1 / -1}.gallery figure.w4{grid-column:span 6}}
 .table-hint{display:none}
 @media (max-width:640px){.table-hint{display:block;margin:-8px 0 10px;font-size:.8rem;color:var(--muted)}}
 .table-wrap{overflow-x:auto}
@@ -353,10 +355,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .bleed-text h2{max-width:22ch;margin-bottom:20px}
 .bleed-text p{max-width:62ch}
 .bleed-text .lead{margin-bottom:.6em}
-/* marker for projects that still have a dedicated external site */
-.ext-note{margin-top:28px;padding:12px 16px;border-inline-start:2px solid var(--blue);background:var(--bg-2);font-size:var(--fs-small);color:var(--muted)}
-.ext-note span[dir=ltr]{color:var(--navy);font-weight:500;unicode-bidi:isolate}
-.ext-note em{font-style:normal;color:var(--blue-text)}
 .extra-fig{margin:40px 0 0}
 .extra-fig .frame{overflow:hidden;background:var(--bg-2)}
 
@@ -394,6 +392,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .apts .pdf{display:inline-block;padding:4px 10px;border:1px solid var(--line-strong);font-size:.8rem;font-weight:500;color:var(--navy);transition:border-color .2s,background .2s}
 .apts .pdf:hover{border-color:var(--navy);background:var(--bg-2)}
 .apts .sold .pdf{opacity:.6}
+.apts .sold-tag{display:inline-block;margin-inline-start:8px;font-size:.72rem;font-weight:500;color:var(--muted);border:1px solid var(--line);padding:1px 6px;vertical-align:middle}
+.side-h{font-size:1.125rem;font-weight:500;margin-bottom:20px}
 
 /* virtual tours: click-to-load facades */
 .tours{align-items:start}
@@ -443,17 +443,44 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="proj-body prose rv">
       <h2 style="margin-top:0">About the project</h2>
       <p>Mevo Grofit 3 offers its residents a complete living experience in a rare location with an authentic Tel Aviv atmosphere. The apartments are planned with an emphasis on comfort, calm and hosting, with an elegant, classic finish in materials of the highest standard.</p><p>Tzahala, in north Tel Aviv, is one of the city's oldest and most sought-after neighbourhoods: private and two-storey homes, a warm community, a school, kindergartens and a neighbourhood shopping centre within walking distance, and many gardens and green corners along wide, shaded pavements.</p><p>Designed by a leading architectural practice specialising in this part of Tzahala, with spacious, modern layouts. The building is built to green building and earthquake reinforcement standards, with a generous lobby, a quiet lift and a garden designed by a landscape consultant.</p>
-      <p class="ext-note"><span>This project has a separate dedicated website:</span> <span dir="ltr">grofit3.co.il</span> <em>(pending decision)</em></p>
-      <figure class="rv-img extra-fig"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/grofit-interior-480.avif 480w, /assets/img/grofit-interior-800.avif 800w, /assets/img/grofit-interior-1200.avif 1200w, /assets/img/grofit-interior-1600.avif 1600w" sizes="(max-width:900px) 92vw, 58vw"><img src="/assets/img/grofit-interior-800.webp" srcset="/assets/img/grofit-interior-480.webp 480w, /assets/img/grofit-interior-800.webp 800w, /assets/img/grofit-interior-1200.webp 1200w, /assets/img/grofit-interior-1600.webp 1600w" sizes="(max-width:900px) 92vw, 58vw" width="1600" height="920" alt="Mevo Grofit 3, Tel Aviv" loading="lazy" decoding="async"></picture></div></figure>
+      
+      
     </div>
     <aside class="proj-side rv">
-      <dl class="spec"><div><dt>Project type</dt><dd>TAMA 38/2, demolition and rebuilding</dd></div><div><dt>City</dt><dd>Tel Aviv, Tzahala</dd></div><div><dt>Status</dt><dd>Under construction</dd></div></dl>
+      <dl class="spec"><div><dt>Project type</dt><dd>TAMA 38/2, demolition and rebuilding</dd></div><div><dt>City</dt><dd>Tel Aviv, Tzahala</dd></div><div><dt>Floors</dt><dd>4</dd></div><div><dt>Apartments</dt><dd>8</dd></div><div><dt>Status</dt><dd>Under construction</dd></div></dl>
       <div class="cta-row"><a class="btn" href="/en/contact/?project=grofit-3">Leave your details</a></div>
       <p class="small muted" style="margin-top:14px">or call: <a class="link" href="tel:+97236121314" dir="ltr">03-6121314</a></p>
     </aside>
   </div>
 </section>
 
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>The apartments</h2></div>
+  <p class="rv" style="margin-top:-16px;margin-bottom:24px">Only two apartments per floor, three exposures for every apartment.</p>
+  <p class="table-hint">Scroll the table sideways</p>
+  <div class="table-wrap"><table class="apts">
+    <thead><tr><th>Apartment</th><th>Floor</th><th>Rooms</th><th>Area</th><th>Plan</th></tr></thead>
+    <tbody><tr class="sold"><td>Apt. 1 <span class="sold-tag">Sold</span></td><td>Ground</td><td>5 rooms</td><td>142 sqm</td><td><a class="pdf" href="/assets/pdf/grofit-3/apt-1.pdf" download aria-label="PDF, Download the apartment plan: Apt. 1">PDF</a></td></tr><tr class="sold"><td>Apt. 2 <span class="sold-tag">Sold</span></td><td>Ground</td><td>5 rooms</td><td>136 sqm</td><td></td></tr><tr class=""><td>Apt. 3</td><td>1</td><td>5 rooms</td><td>126 sqm</td><td><a class="pdf" href="/assets/pdf/grofit-3/apt-3.pdf" download aria-label="PDF, Download the apartment plan: Apt. 3">PDF</a></td></tr><tr class=""><td>Apt. 4</td><td>1</td><td>5 rooms</td><td>123 sqm</td><td><a class="pdf" href="/assets/pdf/grofit-3/apt-4.pdf" download aria-label="PDF, Download the apartment plan: Apt. 4">PDF</a></td></tr><tr class=""><td>Apt. 8, roof duplex</td><td>3-4</td><td>6 rooms</td><td>140 sqm</td><td><a class="pdf" href="/assets/pdf/grofit-3/apt-8.pdf" download aria-label="PDF, Download the apartment plan: Apt. 8, roof duplex">PDF</a></td></tr></tbody>
+  </table></div>
+  
+</section>
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>Interior renderings</h2><span class="small muted">For illustration only</span></div>
+  <div class="gallery"><figure class="rv-img w6"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/grofit-int-1-480.avif 480w, /assets/img/grofit-int-1-800.avif 800w, /assets/img/grofit-int-1-1200.avif 1200w, /assets/img/grofit-int-1-1600.avif 1600w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/grofit-int-1-800.webp" srcset="/assets/img/grofit-int-1-480.webp 480w, /assets/img/grofit-int-1-800.webp 800w, /assets/img/grofit-int-1-1200.webp 1200w, /assets/img/grofit-int-1-1600.webp 1600w" sizes="(max-width:640px) 92vw, 48vw" width="1600" height="920" alt="Mevo Grofit 3: Interior renderings 1" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w6"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/grofit-interior-480.avif 480w, /assets/img/grofit-interior-800.avif 800w, /assets/img/grofit-interior-1200.avif 1200w, /assets/img/grofit-interior-1600.avif 1600w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/grofit-interior-800.webp" srcset="/assets/img/grofit-interior-480.webp 480w, /assets/img/grofit-interior-800.webp 800w, /assets/img/grofit-interior-1200.webp 1200w, /assets/img/grofit-interior-1600.webp 1600w" sizes="(max-width:640px) 92vw, 48vw" width="1600" height="920" alt="Mevo Grofit 3: Interior renderings 2" loading="lazy" decoding="async"></picture></div></figure></div>
+</section>
+<section class="wrap section rule">
+  <div class="grid">
+    <div class="proj-body prose rv">
+      <h2 style="margin-top:0">Technical specification</h2>
+      <h3>The building</h3><ul><li>Designed by a leading architectural practice specialising in this part of Tzahala, with spacious, modern layouts. Built to green building and earthquake reinforcement (TAMA 38) standards.</li><li>A generous architect-designed lobby with planting, a large mirror and decorative lighting. A quiet, smart, spacious lift.</li><li>A garden designed by a landscape consultant, outdoor lighting by a lighting consultant, irrigation and concealed low-energy lighting.</li></ul><h3>The apartment</h3><ul><li>Designed security entrance door, intercom with colour closed-circuit video. Unik Premium interior doors, 2.1 m high.</li><li>VRF air conditioning system.</li><li>Smart electrical system, Gewiss or Bticino fittings.</li><li>Designed kitchen by Dada, Semel or Boffi, sized according to the architectural plan of each apartment.</li><li>Bathrooms: tiling to the ceiling, taps, toilets, baths, shower enclosures and concealed cisterns. Hamat, Grohe, Ideal Standard or Geberit.</li><li>Klil or Extal windows and glazing, electric shutters with Somfy motors, acoustic double glazing, insect screens on all openings (except the safe room, per standard).</li><li>One parking space per apartment in a basement stacker, independently accessible, with an electric vehicle charger.</li></ul><h3>The balcony</h3><ul><li>Wrought-iron railing, or a light steel or cable railing, at the architect's choice.</li><li>Electric roller shutter (Somfy motor) and aluminium glazing in Klil 7000 profiles, sized to the window type and the manufacturer's guidance.</li></ul>
+      <p class="notice">E&OE. Equivalent alternatives may be supplied for all items.</p>
+    </div>
+    <div class="proj-side rv">
+      <h2 class="side-h">The team</h2>
+      <div class="people"><div><p class="role">Architect</p><h3>Ron Spiegel Architects</h3><p class="small muted">Founded in 2007 by architect Ron Spiegel, a graduate of Ariel University's architecture department, the practice specialises in private homes, luxury apartments, renovation of existing buildings, urban construction, residential buildings, TAMA 38 and urban renewal.</p></div><div><p class="role">Developer's counsel</p><h3>Dr. Moshe Weinberg Law Offices</h3><p class="small muted">A leading civil law firm: planning and construction, land rezoning, real estate development and expropriation, and general civil law. The firm has initiated and advanced the development of thousands of housing units across Israel and works continuously with the planning authorities.</p></div></div>
+    </div>
+  </div>
+</section>
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>More projects</h2><a class="link" href="/en/projects/">All projects</a></div>
   <div class="cards cards--3">
@@ -464,7 +491,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="sub"><span>Tel Aviv, Old North</span><span class="status">Permit granted</span></div>
   </div>
 </a>
-<a class="card rv-img" href="/en/projects/bernstein-11/" data-status="marketing">
+<a class="card rv-img" href="https://eduard11.co.il/" data-status="marketing">
   <div class="frame"><picture><source type="image/avif" srcset="/assets/img/bernstein-480.avif 480w, /assets/img/bernstein-800.avif 800w, /assets/img/bernstein-1200.avif 1200w, /assets/img/bernstein-1510.avif 1510w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw"><img src="/assets/img/bernstein-800.webp" srcset="/assets/img/bernstein-480.webp 480w, /assets/img/bernstein-800.webp 800w, /assets/img/bernstein-1200.webp 1200w, /assets/img/bernstein-1510.webp 1510w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw" width="1510" height="1888" alt="Eduard Bernstein 11, Tel Aviv" loading="lazy" decoding="async"></picture></div>
   <div class="meta">
     <h3>Eduard Bernstein 11</h3>

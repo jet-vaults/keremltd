@@ -319,10 +319,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .spec dd{margin:0;color:var(--navy);font-weight:500}
 .gallery{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap)}
 .gallery figure{margin:0;grid-column:span 6}
-.gallery figure:nth-child(3n){grid-column:span 12}
+.gallery figure.w12{grid-column:span 12}
+.gallery figure.w4{grid-column:span 4}
 .gallery .frame{aspect-ratio:16/9;overflow:hidden;background:var(--bg-2)}
+.gallery figure.w4 .frame{aspect-ratio:3/4}
 .gallery img{width:100%;height:100%;object-fit:cover}
-@media (max-width:640px){.gallery figure,.gallery figure:nth-child(3n){grid-column:1 / -1}}
+@media (max-width:640px){.gallery figure,.gallery figure.w12{grid-column:1 / -1}.gallery figure.w4{grid-column:span 6}}
 .table-hint{display:none}
 @media (max-width:640px){.table-hint{display:block;margin:-8px 0 10px;font-size:.8rem;color:var(--muted)}}
 .table-wrap{overflow-x:auto}
@@ -353,10 +355,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .bleed-text h2{max-width:22ch;margin-bottom:20px}
 .bleed-text p{max-width:62ch}
 .bleed-text .lead{margin-bottom:.6em}
-/* marker for projects that still have a dedicated external site */
-.ext-note{margin-top:28px;padding:12px 16px;border-inline-start:2px solid var(--blue);background:var(--bg-2);font-size:var(--fs-small);color:var(--muted)}
-.ext-note span[dir=ltr]{color:var(--navy);font-weight:500;unicode-bidi:isolate}
-.ext-note em{font-style:normal;color:var(--blue-text)}
 .extra-fig{margin:40px 0 0}
 .extra-fig .frame{overflow:hidden;background:var(--bg-2)}
 
@@ -394,6 +392,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .apts .pdf{display:inline-block;padding:4px 10px;border:1px solid var(--line-strong);font-size:.8rem;font-weight:500;color:var(--navy);transition:border-color .2s,background .2s}
 .apts .pdf:hover{border-color:var(--navy);background:var(--bg-2)}
 .apts .sold .pdf{opacity:.6}
+.apts .sold-tag{display:inline-block;margin-inline-start:8px;font-size:.72rem;font-weight:500;color:var(--muted);border:1px solid var(--line);padding:1px 6px;vertical-align:middle}
+.side-h{font-size:1.125rem;font-weight:500;margin-bottom:20px}
 
 /* virtual tours: click-to-load facades */
 .tours{align-items:start}
@@ -443,17 +443,44 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="proj-body prose rv">
       <h2 style="margin-top:0">על הפרויקט</h2>
       <p>הבית במבוא גרופית 3 מעניק לדייריו חוויית מגורים מושלמת, איכות חיים גבוהה, במיקום נדיר ובאווירה תל אביבית מקורית. הדירות תוכננו בקפידה עם דגש על עיצוב לנוחות, שלווה ואירוח, וגימור אלגנטי וקלאסי המבוסס על חומרים מהסטנדרט הגבוה ביותר.</p><p>צהלה, בצפון תל אביב, היא מהשכונות הוותיקות והמבוקשות בעיר: בתים פרטיים ודו־קומתיים, קהילה חמה, בית ספר, גני ילדים ומרכז מסחרי שכונתי במרחק הליכה, גינות רבות ופינות טבע, והכול על מדרכות רחבות ומוצלות ברקע נוף ירוק.</p><p>התכנון על ידי משרד אדריכלים מוביל המתמחה במבנים באזור זה של צהלה, בדגש על שטחים מרווחים ומודרניים. הבניין נבנה על פי תקן בנייה ירוקה ותקני החיזוק מפני רעידות אדמה, עם לובי מרווח, מעלית שקטה וגינה מעוצבת על ידי יועץ נוף.</p>
-      <p class="ext-note"><span>לפרויקט זה קיים אתר ייעודי נפרד:</span> <span dir="ltr">grofit3.co.il</span> <em>(בהמתנה להחלטה)</em></p>
-      <figure class="rv-img extra-fig"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/grofit-interior-480.avif 480w, /assets/img/grofit-interior-800.avif 800w, /assets/img/grofit-interior-1200.avif 1200w, /assets/img/grofit-interior-1600.avif 1600w" sizes="(max-width:900px) 92vw, 58vw"><img src="/assets/img/grofit-interior-800.webp" srcset="/assets/img/grofit-interior-480.webp 480w, /assets/img/grofit-interior-800.webp 800w, /assets/img/grofit-interior-1200.webp 1200w, /assets/img/grofit-interior-1600.webp 1600w" sizes="(max-width:900px) 92vw, 58vw" width="1600" height="920" alt="מבוא גרופית 3, תל אביב" loading="lazy" decoding="async"></picture></div></figure>
+      
+      
     </div>
     <aside class="proj-side rv">
-      <dl class="spec"><div><dt>סוג הפרויקט</dt><dd>תמ״א 38/2, הריסה ובנייה</dd></div><div><dt>עיר</dt><dd>תל אביב, צהלה</dd></div><div><dt>סטטוס</dt><dd>הבנייה החלה</dd></div></dl>
+      <dl class="spec"><div><dt>סוג הפרויקט</dt><dd>תמ״א 38/2, הריסה ובנייה</dd></div><div><dt>עיר</dt><dd>תל אביב, צהלה</dd></div><div><dt>קומות</dt><dd>4</dd></div><div><dt>יחידות דיור</dt><dd>8</dd></div><div><dt>סטטוס</dt><dd>הבנייה החלה</dd></div></dl>
       <div class="cta-row"><a class="btn" href="/contact/?project=grofit-3">השאירו פרטים</a></div>
       <p class="small muted" style="margin-top:14px">או התקשרו: <a class="link" href="tel:+97236121314" dir="ltr">03-6121314</a></p>
     </aside>
   </div>
 </section>
 
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>הדירות</h2></div>
+  <p class="rv" style="margin-top:-16px;margin-bottom:24px">2 דירות בלבד בכל קומה, 3 כיווני אוויר לכל דירה.</p>
+  <p class="table-hint">ניתן לגלול את הטבלה לצדדים</p>
+  <div class="table-wrap"><table class="apts">
+    <thead><tr><th>דירה</th><th>קומה</th><th>חדרים</th><th>שטח</th><th>תכנית</th></tr></thead>
+    <tbody><tr class="sold"><td>דירה 1 <span class="sold-tag">נמכרה</span></td><td>קרקע</td><td>5 חדרים</td><td>142 מ״ר</td><td><a class="pdf" href="/assets/pdf/grofit-3/apt-1.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 1">PDF</a></td></tr><tr class="sold"><td>דירה 2 <span class="sold-tag">נמכרה</span></td><td>קרקע</td><td>5 חדרים</td><td>136 מ״ר</td><td></td></tr><tr class=""><td>דירה 3</td><td>1</td><td>5 חדרים</td><td>126 מ״ר</td><td><a class="pdf" href="/assets/pdf/grofit-3/apt-3.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 3">PDF</a></td></tr><tr class=""><td>דירה 4</td><td>1</td><td>5 חדרים</td><td>123 מ״ר</td><td><a class="pdf" href="/assets/pdf/grofit-3/apt-4.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 4">PDF</a></td></tr><tr class=""><td>דירה 8, דופלקס גג</td><td>3-4</td><td>6 חדרים</td><td>140 מ״ר</td><td><a class="pdf" href="/assets/pdf/grofit-3/apt-8.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 8, דופלקס גג">PDF</a></td></tr></tbody>
+  </table></div>
+  
+</section>
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>הדמיות פנים</h2><span class="small muted">להמחשה בלבד</span></div>
+  <div class="gallery"><figure class="rv-img w6"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/grofit-int-1-480.avif 480w, /assets/img/grofit-int-1-800.avif 800w, /assets/img/grofit-int-1-1200.avif 1200w, /assets/img/grofit-int-1-1600.avif 1600w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/grofit-int-1-800.webp" srcset="/assets/img/grofit-int-1-480.webp 480w, /assets/img/grofit-int-1-800.webp 800w, /assets/img/grofit-int-1-1200.webp 1200w, /assets/img/grofit-int-1-1600.webp 1600w" sizes="(max-width:640px) 92vw, 48vw" width="1600" height="920" alt="מבוא גרופית 3: הדמיות פנים 1" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w6"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/grofit-interior-480.avif 480w, /assets/img/grofit-interior-800.avif 800w, /assets/img/grofit-interior-1200.avif 1200w, /assets/img/grofit-interior-1600.avif 1600w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/grofit-interior-800.webp" srcset="/assets/img/grofit-interior-480.webp 480w, /assets/img/grofit-interior-800.webp 800w, /assets/img/grofit-interior-1200.webp 1200w, /assets/img/grofit-interior-1600.webp 1600w" sizes="(max-width:640px) 92vw, 48vw" width="1600" height="920" alt="מבוא גרופית 3: הדמיות פנים 2" loading="lazy" decoding="async"></picture></div></figure></div>
+</section>
+<section class="wrap section rule">
+  <div class="grid">
+    <div class="proj-body prose rv">
+      <h2 style="margin-top:0">מפרט טכני</h2>
+      <h3>הבניין</h3><ul><li>תכנון על ידי משרד אדריכלים מוביל המתמחה במבנים באזור זה של צהלה, בדגש על שטחים מרווחים ומודרניים. הבניין נבנה על פי תקן בנייה ירוקה ותקני החיזוק מפני רעידות אדמה (תמ״א 38).</li><li>לובי מרווח בעיצוב אדריכלי עם פינות נוי, צמחייה, מראה ותאורה דקורטיבית. מעלית שקטה, חכמה ומרווחת.</li><li>גינה מעוצבת על ידי יועץ נוף, תאורת חוץ בתכנון יועץ תאורה, השקיה ותאורה סמויה חסכונית.</li></ul><h3>הדירה</h3><ul><li>דלת ביטחון מעוצבת בכניסה לדירה, מערכת אינטרקום עם צפייה במעגל סגור במסך צבעוני. דלתות פנים יוניק פרימיום בגובה 2.1 מ׳.</li><li>מערכת מיזוג אוויר VRF.</li><li>חשמל חכם, אביזרי קצה גוויס או ביטיצ׳ינו.</li><li>מטבח מעוצב מחברת דאדא, סמל או בופי, בגודל לפי התכנון האדריכלי ותכניות הדירה.</li><li>חדרי אמבטיה: חיפוי עד התקרה, ברזים, אסלות, אמבטיות ומקלחונים וניאגרה סמויה. חמת, גרוהה, אידיאל סטנדרט או גיבריט.</li><li>חלונות וויטרינות קליל או אקסטל, תריסים חשמליים עם מנועי סומפי, זיגוג כפול אקוסטי מבודד, רשתות נגד יתושים בכל הפתחים (למעט ממ״ד, על פי תקן).</li><li>לכל דירה חניה במכפיל חניה במרתף, עם יציאה וכניסה עצמאיות ועמדת טעינה לרכב חשמלי.</li></ul><h3>המרפסת</h3><ul><li>מעקה מסגרות ברזל אומן, או מעקה קל (פלדה או כבלים) לפי בחירת האדריכל.</li><li>תריס גלילה חשמלי (מנוע סומפי) וויטרינות אלומיניום מפרופיל קליל 7000, במידות לפי סוג החלון והנחיות היצרן.</li></ul>
+      <p class="notice">ט.ל.ח. לכל הסעיפים אפשרות לשווה ערך.</p>
+    </div>
+    <div class="proj-side rv">
+      <h2 class="side-h">הצוות</h2>
+      <div class="people"><div><p class="role">האדריכל</p><h3>רון שפיגל אדריכלים</h3><p class="small muted">המשרד, בראשות האדריכל רון שפיגל, בוגר החוג לאדריכלות באוניברסיטת אריאל, הוקם בשנת 2007 ומתמחה בתכנון ועיצוב בתים פרטיים, דירות יוקרה, שיפוץ מבנים קיימים, בנייה אורבנית, בנייני מגורים, תמ״א 38 והתחדשות עירונית.</p></div><div><p class="role">עורך דין היזם</p><h3>משרד עו״ד ד״ר משה וינברג</h3><p class="small muted">משרד מוביל בתחום האזרחי: תכנון ובנייה, הפשרת קרקעות, פיתוח והפקעת מקרקעין ומשפט אזרחי. המשרד קידם ויזם פיתוח של אלפי יחידות דיור ברחבי הארץ ומקיים קשר שוטף עם רשויות התכנון.</p></div></div>
+    </div>
+  </div>
+</section>
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>פרויקטים נוספים</h2><a class="link" href="/projects/">כל הפרויקטים</a></div>
   <div class="cards cards--3">
@@ -464,7 +491,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="sub"><span>תל אביב, הצפון הישן</span><span class="status">התקבל היתר</span></div>
   </div>
 </a>
-<a class="card rv-img" href="/projects/bernstein-11/" data-status="marketing">
+<a class="card rv-img" href="https://eduard11.co.il/" data-status="marketing">
   <div class="frame"><picture><source type="image/avif" srcset="/assets/img/bernstein-480.avif 480w, /assets/img/bernstein-800.avif 800w, /assets/img/bernstein-1200.avif 1200w, /assets/img/bernstein-1510.avif 1510w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw"><img src="/assets/img/bernstein-800.webp" srcset="/assets/img/bernstein-480.webp 480w, /assets/img/bernstein-800.webp 800w, /assets/img/bernstein-1200.webp 1200w, /assets/img/bernstein-1510.webp 1510w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw" width="1510" height="1888" alt="אדוארד ברנשטיין 11, תל אביב" loading="lazy" decoding="async"></picture></div>
   <div class="meta">
     <h3>אדוארד ברנשטיין 11</h3>

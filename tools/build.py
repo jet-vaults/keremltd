@@ -28,15 +28,6 @@ WEB3FORMS_KEY = "YOUR-WEB3FORMS-ACCESS-KEY"
 TODAY = date.today().strftime("%d.%m.%Y")
 STATEMENT_DATE = "23.09.2026"  # legal statements are dated when their text changes, not on every build
 
-# Four projects have (or had) dedicated marketing sites. They are now rendered
-# as internal pages; the dedicated URL is shown as a plain marker, not a link.
-# TODO(owner): decide whether to link out, embed, or retire these sites.
-EXTERNAL_SITES = {
-    "grofit-3": "grofit3.co.il",
-    "bernstein-11": "eduard11.co.il",
-    "arlozorov-53": "arlozorov53.co.il",
-    "bat-shua-8": "batshua8.com",
-}
 
 # --------------------------------------------------------------------------
 # UI strings
@@ -87,7 +78,7 @@ T = {
         p_about="על הפרויקט", p_render="הדמיה להמחשה בלבד", p_more="פרויקטים נוספים", p_or_call="או התקשרו:",
         p_ext_note="לפרויקט זה קיים אתר ייעודי נפרד:", p_ext_todo="בהמתנה להחלטה",
         m_apts="הדירות", m_apts_note="3 דירות בקומה, 2 כיווני אוויר ומרפסת שמש לכל דירה.",
-        m_th=["דירה", "סוג", "חדרים", "שטח", "חוץ", "הערות", "תכנית"],
+        m_notes="הערות", m_plan="תכנית", m_spec_note="ט.ל.ח. לכל הסעיפים אפשרות לשווה ערך.", m_team="הצוות",
         m_pdf="PDF", m_pdf_label="הורדת תכנית הדירה",
         m_tours="סיור וירטואלי", m_tours_note="הסיור נטען רק בלחיצה, כדי לא להכביד על הדף.",
         m_pano="סיור פנורמי בדירה", m_pano_btn="פתיחת הסיור הפנורמי", m_pano_p="סיור 360° בדירה לדוגמה. גררו כדי להסתובב בחלל.",
@@ -192,7 +183,7 @@ T = {
         p_about="About the project", p_render="Rendering for illustration only", p_more="More projects", p_or_call="or call:",
         p_ext_note="This project has a separate dedicated website:", p_ext_todo="pending decision",
         m_apts="The apartments", m_apts_note="Three apartments per floor, two exposures and a sun balcony for every apartment.",
-        m_th=["Apartment", "Type", "Rooms", "Area", "Outdoor", "Notes", "Plan"],
+        m_notes="Notes", m_plan="Plan", m_spec_note="E&OE. Equivalent alternatives may be supplied for all items.", m_team="The team",
         m_pdf="PDF", m_pdf_label="Download the apartment plan",
         m_tours="Virtual tour", m_tours_note="The tour loads only when you open it, so the page stays fast.",
         m_pano="360° apartment tour", m_pano_btn="Open the panoramic tour", m_pano_p="A 360° walk through a sample apartment. Drag to look around.",
@@ -279,12 +270,11 @@ PROJECTS = [
              "A distinctive residential project in the heart of Tel Aviv, on quiet Louis Marshall Street in the prestigious Old North, near Hayarkon Park, Kikar Hamedina and Ibn Gabirol, and within walking distance of the sea.",
              "A boutique building of eight storeys in a modern, carefully detailed architectural design and a high standard, with 20 apartments and a rich technical specification.",
              "Every apartment is planned to make the most of its space. Each has a generous sun balcony, only three apartments per floor and two exposures. Two garden apartments on the ground floor and two penthouses on the roof.",
-         ]),
-         marshall=True),
+         ])),
     dict(slug="grofit-3", img="grofit",
          name=L("מבוא גרופית 3", "Mevo Grofit 3"), city=L("תל אביב", "Tel Aviv"), area=L("צהלה", "Tzahala"),
          status=L("הבנייה החלה", "Under construction"), group="marketing", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
-         floors=None, units=None, shops=None,
+         floors="4", units="8", shops=None,
          short=L("חוויית מגורים מושלמת, איכות חיים גבוהה, במיקום נדיר ובאווירה תל אביבית מקורית.",
                  "A complete living experience in a rare location, with an authentic Tel Aviv atmosphere."),
          desc=L([
@@ -296,11 +286,11 @@ PROJECTS = [
              "Tzahala, in north Tel Aviv, is one of the city's oldest and most sought-after neighbourhoods: private and two-storey homes, a warm community, a school, kindergartens and a neighbourhood shopping centre within walking distance, and many gardens and green corners along wide, shaded pavements.",
              "Designed by a leading architectural practice specialising in this part of Tzahala, with spacious, modern layouts. The building is built to green building and earthquake reinforcement standards, with a generous lobby, a quiet lift and a garden designed by a landscape consultant.",
          ]),
-         extra_img="grofit-interior"),
+         ),
     dict(slug="bernstein-11", img="bernstein",
          name=L("אדוארד ברנשטיין 11", "Eduard Bernstein 11"), city=L("תל אביב", "Tel Aviv"), area=L("המרכז ההיסטורי", "Historic centre"),
          status=L("אושר בוועדה המקומית", "Approved by local committee"), group="marketing", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
-         floors="6", units="14", shops=None,
+         floors="6", units="14", shops=None, redirect="https://eduard11.co.il/",
          short=L("בניין חדש בן 6 קומות ו־14 דירות ברחוב שקט במרכז ההיסטורי של תל אביב, דקות מהים.",
                  "A new six-storey building with 14 apartments on a quiet street in the historic centre of Tel Aviv, minutes from the sea."),
          desc=L([
@@ -315,7 +305,7 @@ PROJECTS = [
     dict(slug="arlozorov-53", img="arlozorov",
          name=L("ארלוזורוב 53", "Arlozorov 53"), city=L("רמת גן", "Ramat Gan"), area=L("שכונת חשמונאים", "Hashmonaim neighbourhood"),
          status=L("בשיווק", "In marketing"), group="marketing", type=L("בניין מגורים חדש", "New residential building"),
-         floors="10", units=None, shops=None,
+         floors="10", units="31", shops=None,
          short=L("בניין מגורים חדש בן 10 קומות בשכונה ותיקה ומשפחתית, במרחק הליכה מהרכבת הקלה.",
                  "A new ten-storey residential building in an established family neighbourhood, a short walk from the light rail."),
          desc=L([
@@ -327,7 +317,7 @@ PROJECTS = [
              "An established family neighbourhood right on the Tel Aviv border: close to Ramat Gan's leisure and cultural centres, business districts and leading schools, a walk from Bialik Street and the renewed Bursa district, with quick access to the Ayalon, Jabotinsky and Abba Hillel roads.",
              "The new building has ten storeys and four basement levels, two quiet lifts, a generous architect-designed lobby and a garden designed by a landscape architect. Built to green building and earthquake reinforcement standards.",
          ]),
-         extra_img="arlozorov-interior"),
+         ),
     # --- in planning ---
     dict(slug="pinsker-53-55", img="pinsker",
          name=L("פינסקר 53+55", "Pinsker 53+55"), city=L("תל אביב", "Tel Aviv"), area=L("לב העיר", "City centre"),
@@ -519,33 +509,153 @@ FIRST_STEP = L([
     "We do our homework with the municipality and our in-house team, come back to you with a proposal tailored to your building, and proceed according to the residents' feedback.",
 ])
 
-MARSHALL_APTS = L([
-    ("דירה 1", "דירת גן", "2 חדרים", "67 מ״ר", "55 מ״ר גן", ""),
-    ("דירה 2", "דירה", "3 חדרים", "70 מ״ר", "11 מ״ר מרפסת", "מבצע לזמן מוגבל"),
-    ("דירה 3", "דירה", "3 חדרים", "76 מ״ר", "11 מ״ר מרפסת", "4,820,300 ₪, מבצע לזמן מוגבל"),
-    ("דירה 4", "דירה", "3 חדרים", "62 מ״ר", "14 מ״ר מרפסת", "נמכרה"),
-    ("דירה 5", "דירה", "3 חדרים", "70 מ״ר", "11 מ״ר מרפסת", "מבצע לזמן מוגבל"),
-    ("דירה 17", "פנטהאוז", "3 חדרים", "80 מ״ר", "50 מ״ר מרפסת", ""),
-    ("דירה 18", "מיני פנטהאוז", "2 חדרים", "60 מ״ר", "21 מ״ר מרפסת", "נמכרה"),
-    ("דירה 19", "דירה", "3 חדרים", "73 מ״ר", "6 מ״ר מרפסת", ""),
-    ("דירה 20", "דירה", "2 חדרים", "56 מ״ר", "5.5 מ״ר מרפסת", ""),
-    ("איחוד 19+20", "פנטהאוז", "4 חדרים", "120 מ״ר", "20 מ״ר מרפסת", ""),
-], [
-    ("Apt. 1", "Garden apartment", "2 rooms", "67 sqm", "55 sqm garden", ""),
-    ("Apt. 2", "Apartment", "3 rooms", "70 sqm", "11 sqm balcony", "Limited-time offer"),
-    ("Apt. 3", "Apartment", "3 rooms", "76 sqm", "11 sqm balcony", "NIS 4,820,300, limited-time offer"),
-    ("Apt. 4", "Apartment", "3 rooms", "62 sqm", "14 sqm balcony", "Sold"),
-    ("Apt. 5", "Apartment", "3 rooms", "70 sqm", "11 sqm balcony", "Limited-time offer"),
-    ("Apt. 17", "Penthouse", "3 rooms", "80 sqm", "50 sqm terrace", ""),
-    ("Apt. 18", "Mini penthouse", "2 rooms", "60 sqm", "21 sqm terrace", "Sold"),
-    ("Apt. 19", "Apartment", "3 rooms", "73 sqm", "6 sqm balcony", ""),
-    ("Apt. 20", "Apartment", "2 rooms", "56 sqm", "5.5 sqm balcony", ""),
-    ("19+20 combined", "Penthouse", "4 rooms", "120 sqm", "20 sqm terrace", ""),
-])
 SOLD = {"he": "נמכרה", "en": "Sold"}
-# Apartment plan PDFs (row index in MARSHALL_APTS -> file under /assets/pdf/louis-marshall-11/)
-MARSHALL_PDFS = ["apt-1", "apt-2", "apt-3", "apt-4", "apt-5", "apt-17", "apt-18", "apt-19", "apt-20", "penthouse-19-20"]
-# Virtual tours (loaded only when the visitor asks for them)
+
+DOOR = L("דלת ביטחון מעוצבת בכניסה לדירה, מערכת אינטרקום עם צפייה במעגל סגור במסך צבעוני. דלתות פנים יוניק פרימיום בגובה 2.1 מ׳.",
+         "Designed security entrance door, intercom with colour closed-circuit video. Unik Premium interior doors, 2.1 m high.")
+BATH = L("חדרי אמבטיה: חיפוי עד התקרה, ברזים, אסלות, אמבטיות ומקלחונים וניאגרה סמויה. חמת, גרוהה, אידיאל סטנדרט או גיבריט.",
+         "Bathrooms: tiling to the ceiling, taps, toilets, baths, shower enclosures and concealed cisterns. Hamat, Grohe, Ideal Standard or Geberit.")
+WINDOWS = L("חלונות וויטרינות קליל או אקסטל, תריסים חשמליים עם מנועי סומפי, זיגוג כפול אקוסטי מבודד, רשתות נגד יתושים בכל הפתחים (למעט ממ״ד, על פי תקן).",
+            "Klil or Extal windows and glazing, electric shutters with Somfy motors, acoustic double glazing, insect screens on all openings (except the safe room, per standard).")
+BALCONY = L([
+    "מעקה מסגרות ברזל אומן, או מעקה קל (פלדה או כבלים) לפי בחירת האדריכל.",
+    "תריס גלילה חשמלי (מנוע סומפי) וויטרינות אלומיניום מפרופיל קליל 7000, במידות לפי סוג החלון והנחיות היצרן.",
+], [
+    "Wrought-iron railing, or a light steel or cable railing, at the architect's choice.",
+    "Electric roller shutter (Somfy motor) and aluminium glazing in Klil 7000 profiles, sized to the window type and the manufacturer's guidance.",
+])
+LAWYER = L(("עורך דין היזם", "משרד עו״ד ד״ר משה וינברג",
+            "משרד מוביל בתחום האזרחי: תכנון ובנייה, הפשרת קרקעות, פיתוח והפקעת מקרקעין ומשפט אזרחי. המשרד קידם ויזם פיתוח של אלפי יחידות דיור ברחבי הארץ ומקיים קשר שוטף עם רשויות התכנון."),
+           ("Developer's counsel", "Dr. Moshe Weinberg Law Offices",
+            "A leading civil law firm: planning and construction, land rezoning, real estate development and expropriation, and general civil law. The firm has initiated and advanced the development of thousands of housing units across Israel and works continuously with the planning authorities."))
+
+
+def apt(he, en, pdf=None, sold=False, note=None):
+    return dict(cells=L(he, en), pdf=pdf, sold=sold, note=note)
+
+
+# Rich project pages: apartments table (+ plan PDFs), tours, gallery, specification, team.
+RICH = {
+    "louis-marshall-11": dict(
+        head=L(["דירה", "סוג", "חדרים", "שטח", "חוץ"], ["Apartment", "Type", "Rooms", "Area", "Outdoor"]),
+        note=L("3 דירות בקומה, 2 כיווני אוויר ומרפסת שמש לכל דירה.", "Three apartments per floor, two exposures and a sun balcony for every apartment."),
+        rows=[
+            apt(["דירה 1", "דירת גן", "2 חדרים", "67 מ״ר", "55 מ״ר גן"], ["Apt. 1", "Garden apartment", "2 rooms", "67 sqm", "55 sqm garden"], "apt-1"),
+            apt(["דירה 2", "דירה", "3 חדרים", "70 מ״ר", "11 מ״ר מרפסת"], ["Apt. 2", "Apartment", "3 rooms", "70 sqm", "11 sqm balcony"], "apt-2", note=L("מבצע לזמן מוגבל", "Limited-time offer")),
+            apt(["דירה 3", "דירה", "3 חדרים", "76 מ״ר", "11 מ״ר מרפסת"], ["Apt. 3", "Apartment", "3 rooms", "76 sqm", "11 sqm balcony"], "apt-3", note=L("4,820,300 ₪, מבצע לזמן מוגבל", "NIS 4,820,300, limited-time offer")),
+            apt(["דירה 4", "דירה", "3 חדרים", "62 מ״ר", "14 מ״ר מרפסת"], ["Apt. 4", "Apartment", "3 rooms", "62 sqm", "14 sqm balcony"], "apt-4", sold=True),
+            apt(["דירה 5", "דירה", "3 חדרים", "70 מ״ר", "11 מ״ר מרפסת"], ["Apt. 5", "Apartment", "3 rooms", "70 sqm", "11 sqm balcony"], "apt-5", note=L("מבצע לזמן מוגבל", "Limited-time offer")),
+            apt(["דירה 17", "פנטהאוז", "3 חדרים", "80 מ״ר", "50 מ״ר מרפסת"], ["Apt. 17", "Penthouse", "3 rooms", "80 sqm", "50 sqm terrace"], "apt-17"),
+            apt(["דירה 18", "מיני פנטהאוז", "2 חדרים", "60 מ״ר", "21 מ״ר מרפסת"], ["Apt. 18", "Mini penthouse", "2 rooms", "60 sqm", "21 sqm terrace"], "apt-18", sold=True),
+            apt(["דירה 19", "דירה", "3 חדרים", "73 מ״ר", "6 מ״ר מרפסת"], ["Apt. 19", "Apartment", "3 rooms", "73 sqm", "6 sqm balcony"], "apt-19"),
+            apt(["דירה 20", "דירה", "2 חדרים", "56 מ״ר", "5.5 מ״ר מרפסת"], ["Apt. 20", "Apartment", "2 rooms", "56 sqm", "5.5 sqm balcony"], "apt-20"),
+            apt(["איחוד 19+20", "פנטהאוז", "4 חדרים", "120 מ״ר", "20 מ״ר מרפסת"], ["19+20 combined", "Penthouse", "4 rooms", "120 sqm", "20 sqm terrace"], "penthouse-19-20"),
+        ],
+        sale_notice=True,
+        tours=True,
+        gallery=[(f"apt-{i}", "w6" if i % 3 else "w12") for i in range(1, 9)],
+        spec=L([("", ["דלת ביטחון מעוצבת בכניסה לדירה, מערכת אינטרקום עם צפייה במעגל סגור במסך צבעוני. דלתות פנים יוניק פרימיום בגובה 2.1 מ׳.",
+                      "מערכת מיזוג אוויר VRF.", "חשמל חכם, אביזרי קצה גוויס או ביטיצ׳ינו.",
+                      "מטבח מעוצב, גודלו על פי התכנון האדריכלי ותכניות הדירה.",
+                      "חדרי אמבטיה: חיפוי עד התקרה, ברזים, אסלות, אמבטיות ומקלחונים וניאגרה סמויה. חמת, גרוהה, אידיאל סטנדרט או גיבריט.",
+                      "חלונות וויטרינות קליל או אקסטל, תריסים חשמליים עם מנועי סומפי, זיגוג כפול אקוסטי מבודד, רשתות נגד יתושים בכל הפתחים (למעט ממ״ד, על פי תקן)."])],
+               [("", ["Designed security entrance door, intercom with colour closed-circuit video. Unik Premium interior doors, 2.1 m high.",
+                      "VRF air conditioning system.", "Smart electrical system, Gewiss or Bticino fittings.",
+                      "Designed kitchen, sized according to the architectural plan of each apartment.",
+                      "Bathrooms: tiling to the ceiling, taps, toilets, baths, shower enclosures and concealed cisterns. Hamat, Grohe, Ideal Standard or Geberit.",
+                      "Klil or Extal windows and glazing, electric shutters with Somfy motors, acoustic double glazing, insect screens on all openings (except the safe room, per standard)."])]),
+        people=L([("האדריכל", "מאור לוי, לוי לוסטיג אדריכלים",
+                   "המשרד עוסק בתכנון ועיצוב בתים ודירות מגורים ובפרויקטי תמ״א 38. מאור לוי הוא אדריכל, בעל תואר שני במנהל עסקים ומוסמך מכון התקנים כמלווה בנייה ירוקה, עם ניסיון רב שנים בבנייה אורבנית ופרטית."),
+                  LAWYER["he"]],
+                 [("Architect", "Maor Levy, Levy Lustig Architects",
+                   "The practice designs houses, residential apartments and TAMA 38 projects. Maor Levy is an architect with an MBA, certified by the Standards Institution of Israel as a green building consultant, with many years of experience in urban and private construction."),
+                  LAWYER["en"]]),
+    ),
+    "grofit-3": dict(
+        head=L(["דירה", "קומה", "חדרים", "שטח"], ["Apartment", "Floor", "Rooms", "Area"]),
+        note=L("2 דירות בלבד בכל קומה, 3 כיווני אוויר לכל דירה.", "Only two apartments per floor, three exposures for every apartment."),
+        rows=[
+            apt(["דירה 1", "קרקע", "5 חדרים", "142 מ״ר"], ["Apt. 1", "Ground", "5 rooms", "142 sqm"], "apt-1", sold=True),
+            apt(["דירה 2", "קרקע", "5 חדרים", "136 מ״ר"], ["Apt. 2", "Ground", "5 rooms", "136 sqm"], None, sold=True),
+            apt(["דירה 3", "1", "5 חדרים", "126 מ״ר"], ["Apt. 3", "1", "5 rooms", "126 sqm"], "apt-3"),
+            apt(["דירה 4", "1", "5 חדרים", "123 מ״ר"], ["Apt. 4", "1", "5 rooms", "123 sqm"], "apt-4"),
+            apt(["דירה 8, דופלקס גג", "3-4", "6 חדרים", "140 מ״ר"], ["Apt. 8, roof duplex", "3-4", "6 rooms", "140 sqm"], "apt-8"),
+        ],
+        gallery=[("grofit-int-1", "w6"), ("grofit-interior", "w6")],
+        spec=L([("הבניין", ["תכנון על ידי משרד אדריכלים מוביל המתמחה במבנים באזור זה של צהלה, בדגש על שטחים מרווחים ומודרניים. הבניין נבנה על פי תקן בנייה ירוקה ותקני החיזוק מפני רעידות אדמה (תמ״א 38).",
+                            "לובי מרווח בעיצוב אדריכלי עם פינות נוי, צמחייה, מראה ותאורה דקורטיבית. מעלית שקטה, חכמה ומרווחת.",
+                            "גינה מעוצבת על ידי יועץ נוף, תאורת חוץ בתכנון יועץ תאורה, השקיה ותאורה סמויה חסכונית."]),
+                ("הדירה", [DOOR["he"], "מערכת מיזוג אוויר VRF.", "חשמל חכם, אביזרי קצה גוויס או ביטיצ׳ינו.",
+                           "מטבח מעוצב מחברת דאדא, סמל או בופי, בגודל לפי התכנון האדריכלי ותכניות הדירה.", BATH["he"], WINDOWS["he"],
+                           "לכל דירה חניה במכפיל חניה במרתף, עם יציאה וכניסה עצמאיות ועמדת טעינה לרכב חשמלי."]),
+                ("המרפסת", BALCONY["he"])],
+               [("The building", ["Designed by a leading architectural practice specialising in this part of Tzahala, with spacious, modern layouts. Built to green building and earthquake reinforcement (TAMA 38) standards.",
+                                  "A generous architect-designed lobby with planting, a large mirror and decorative lighting. A quiet, smart, spacious lift.",
+                                  "A garden designed by a landscape consultant, outdoor lighting by a lighting consultant, irrigation and concealed low-energy lighting."]),
+                ("The apartment", [DOOR["en"], "VRF air conditioning system.", "Smart electrical system, Gewiss or Bticino fittings.",
+                                   "Designed kitchen by Dada, Semel or Boffi, sized according to the architectural plan of each apartment.", BATH["en"], WINDOWS["en"],
+                                   "One parking space per apartment in a basement stacker, independently accessible, with an electric vehicle charger."]),
+                ("The balcony", BALCONY["en"])]),
+        spec_note=True,
+        people=L([("האדריכל", "רון שפיגל אדריכלים",
+                   "המשרד, בראשות האדריכל רון שפיגל, בוגר החוג לאדריכלות באוניברסיטת אריאל, הוקם בשנת 2007 ומתמחה בתכנון ועיצוב בתים פרטיים, דירות יוקרה, שיפוץ מבנים קיימים, בנייה אורבנית, בנייני מגורים, תמ״א 38 והתחדשות עירונית."),
+                  LAWYER["he"]],
+                 [("Architect", "Ron Spiegel Architects",
+                   "Founded in 2007 by architect Ron Spiegel, a graduate of Ariel University's architecture department, the practice specialises in private homes, luxury apartments, renovation of existing buildings, urban construction, residential buildings, TAMA 38 and urban renewal."),
+                  LAWYER["en"]]),
+    ),
+    "arlozorov-53": dict(
+        head=L(["דירה", "קומה", "חדרים", "שטח"], ["Apartment", "Floor", "Rooms", "Area"]),
+        note=L("דירות 2 עד 5 חדרים, דירת גן בקומת הקרקע ושני פנטהאוזים עם נוף לקו הרקיע של תל אביב. 2 כיווני אוויר לכל דירה.",
+               "Two- to five-room apartments, a garden apartment on the ground floor and two penthouses facing the Tel Aviv skyline. Two exposures for every apartment."),
+        rows=[
+            apt(["דירה 1", "1-", "4 חדרים", "103 מ״ר"], ["Apt. 1", "-1", "4 rooms", "103 sqm"], "apt-1"),
+            apt(["דירה 2", "קרקע", "2 חדרים", "62.7 מ״ר"], ["Apt. 2", "Ground", "2 rooms", "62.7 sqm"], "apt-2"),
+            apt(["דירה 3", "קרקע", "2 חדרים", "64.2 מ״ר"], ["Apt. 3", "Ground", "2 rooms", "64.2 sqm"], "apt-3"),
+            apt(["דירה 6", "1", "3 חדרים", "69 מ״ר"], ["Apt. 6", "1", "3 rooms", "69 sqm"], "apt-6", sold=True),
+            apt(["דירה 9", "2", "2 חדרים", "51.2 מ״ר"], ["Apt. 9", "2", "2 rooms", "51.2 sqm"], "apt-9", sold=True),
+            apt(["דירה 10", "2", "4 חדרים", "98.3 מ״ר"], ["Apt. 10", "2", "4 rooms", "98.3 sqm"], "apt-10"),
+            apt(["דירה 11", "2", "2 חדרים", "58.8 מ״ר"], ["Apt. 11", "2", "2 rooms", "58.8 sqm"], "apt-11", sold=True),
+            apt(["דירה 15", "4", "3 חדרים", "63.3 מ״ר"], ["Apt. 15", "4", "3 rooms", "63.3 sqm"], "apt-15", sold=True),
+            apt(["דירה 18", "5", "3 חדרים", "63.2 מ״ר"], ["Apt. 18", "5", "3 rooms", "63.2 sqm"], "apt-18", sold=True),
+            apt(["דירה 22", "6", "2 חדרים", "62.6 מ״ר"], ["Apt. 22", "6", "2 rooms", "62.6 sqm"], "apt-22", sold=True),
+            apt(["דירה 23", "6", "5 חדרים", "111.2 מ״ר"], ["Apt. 23", "6", "5 rooms", "111.2 sqm"], "apt-23"),
+            apt(["דירה 24", "7", "4 חדרים", "99.4 מ״ר"], ["Apt. 24", "7", "4 rooms", "99.4 sqm"], "apt-24"),
+            apt(["דירה 25", "7", "2 חדרים", "63 מ״ר"], ["Apt. 25", "7", "2 rooms", "63 sqm"], "apt-25", sold=True),
+            apt(["דירה 26", "7", "5 חדרים", "111.2 מ״ר"], ["Apt. 26", "7", "5 rooms", "111.2 sqm"], "apt-26"),
+            apt(["דירה 27", "8", "3 חדרים", "78 מ״ר"], ["Apt. 27", "8", "3 rooms", "78 sqm"], "apt-27"),
+            apt(["דירה 28", "8", "3 חדרים", "73.2 מ״ר"], ["Apt. 28", "8", "3 rooms", "73.2 sqm"], "apt-28", sold=True),
+            apt(["דירה 29", "8", "4.5 חדרים", "94.6 מ״ר"], ["Apt. 29", "8", "4.5 rooms", "94.6 sqm"], "apt-29"),
+            apt(["דירה 30", "9", "3 חדרים", "66.2 מ״ר"], ["Apt. 30", "9", "3 rooms", "66.2 sqm"], "apt-30"),
+            apt(["דירה 31", "9", "3 חדרים", "86.3 מ״ר"], ["Apt. 31", "9", "3 rooms", "86.3 sqm"], "apt-31"),
+        ],
+        gallery=[("arlozorov-front", "w4"), ("arlozorov-back", "w4"), ("arlozorov-view-1", "w4"), ("arlozorov-interior", "w6"), ("arlozorov-int-2", "w6")],
+        spec=L([("הבניין", ["10 קומות ו-4 קומות מרתף, 2 מעליות שקטות וחכמות, לובי מרווח בעיצוב אדריכלי עם פינות נוי, צמחייה, מראה ותאורה דקורטיבית.",
+                            "גינה מעוצבת על ידי מומחה נוף, עם השקיה ותאורה חסכונית חכמה.",
+                            "בנייה על פי תקן בנייה ירוקה ותקני החיזוק מפני רעידות אדמה (תמ״א 38)."]),
+                ("הדירה", ["בקומות העליונות 3 דירות בקומה בלבד, בקומות הנמוכות 4 דירות בקומה. לכל דירה 2 כיווני אוויר.",
+                           DOOR["he"], "חשמל, אביזרי קצה גוויס או ביטיצ׳ינו או שווה ערך.",
+                           "מטבח מעוצב מחברת אביבי או סמל או שווה ערך, בגודל לפי התכנון האדריכלי ותכניות הדירה.", BATH["he"], WINDOWS["he"],
+                           "לכל דירה מחסן דירתי, מרפסת שמש וחניה אחת במרתף."]),
+                ("המרפסת", BALCONY["he"])],
+               [("The building", ["Ten storeys and four basement levels, two quiet smart lifts, a generous architect-designed lobby with planting, a large mirror and decorative lighting.",
+                                  "A garden designed by a landscape specialist, with irrigation and smart low-energy lighting.",
+                                  "Built to green building and earthquake reinforcement (TAMA 38) standards."]),
+                ("The apartment", ["Only three apartments per floor on the upper floors, four on the lower floors. Two exposures for every apartment.",
+                                   DOOR["en"], "Electrical system with Gewiss or Bticino fittings, or equivalent.",
+                                   "Designed kitchen by Avivi or Semel, or equivalent, sized according to the architectural plan of each apartment.", BATH["en"], WINDOWS["en"],
+                                   "A storage room, a sun balcony and one basement parking space for every apartment."]),
+                ("The balcony", BALCONY["en"])]),
+        spec_note=True,
+        people=L([("האדריכל", "משה אלפסי אדריכלים",
+                   "המשרד, שהוקם בשנת 2013 על ידי האדריכל משה אלפסי, בוגר המחלקה לארכיטקטורה בבצלאל, פועל בפרויקטי מגורים ותכנון עירוני ומגבש בכל פרויקט רעיון אדריכלי מתוך מחקר ותשומת לב למאפייני המקום."),
+                  LAWYER["he"]],
+                 [("Architect", "Moshe Alfasi Architects",
+                   "Founded in 2013 by architect Moshe Alfasi, a graduate of the Bezalel Academy's architecture department, the practice works on residential and urban planning projects, developing each design from research into the site's distinctive character."),
+                  LAWYER["en"]]),
+    ),
+}
+# Virtual tours (Louis Marshall only), loaded only when the visitor asks for them
 MARSHALL_PANORAMA = "https://reelook-public.s3.eu-west-1.amazonaws.com/panoramas/LuiMarshel11/tour.html"
 MARSHALL_3D = "https://www.theasys.io/viewer/pd9r6wvGUtRFF7JIuHks3KeXBsT8LP/"
 
@@ -607,7 +717,8 @@ CARD_SIZES = {2: "(max-width:560px) 92vw, 46vw", 3: "(max-width:560px) 92vw, (ma
 
 
 def card(p, lang, cols=3):
-    return f"""<a class="card rv-img" href="{pfx(lang)}/projects/{p['slug']}/" data-status="{p['group']}">
+    href = p.get("redirect") or f"{pfx(lang)}/projects/{p['slug']}/"
+    return f"""<a class="card rv-img" href="{href}" data-status="{p['group']}">
   <div class="frame">{picture(p['img'], f"{v(p['name'], lang)}, {v(p['city'], lang)}", CARD_SIZES[cols])}</div>
   <div class="meta">
     <h3>{esc(v(p['name'], lang))}</h3>
@@ -946,21 +1057,42 @@ def page_project(p, lang):
     others = (same + rest)[:3]
 
     ext = ""
-    if p["slug"] in EXTERNAL_SITES:
-        ext = f"""<p class="ext-note"><span>{t['p_ext_note']}</span> <span dir="ltr">{EXTERNAL_SITES[p['slug']]}</span> <em>({t['p_ext_todo']})</em></p>"""
 
     extra_fig = ""
     if p.get("extra_img"):
         extra_fig = f"""<figure class="rv-img extra-fig"><div class="frame">{picture(p['extra_img'], f"{name}, {city}", "(max-width:900px) 92vw, 58vw")}</div></figure>"""
 
-    marshall = ""
-    if p.get("marshall"):
-        sold = SOLD[lang]
-        trs = "".join(
-            f'<tr class="{"sold" if n == sold else ""}"><td>{a}</td><td>{ty}</td><td>{r}</td><td>{s}</td><td>{o}</td><td>{"<span class=tag>" + n + "</span>" if n and n != sold else n}</td>'
-            f'<td><a class="pdf" href="/assets/pdf/louis-marshall-11/{pdf}.pdf" download aria-label="{t["m_pdf"]}, {t["m_pdf_label"]}: {a}">{t["m_pdf"]}</a></td></tr>'
-            for (a, ty, r, s, o, n), pdf in zip(v(MARSHALL_APTS, lang), MARSHALL_PDFS))
-        tours = f"""
+    rich_html = ""
+    r = RICH.get(p["slug"])
+    if r:
+        pdf_dir = f"/assets/pdf/{p['slug']}"
+        has_notes = any(row.get("note") for row in r["rows"])
+        thead = list(v(r["head"], lang)) + ([t["m_notes"]] if has_notes else []) + [t["m_plan"]]
+        trs = ""
+        for row in r["rows"]:
+            cells = "".join(f"<td>{esc(c)}</td>" for c in v(row["cells"], lang))
+            if has_notes:
+                n = v(row["note"], lang) if row.get("note") else ""
+                cells += f'<td>{"<span class=tag>" + esc(n) + "</span>" if n else ""}</td>'
+            plan = (f'<a class="pdf" href="{pdf_dir}/{row["pdf"]}.pdf" download aria-label="{t["m_pdf"]}, {t["m_pdf_label"]}: {esc(v(row["cells"], lang)[0])}">{t["m_pdf"]}</a>'
+                    if row.get("pdf") else "")
+            cells += f"<td>{plan}</td>"
+            sold = f' <span class="sold-tag">{SOLD[lang]}</span>' if row.get("sold") else ""
+            cells = cells.replace("</td>", sold + "</td>", 1)
+            trs += f'<tr class="{"sold" if row.get("sold") else ""}">{cells}</tr>'
+        rich_html += f"""
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>{t['m_apts']}</h2></div>
+  <p class="rv" style="margin-top:-16px;margin-bottom:24px">{v(r['note'], lang)}</p>
+  <p class="table-hint">{t['m_scroll_hint']}</p>
+  <div class="table-wrap"><table class="apts">
+    <thead><tr>{"".join(f"<th>{h}</th>" for h in thead)}</tr></thead>
+    <tbody>{trs}</tbody>
+  </table></div>
+  {'<p class="notice">' + t['m_notice'] + '</p>' if r.get('sale_notice') else ''}
+</section>"""
+        if r.get("tours"):
+            rich_html += f"""
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>{t['m_tours']}</h2><span class="small muted">{t['m_tours_note']}</span></div>
   <div class="grid tours">
@@ -976,37 +1108,31 @@ def page_project(p, lang):
     </div>
   </div>
 </section>"""
-        gallery = "".join(
-            f'<figure class="rv-img"><div class="frame">{picture(f"apt-{i}", f"{name}: {t['m_gallery']} {i}", "(max-width:640px) 92vw, 48vw")}</div></figure>'
-            for i in range(1, 9))
-        spec_items = "".join(f"<li>{x}</li>" for x in t["m_spec_items"])
-        marshall = f"""
-<section class="wrap section rule">
-  <div class="sec-head rv"><h2>{t['m_apts']}</h2></div>
-  <p class="rv" style="margin-top:-16px;margin-bottom:24px">{t['m_apts_note']}</p>
-  <p class="table-hint">{t['m_scroll_hint']}</p>
-  <div class="table-wrap"><table class="apts">
-    <thead><tr>{"".join(f"<th>{h}</th>" for h in t['m_th'])}</tr></thead>
-    <tbody>{trs}</tbody>
-  </table></div>
-  <p class="notice">{t['m_notice']}</p>
-</section>
-{tours}
+        if r.get("gallery"):
+            figs = "".join(
+                f'<figure class="rv-img {w}"><div class="frame">{picture(img, f"{name}: {t["m_gallery"]} {i + 1}", "(max-width:640px) 92vw, 48vw")}</div></figure>'
+                for i, (img, w) in enumerate(r["gallery"]))
+            rich_html += f"""
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>{t['m_gallery']}</h2><span class="small muted">{t['m_gallery_note']}</span></div>
-  <div class="gallery">{gallery}</div>
-</section>
+  <div class="gallery">{figs}</div>
+</section>"""
+        if r.get("spec"):
+            groups = ""
+            for title, items in v(r["spec"], lang):
+                groups += (f"<h3>{title}</h3>" if title else "") + "<ul>" + "".join(f"<li>{x}</li>" for x in items) + "</ul>"
+            people = "".join(f'<div><p class="role">{role}</p><h3>{who}</h3><p class="small muted">{txt}</p></div>' for role, who, txt in v(r["people"], lang))
+            rich_html += f"""
 <section class="wrap section rule">
   <div class="grid">
     <div class="proj-body prose rv">
       <h2 style="margin-top:0">{t['m_spec']}</h2>
-      <ul>{spec_items}</ul>
+      {groups}
+      {'<p class="notice">' + t['m_spec_note'] + '</p>' if r.get('spec_note') else ''}
     </div>
     <div class="proj-side rv">
-      <div class="people">
-        <div><p class="role">{t['m_architect']}</p><h3>{t['m_architect_name']}</h3><p class="small muted">{t['m_architect_p']}</p></div>
-        <div><p class="role">{t['m_lawyer']}</p><h3>{t['m_lawyer_name']}</h3><p class="small muted">{t['m_lawyer_p']}</p></div>
-      </div>
+      <h2 class="side-h">{t['m_team']}</h2>
+      <div class="people">{people}</div>
     </div>
   </div>
 </section>"""
@@ -1038,7 +1164,7 @@ def page_project(p, lang):
     </aside>
   </div>
 </section>
-{marshall}
+{rich_html}
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>{t['p_more']}</h2><a class="link" href="{px}/projects/">{t['cta_projects']}</a></div>
   {cards(others, 3, lang)}
@@ -1309,7 +1435,7 @@ def sitemap():
     for lang in ("he", "en"):
         px = pfx(lang)
         urls += [px + "/", px + "/about/", px + "/projects/", px + "/how-we-start/", px + "/contact/", px + "/accessibility/", px + "/privacy/"]
-        urls += [f"{px}/projects/{p['slug']}/" for p in PROJECTS]
+        urls += [f"{px}/projects/{p['slug']}/" for p in PROJECTS if not p.get("redirect")]
     today = date.today().isoformat()
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     xml += "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{today}</lastmod></url>\n" for u in urls)
@@ -1318,6 +1444,10 @@ def sitemap():
         f.write(xml)
     with open(os.path.join(WWW, "robots.txt"), "w", encoding="utf-8", newline="\n") as f:
         f.write(f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
+    # Cloudflare Pages redirects: projects with a dedicated site send visitors there directly
+    lines = [f"{pfx(lang)}/projects/{p['slug']}/ {p['redirect']} 302" for p in PROJECTS if p.get("redirect") for lang in ("he", "en")]
+    with open(os.path.join(WWW, "_redirects"), "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines) + "\n")
 
 
 def main():
@@ -1325,7 +1455,8 @@ def main():
         page_home(lang)
         page_projects(lang)
         for p in PROJECTS:
-            page_project(p, lang)
+            if not p.get("redirect"):
+                page_project(p, lang)
         page_about(lang)
         page_how(lang)
         page_contact(lang)

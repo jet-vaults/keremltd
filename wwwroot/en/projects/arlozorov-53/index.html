@@ -319,10 +319,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .spec dd{margin:0;color:var(--navy);font-weight:500}
 .gallery{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap)}
 .gallery figure{margin:0;grid-column:span 6}
-.gallery figure:nth-child(3n){grid-column:span 12}
+.gallery figure.w12{grid-column:span 12}
+.gallery figure.w4{grid-column:span 4}
 .gallery .frame{aspect-ratio:16/9;overflow:hidden;background:var(--bg-2)}
+.gallery figure.w4 .frame{aspect-ratio:3/4}
 .gallery img{width:100%;height:100%;object-fit:cover}
-@media (max-width:640px){.gallery figure,.gallery figure:nth-child(3n){grid-column:1 / -1}}
+@media (max-width:640px){.gallery figure,.gallery figure.w12{grid-column:1 / -1}.gallery figure.w4{grid-column:span 6}}
 .table-hint{display:none}
 @media (max-width:640px){.table-hint{display:block;margin:-8px 0 10px;font-size:.8rem;color:var(--muted)}}
 .table-wrap{overflow-x:auto}
@@ -353,10 +355,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .bleed-text h2{max-width:22ch;margin-bottom:20px}
 .bleed-text p{max-width:62ch}
 .bleed-text .lead{margin-bottom:.6em}
-/* marker for projects that still have a dedicated external site */
-.ext-note{margin-top:28px;padding:12px 16px;border-inline-start:2px solid var(--blue);background:var(--bg-2);font-size:var(--fs-small);color:var(--muted)}
-.ext-note span[dir=ltr]{color:var(--navy);font-weight:500;unicode-bidi:isolate}
-.ext-note em{font-style:normal;color:var(--blue-text)}
 .extra-fig{margin:40px 0 0}
 .extra-fig .frame{overflow:hidden;background:var(--bg-2)}
 
@@ -394,6 +392,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .apts .pdf{display:inline-block;padding:4px 10px;border:1px solid var(--line-strong);font-size:.8rem;font-weight:500;color:var(--navy);transition:border-color .2s,background .2s}
 .apts .pdf:hover{border-color:var(--navy);background:var(--bg-2)}
 .apts .sold .pdf{opacity:.6}
+.apts .sold-tag{display:inline-block;margin-inline-start:8px;font-size:.72rem;font-weight:500;color:var(--muted);border:1px solid var(--line);padding:1px 6px;vertical-align:middle}
+.side-h{font-size:1.125rem;font-weight:500;margin-bottom:20px}
 
 /* virtual tours: click-to-load facades */
 .tours{align-items:start}
@@ -443,17 +443,44 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="proj-body prose rv">
       <h2 style="margin-top:0">About the project</h2>
       <p>A new home in the beating heart of Ramat Gan, a short walk from the Elite Junction light rail station. Arlozorov 53 offers its residents a complete living experience, designed for comfort and calm, in an authentic neighbourhood atmosphere.</p><p>An established family neighbourhood right on the Tel Aviv border: close to Ramat Gan's leisure and cultural centres, business districts and leading schools, a walk from Bialik Street and the renewed Bursa district, with quick access to the Ayalon, Jabotinsky and Abba Hillel roads.</p><p>The new building has ten storeys and four basement levels, two quiet lifts, a generous architect-designed lobby and a garden designed by a landscape architect. Built to green building and earthquake reinforcement standards.</p>
-      <p class="ext-note"><span>This project has a separate dedicated website:</span> <span dir="ltr">arlozorov53.co.il</span> <em>(pending decision)</em></p>
-      <figure class="rv-img extra-fig"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-interior-480.avif 480w, /assets/img/arlozorov-interior-800.avif 800w, /assets/img/arlozorov-interior-1200.avif 1200w, /assets/img/arlozorov-interior-1600.avif 1600w" sizes="(max-width:900px) 92vw, 58vw"><img src="/assets/img/arlozorov-interior-800.webp" srcset="/assets/img/arlozorov-interior-480.webp 480w, /assets/img/arlozorov-interior-800.webp 800w, /assets/img/arlozorov-interior-1200.webp 1200w, /assets/img/arlozorov-interior-1600.webp 1600w" sizes="(max-width:900px) 92vw, 58vw" width="1600" height="920" alt="Arlozorov 53, Ramat Gan" loading="lazy" decoding="async"></picture></div></figure>
+      
+      
     </div>
     <aside class="proj-side rv">
-      <dl class="spec"><div><dt>Project type</dt><dd>New residential building</dd></div><div><dt>City</dt><dd>Ramat Gan, Hashmonaim neighbourhood</dd></div><div><dt>Floors</dt><dd>10</dd></div><div><dt>Status</dt><dd>In marketing</dd></div></dl>
+      <dl class="spec"><div><dt>Project type</dt><dd>New residential building</dd></div><div><dt>City</dt><dd>Ramat Gan, Hashmonaim neighbourhood</dd></div><div><dt>Floors</dt><dd>10</dd></div><div><dt>Apartments</dt><dd>31</dd></div><div><dt>Status</dt><dd>In marketing</dd></div></dl>
       <div class="cta-row"><a class="btn" href="/en/contact/?project=arlozorov-53">Leave your details</a></div>
       <p class="small muted" style="margin-top:14px">or call: <a class="link" href="tel:+97236121314" dir="ltr">03-6121314</a></p>
     </aside>
   </div>
 </section>
 
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>The apartments</h2></div>
+  <p class="rv" style="margin-top:-16px;margin-bottom:24px">Two- to five-room apartments, a garden apartment on the ground floor and two penthouses facing the Tel Aviv skyline. Two exposures for every apartment.</p>
+  <p class="table-hint">Scroll the table sideways</p>
+  <div class="table-wrap"><table class="apts">
+    <thead><tr><th>Apartment</th><th>Floor</th><th>Rooms</th><th>Area</th><th>Plan</th></tr></thead>
+    <tbody><tr class=""><td>Apt. 1</td><td>-1</td><td>4 rooms</td><td>103 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-1.pdf" download aria-label="PDF, Download the apartment plan: Apt. 1">PDF</a></td></tr><tr class=""><td>Apt. 2</td><td>Ground</td><td>2 rooms</td><td>62.7 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-2.pdf" download aria-label="PDF, Download the apartment plan: Apt. 2">PDF</a></td></tr><tr class=""><td>Apt. 3</td><td>Ground</td><td>2 rooms</td><td>64.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-3.pdf" download aria-label="PDF, Download the apartment plan: Apt. 3">PDF</a></td></tr><tr class="sold"><td>Apt. 6 <span class="sold-tag">Sold</span></td><td>1</td><td>3 rooms</td><td>69 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-6.pdf" download aria-label="PDF, Download the apartment plan: Apt. 6">PDF</a></td></tr><tr class="sold"><td>Apt. 9 <span class="sold-tag">Sold</span></td><td>2</td><td>2 rooms</td><td>51.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-9.pdf" download aria-label="PDF, Download the apartment plan: Apt. 9">PDF</a></td></tr><tr class=""><td>Apt. 10</td><td>2</td><td>4 rooms</td><td>98.3 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-10.pdf" download aria-label="PDF, Download the apartment plan: Apt. 10">PDF</a></td></tr><tr class="sold"><td>Apt. 11 <span class="sold-tag">Sold</span></td><td>2</td><td>2 rooms</td><td>58.8 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-11.pdf" download aria-label="PDF, Download the apartment plan: Apt. 11">PDF</a></td></tr><tr class="sold"><td>Apt. 15 <span class="sold-tag">Sold</span></td><td>4</td><td>3 rooms</td><td>63.3 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-15.pdf" download aria-label="PDF, Download the apartment plan: Apt. 15">PDF</a></td></tr><tr class="sold"><td>Apt. 18 <span class="sold-tag">Sold</span></td><td>5</td><td>3 rooms</td><td>63.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-18.pdf" download aria-label="PDF, Download the apartment plan: Apt. 18">PDF</a></td></tr><tr class="sold"><td>Apt. 22 <span class="sold-tag">Sold</span></td><td>6</td><td>2 rooms</td><td>62.6 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-22.pdf" download aria-label="PDF, Download the apartment plan: Apt. 22">PDF</a></td></tr><tr class=""><td>Apt. 23</td><td>6</td><td>5 rooms</td><td>111.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-23.pdf" download aria-label="PDF, Download the apartment plan: Apt. 23">PDF</a></td></tr><tr class=""><td>Apt. 24</td><td>7</td><td>4 rooms</td><td>99.4 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-24.pdf" download aria-label="PDF, Download the apartment plan: Apt. 24">PDF</a></td></tr><tr class="sold"><td>Apt. 25 <span class="sold-tag">Sold</span></td><td>7</td><td>2 rooms</td><td>63 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-25.pdf" download aria-label="PDF, Download the apartment plan: Apt. 25">PDF</a></td></tr><tr class=""><td>Apt. 26</td><td>7</td><td>5 rooms</td><td>111.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-26.pdf" download aria-label="PDF, Download the apartment plan: Apt. 26">PDF</a></td></tr><tr class=""><td>Apt. 27</td><td>8</td><td>3 rooms</td><td>78 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-27.pdf" download aria-label="PDF, Download the apartment plan: Apt. 27">PDF</a></td></tr><tr class="sold"><td>Apt. 28 <span class="sold-tag">Sold</span></td><td>8</td><td>3 rooms</td><td>73.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-28.pdf" download aria-label="PDF, Download the apartment plan: Apt. 28">PDF</a></td></tr><tr class=""><td>Apt. 29</td><td>8</td><td>4.5 rooms</td><td>94.6 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-29.pdf" download aria-label="PDF, Download the apartment plan: Apt. 29">PDF</a></td></tr><tr class=""><td>Apt. 30</td><td>9</td><td>3 rooms</td><td>66.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-30.pdf" download aria-label="PDF, Download the apartment plan: Apt. 30">PDF</a></td></tr><tr class=""><td>Apt. 31</td><td>9</td><td>3 rooms</td><td>86.3 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-31.pdf" download aria-label="PDF, Download the apartment plan: Apt. 31">PDF</a></td></tr></tbody>
+  </table></div>
+  
+</section>
+<section class="wrap section rule">
+  <div class="sec-head rv"><h2>Interior renderings</h2><span class="small muted">For illustration only</span></div>
+  <div class="gallery"><figure class="rv-img w4"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-front-480.avif 480w, /assets/img/arlozorov-front-800.avif 800w, /assets/img/arlozorov-front-1000.avif 1000w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-front-800.webp" srcset="/assets/img/arlozorov-front-480.webp 480w, /assets/img/arlozorov-front-800.webp 800w, /assets/img/arlozorov-front-1000.webp 1000w" sizes="(max-width:640px) 92vw, 48vw" width="1000" height="1333" alt="Arlozorov 53: Interior renderings 1" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w4"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-back-480.avif 480w, /assets/img/arlozorov-back-800.avif 800w, /assets/img/arlozorov-back-1000.avif 1000w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-back-800.webp" srcset="/assets/img/arlozorov-back-480.webp 480w, /assets/img/arlozorov-back-800.webp 800w, /assets/img/arlozorov-back-1000.webp 1000w" sizes="(max-width:640px) 92vw, 48vw" width="1000" height="1333" alt="Arlozorov 53: Interior renderings 2" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w4"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-view-1-480.avif 480w, /assets/img/arlozorov-view-1-800.avif 800w, /assets/img/arlozorov-view-1-1000.avif 1000w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-view-1-800.webp" srcset="/assets/img/arlozorov-view-1-480.webp 480w, /assets/img/arlozorov-view-1-800.webp 800w, /assets/img/arlozorov-view-1-1000.webp 1000w" sizes="(max-width:640px) 92vw, 48vw" width="1000" height="1333" alt="Arlozorov 53: Interior renderings 3" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w6"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-interior-480.avif 480w, /assets/img/arlozorov-interior-800.avif 800w, /assets/img/arlozorov-interior-1200.avif 1200w, /assets/img/arlozorov-interior-1600.avif 1600w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-interior-800.webp" srcset="/assets/img/arlozorov-interior-480.webp 480w, /assets/img/arlozorov-interior-800.webp 800w, /assets/img/arlozorov-interior-1200.webp 1200w, /assets/img/arlozorov-interior-1600.webp 1600w" sizes="(max-width:640px) 92vw, 48vw" width="1600" height="920" alt="Arlozorov 53: Interior renderings 4" loading="lazy" decoding="async"></picture></div></figure><figure class="rv-img w6"><div class="frame"><picture><source type="image/avif" srcset="/assets/img/arlozorov-int-2-480.avif 480w, /assets/img/arlozorov-int-2-800.avif 800w, /assets/img/arlozorov-int-2-1200.avif 1200w, /assets/img/arlozorov-int-2-1600.avif 1600w" sizes="(max-width:640px) 92vw, 48vw"><img src="/assets/img/arlozorov-int-2-800.webp" srcset="/assets/img/arlozorov-int-2-480.webp 480w, /assets/img/arlozorov-int-2-800.webp 800w, /assets/img/arlozorov-int-2-1200.webp 1200w, /assets/img/arlozorov-int-2-1600.webp 1600w" sizes="(max-width:640px) 92vw, 48vw" width="1600" height="1040" alt="Arlozorov 53: Interior renderings 5" loading="lazy" decoding="async"></picture></div></figure></div>
+</section>
+<section class="wrap section rule">
+  <div class="grid">
+    <div class="proj-body prose rv">
+      <h2 style="margin-top:0">Technical specification</h2>
+      <h3>The building</h3><ul><li>Ten storeys and four basement levels, two quiet smart lifts, a generous architect-designed lobby with planting, a large mirror and decorative lighting.</li><li>A garden designed by a landscape specialist, with irrigation and smart low-energy lighting.</li><li>Built to green building and earthquake reinforcement (TAMA 38) standards.</li></ul><h3>The apartment</h3><ul><li>Only three apartments per floor on the upper floors, four on the lower floors. Two exposures for every apartment.</li><li>Designed security entrance door, intercom with colour closed-circuit video. Unik Premium interior doors, 2.1 m high.</li><li>Electrical system with Gewiss or Bticino fittings, or equivalent.</li><li>Designed kitchen by Avivi or Semel, or equivalent, sized according to the architectural plan of each apartment.</li><li>Bathrooms: tiling to the ceiling, taps, toilets, baths, shower enclosures and concealed cisterns. Hamat, Grohe, Ideal Standard or Geberit.</li><li>Klil or Extal windows and glazing, electric shutters with Somfy motors, acoustic double glazing, insect screens on all openings (except the safe room, per standard).</li><li>A storage room, a sun balcony and one basement parking space for every apartment.</li></ul><h3>The balcony</h3><ul><li>Wrought-iron railing, or a light steel or cable railing, at the architect's choice.</li><li>Electric roller shutter (Somfy motor) and aluminium glazing in Klil 7000 profiles, sized to the window type and the manufacturer's guidance.</li></ul>
+      <p class="notice">E&OE. Equivalent alternatives may be supplied for all items.</p>
+    </div>
+    <div class="proj-side rv">
+      <h2 class="side-h">The team</h2>
+      <div class="people"><div><p class="role">Architect</p><h3>Moshe Alfasi Architects</h3><p class="small muted">Founded in 2013 by architect Moshe Alfasi, a graduate of the Bezalel Academy's architecture department, the practice works on residential and urban planning projects, developing each design from research into the site's distinctive character.</p></div><div><p class="role">Developer's counsel</p><h3>Dr. Moshe Weinberg Law Offices</h3><p class="small muted">A leading civil law firm: planning and construction, land rezoning, real estate development and expropriation, and general civil law. The firm has initiated and advanced the development of thousands of housing units across Israel and works continuously with the planning authorities.</p></div></div>
+    </div>
+  </div>
+</section>
 <section class="wrap section rule">
   <div class="sec-head rv"><h2>More projects</h2><a class="link" href="/en/projects/">All projects</a></div>
   <div class="cards cards--3">
@@ -471,7 +498,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="sub"><span>Tel Aviv, Tzahala</span><span class="status">Under construction</span></div>
   </div>
 </a>
-<a class="card rv-img" href="/en/projects/bernstein-11/" data-status="marketing">
+<a class="card rv-img" href="https://eduard11.co.il/" data-status="marketing">
   <div class="frame"><picture><source type="image/avif" srcset="/assets/img/bernstein-480.avif 480w, /assets/img/bernstein-800.avif 800w, /assets/img/bernstein-1200.avif 1200w, /assets/img/bernstein-1510.avif 1510w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw"><img src="/assets/img/bernstein-800.webp" srcset="/assets/img/bernstein-480.webp 480w, /assets/img/bernstein-800.webp 800w, /assets/img/bernstein-1200.webp 1200w, /assets/img/bernstein-1510.webp 1510w" sizes="(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw" width="1510" height="1888" alt="Eduard Bernstein 11, Tel Aviv" loading="lazy" decoding="async"></picture></div>
   <div class="meta">
     <h3>Eduard Bernstein 11</h3>
