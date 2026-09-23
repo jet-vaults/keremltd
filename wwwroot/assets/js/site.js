@@ -56,6 +56,48 @@
     });
   }
 
+  /* lightbox for project imagery */
+  var lb = d.getElementById('lightbox'), lbFigs = [].slice.call(d.querySelectorAll('figure.lb'));
+  if (lb && lbFigs.length) {
+    var lbImg = lb.querySelector('img'), lbCap = lb.querySelector('figcaption'), lbCount = lb.querySelector('.lb-count'), cur = 0, lastFocus = null;
+    var largest = function (fig) {
+      var src = fig.querySelector('source[type="image/avif"]'), img = fig.querySelector('img');
+      var set = (src && src.srcset) || img.srcset || '';
+      var best = null, bw = 0;
+      set.split(',').forEach(function (e) { var m = e.trim().split(/\s+/); var w = parseInt(m[1] || '0', 10); if (w > bw) { bw = w; best = m[0]; } });
+      return best || img.currentSrc || img.src;
+    };
+    var show = function (i) {
+      cur = (i + lbFigs.length) % lbFigs.length;
+      var fig = lbFigs[cur], img = fig.querySelector('img'), cap = fig.querySelector('figcaption');
+      lbImg.src = largest(fig); lbImg.alt = img.alt || '';
+      lbCap.textContent = cap ? cap.textContent : (img.alt || '');
+      lbCount.textContent = (cur + 1) + ' / ' + lbFigs.length;
+      [1, -1].forEach(function (k) { var n = lbFigs[(cur + k + lbFigs.length) % lbFigs.length]; if (n) { var pre = new Image(); pre.src = largest(n); } });
+    };
+    var openLb = function (i) { lastFocus = d.activeElement; show(i); lb.hidden = false; b.classList.add('lb-open'); lb.querySelector('.lb-close').focus(); };
+    var closeLb = function () { lb.hidden = true; b.classList.remove('lb-open'); if (lastFocus && lastFocus.focus) lastFocus.focus(); };
+    lbFigs.forEach(function (fig, i) {
+      var fr = fig.querySelector('.frame'); if (!fr) return;
+      fr.setAttribute('role', 'button'); fr.setAttribute('tabindex', '0');
+      fr.addEventListener('click', function () { openLb(i); });
+      fr.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLb(i); } });
+    });
+    lb.querySelector('.lb-close').addEventListener('click', closeLb);
+    lb.querySelector('.lb-prev').addEventListener('click', function () { show(cur - 1); });
+    lb.querySelector('.lb-next').addEventListener('click', function () { show(cur + 1); });
+    lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+    d.addEventListener('keydown', function (e) {
+      if (lb.hidden) return;
+      if (e.key === 'Escape') closeLb();
+      else if (e.key === 'ArrowRight') show(cur + 1);
+      else if (e.key === 'ArrowLeft') show(cur - 1);
+    });
+    var tx = null;
+    lb.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', function (e) { if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(dx) > 40) show(dx < 0 ? cur + 1 : cur - 1); });
+  }
+
   /* forms (Web3Forms JSON endpoint) */
   d.querySelectorAll('form.form').forEach(function (form) {
     form.addEventListener('submit', function (e) {

@@ -281,6 +281,26 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .apt-body .pdf{display:inline-block;margin-top:12px;padding:8px 14px;border:1px solid var(--line-strong);font-size:.85rem;font-weight:500;color:var(--navy)}
 }
 
+/* lightbox */
+figure.lb .frame{cursor:zoom-in}
+.lightbox{position:fixed;inset:0;z-index:200;background:rgba(11,27,58,.96);display:flex;align-items:center;justify-content:center;direction:ltr}
+.lightbox[hidden]{display:none}
+.lightbox figure{margin:0;max-width:min(92vw,1600px);max-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 0 48px}
+.lightbox img{max-width:100%;max-height:calc(100vh - 120px);object-fit:contain;border-radius:3px;box-shadow:0 20px 60px rgba(0,0,0,.4);user-select:none;-webkit-user-drag:none}
+.lightbox figcaption{margin-top:14px;color:#c9d1df;font-size:var(--fs-small);text-align:center;direction:rtl}
+[lang=en] .lightbox figcaption{direction:ltr}
+.lightbox button{position:absolute;color:#fff;opacity:.8;transition:opacity .2s}
+.lightbox button:hover{opacity:1}
+.lb-close{top:14px;right:18px;width:44px;height:44px;font-size:2rem;line-height:1;font-weight:300}
+.lb-prev,.lb-next{top:50%;transform:translateY(-50%);width:56px;height:80px}
+.lb-prev{left:6px}.lb-next{right:6px}
+.lb-prev::before,.lb-next::before{content:"";position:absolute;top:50%;left:50%;width:16px;height:16px;border-top:1.5px solid #fff;border-left:1.5px solid #fff}
+.lb-prev::before{transform:translate(-30%,-50%) rotate(-45deg)}
+.lb-next::before{transform:translate(-70%,-50%) rotate(135deg)}
+.lb-count{position:absolute;top:26px;left:50%;transform:translateX(-50%);color:#aeb7c8;font-size:var(--fs-small);font-variant-numeric:tabular-nums}
+body.lb-open{overflow:hidden}
+@media (max-width:640px){.lightbox figure{max-width:100vw;padding:56px 0 40px}.lightbox img{max-height:calc(100vh - 110px);border-radius:0}.lb-prev,.lb-next{width:44px}}
+
 /* sticky contact bar */
 body{padding-bottom:var(--stick-h,0px)}
 body.has-stick{--stick-h:73px}
@@ -634,6 +654,13 @@ input[type=tel]{direction:ltr;text-align:right}
     </div>
   </div>
 </footer>
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="הדמיות פנים">
+  <button class="lb-close" type="button" aria-label="סגירה">×</button>
+  <button class="lb-prev" type="button" aria-label="התמונה הקודמת"></button>
+  <figure><img alt=""><figcaption></figcaption></figure>
+  <button class="lb-next" type="button" aria-label="התמונה הבאה"></button>
+  <span class="lb-count"></span>
+</div>
 <div class="stick" id="stick" hidden>
   <div class="wrap stick-row">
     <p class="stick-title">מעוניינים שנחזור אליכם?</p>

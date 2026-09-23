@@ -85,7 +85,7 @@ T = {
         m_3d="מודל תלת-ממדי", m_3d_btn="פתיחת המודל התלת-ממדי", m_3d_p="הדירה במודל תלת-ממדי אינטראקטיבי. ניתן להסתובב, להתקרב ולעבור בין החללים.",
         m_ext_open="פתיחה בחלון מלא",
         m_notice="הפרטים בדף זה הינם להמחשה ולמסירת מידע בלבד, ואינם מהווים התחייבות מצד החברה. את החברה יחייבו הסכם המכר והמפרט הטכני לפי חוק המכר עליו יחתמו החברה והרוכשים. תכניות המכירה כוללות פרטי ריהוט ומוצרי חשמל להמחשה בלבד, שאינם כלולים בממכר. ט.ל.ח.",
-        m_gallery="הדמיות פנים", m_gallery_note="להמחשה בלבד", m_spec="מפרט טכני",
+        m_gallery="הדמיות פנים", m_gallery_note="לחצו על תמונה להגדלה", lb_close="סגירה", lb_prev="התמונה הקודמת", lb_next="התמונה הבאה", m_spec="מפרט טכני",
         m_spec_items=[
             "דלת ביטחון מעוצבת בכניסה לדירה, מערכת אינטרקום עם צפייה במעגל סגור במסך צבעוני. דלתות פנים יוניק פרימיום בגובה 2.1 מ׳.",
             "מערכת מיזוג אוויר VRF.",
@@ -190,7 +190,7 @@ T = {
         m_3d="3D model", m_3d_btn="Open the 3D model", m_3d_p="The apartment as an interactive 3D model. Rotate, zoom and move between rooms.",
         m_ext_open="Open full screen",
         m_notice="The details on this page are for illustration and information only and do not constitute a commitment by the company. The company is bound only by the sale agreement and the technical specification under the Sale Law, as signed by the company and the buyers. Sales plans include furniture and appliances for illustration only, which are not included in the sale. E&OE.",
-        m_gallery="Interior renderings", m_gallery_note="For illustration only", m_spec="Technical specification",
+        m_gallery="Interior renderings", m_gallery_note="Tap an image to enlarge", lb_close="Close", lb_prev="Previous image", lb_next="Next image", m_spec="Technical specification",
         m_spec_items=[
             "Designed security entrance door, intercom with colour closed-circuit video. Unik Premium interior doors, 2.1 m high.",
             "VRF air conditioning system.",
@@ -848,6 +848,13 @@ def footer(lang, path):
     </div>
   </div>
 </footer>
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="{t['m_gallery']}">
+  <button class="lb-close" type="button" aria-label="{t['lb_close']}">×</button>
+  <button class="lb-prev" type="button" aria-label="{t['lb_prev']}"></button>
+  <figure><img alt=""><figcaption></figcaption></figure>
+  <button class="lb-next" type="button" aria-label="{t['lb_next']}"></button>
+  <span class="lb-count"></span>
+</div>
 <div class="stick" id="stick" hidden>
   <div class="wrap stick-row">
     <p class="stick-title">{t['stick_title']}</p>
@@ -1210,7 +1217,7 @@ def page_project(p, lang):
 
     extra_fig = ""
     if p.get("extra_img"):
-        extra_fig = f"""<figure class="rv-img extra-fig"><div class="frame">{picture(p['extra_img'], f"{name}, {city}", "(max-width:900px) 92vw, 58vw")}</div></figure>"""
+        extra_fig = f"""<figure class="rv-img extra-fig lb"><div class="frame">{picture(p['extra_img'], f"{name}, {city}", "(max-width:900px) 92vw, 58vw")}</div></figure>"""
 
     rich_html = ""
     r = RICH.get(p["slug"])
@@ -1278,7 +1285,7 @@ def page_project(p, lang):
 </section>"""
         if r.get("gallery"):
             figs = "".join(
-                f'<figure class="rv-img {w}"><div class="frame">{picture(img, f"{name}: {t["m_gallery"]} {i + 1}", "(max-width:640px) 92vw, 48vw")}</div></figure>'
+                f'<figure class="rv-img lb {w}"><div class="frame">{picture(img, f"{name}: {t["m_gallery"]} {i + 1}", "(max-width:640px) 92vw, 48vw")}</div></figure>'
                 for i, (img, w) in enumerate(r["gallery"]))
             rich_html += f"""
 <section class="wrap section rule">
@@ -1312,7 +1319,7 @@ def page_project(p, lang):
   <p class="lead">{esc(v(p['short'], lang))}</p>
 </section>
 <section class="wrap proj-hero">
-  <figure>
+  <figure class="lb">
     <div class="frame">{picture(p['img'], f"{name}, {city}", "(max-width:1280px) 92vw, 1184px", eager=True)}</div>
     <figcaption>{t['p_render']}</figcaption>
   </figure>
