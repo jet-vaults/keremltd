@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Static site generator for keremltd.co.il.
+"""Static site generator for keremltd.co.il (Hebrew + English).
 
     python tools/build.py
 
-Writes every HTML page under wwwroot/. Content lives in this file so the
-whole site can be regenerated after a copy change. No dependencies.
+Writes every HTML page under wwwroot/ (Hebrew at /, English at /en/).
+Content lives in this file so the whole site can be regenerated after a
+copy change. No dependencies.
 """
 import json
 import os
@@ -18,151 +19,456 @@ with open(os.path.join(WWW, "assets", "css", "site.css"), encoding="utf-8") as _
     CSS = _f.read().replace("</", "<\\/")
 
 SITE = "https://keremltd.co.il"
-BRAND = "כרם יזמות והתחדשות עירונית"
 PHONE = "03-6121314"
 PHONE_TEL = "+97236121314"
 EMAIL = "office@keremltd.co.il"
-ADDRESS = "דרך בגין 82, בית אופקים, קומה 5, תל אביב 67138"
 FACEBOOK = "https://www.facebook.com/keremltd"
-EN_SITE = "https://keremltd.com/"
+MAPS = "https://www.google.com/maps/search/?api=1&query=%D7%93%D7%A8%D7%9A+%D7%9E%D7%A0%D7%97%D7%9D+%D7%91%D7%92%D7%99%D7%9F+82+%D7%AA%D7%9C+%D7%90%D7%91%D7%99%D7%91"
 WEB3FORMS_KEY = "YOUR-WEB3FORMS-ACCESS-KEY"
 TODAY = date.today().strftime("%d.%m.%Y")
+
+# Four projects have (or had) dedicated marketing sites. They are now rendered
+# as internal pages; the dedicated URL is shown as a plain marker, not a link.
+# TODO(owner): decide whether to link out, embed, or retire these sites.
+EXTERNAL_SITES = {
+    "grofit-3": "grofit3.co.il",
+    "bernstein-11": "eduard11.co.il",
+    "arlozorov-53": "arlozorov53.co.il",
+    "bat-shua-8": "batshua8.com",
+}
+
+# --------------------------------------------------------------------------
+# UI strings
+# --------------------------------------------------------------------------
+
+T = {
+    "he": dict(
+        dir="rtl", locale="he_IL",
+        brand="כרם יזמות והתחדשות עירונית",
+        brand_short="כרם",
+        site_title="כרם יזמות והתחדשות עירונית | ארבעה דורות של יזמות נדל״ן בגוש דן",
+        site_desc="כרם יזמות והתחדשות עירונית, מקבוצת וינברג: חברה משפחתית עם ניסיון של ארבעה דורות ביזמות נדל״ן, תמ״א 38, פינוי־בינוי ושימור בתל אביב, רמת גן ובני ברק.",
+        skip="דלג לתוכן", home="ראשי", about="אודות החברה", projects="פרויקטים", how="איך מתחילים פרויקט", contact="צור קשר",
+        lang_switch="EN", lang_switch_full="English", menu_open="פתיחת תפריט",
+        cta_projects="כל הפרויקטים", cta_how="איך מתחילים פרויקט", cta_contact="השאירו פרטים", cta_steps="כל השלבים", cta_home="לדף הבית",
+        hero_eyebrow="מקבוצת וינברג",
+        hero_h1="בונים את העיר מחדש. כבר ארבעה דורות.",
+        hero_lead="חברה משפחתית בבעלות פרטית, המתמחה בתמ״א 38, פינוי־בינוי ושימור במרכזי הערים של גוש דן.",
+        hero_caption="מזא״ה 71, תל אביב-יפו. בניין לשימור בשלבי תכנון.",
+        facts=[("4", "דורות של יזמות נדל״ן"), ("{n}", "פרויקטים בשיווק, בתכנון ובאכלוס"), ("אלפי", "יחידות דיור ומסחר שתוכננו ונבנו")],
+        projects_h2="פרויקטים המשתבחים עם השנים",
+        projects_lead="בניינים במרכזי הערים של גוש דן: הריסה ובנייה מחדש, שימור והשבחה ופרויקטים חדשים, מסודרים לפי שלב.",
+        groups={"marketing": ("בשיווק", "היתרים, בנייה ושיווק פעיל"), "planning": ("בתכנון", "לפני החלטת ועדה. מחירי הנחה והטבות למצטרפים מוקדם"), "done": ("הסתיימו", "מסירה ואכלוס")},
+        about_h2="חברה משפחתית. ארבעה דורות של בנייה.",
+        about_p="כרם יזמות נדל״ן והתחדשות עירונית היא חברה של מומחים, עם ניסיון של ארבעה דורות ביזמות נדל״ן, תכנון ובנייה של אלפי יחידות דיור ומסחר. ההתמחות בשנים האחרונות היא בפרויקטי מגורים במרכז העיר: תמ״א 38 ופינוי־בינוי. החברה בבעלות פרטית מלאה של המשפחה. מנכ״ל החברה: רני וינברג.",
+        about_link="על החברה ועל קבוצת וינברג",
+        about_caption="הושע 21+23, בני ברק. הריסה ובנייה מחדש, בביצוע.",
+        spec_h2="תחומי ההתמחות",
+        statement_eyebrow="איך מתחילים פרויקט?",
+        statement_h2="הצעד הראשון הוא היכרות. בלי חתימות, בלי התחייבות.",
+        statement_p1="כבעלי דירה בבניין, לא פשוט להזיז קדימה דבר כזה: קשה לאסוף את כל הדיירים, קשה להבין מה נכון מול הרבה יזמים שמבטיחים הבטחות, וקשה להתנהל מול יזם ועורך דין בלי להכיר את המושגים.",
+        statement_p2="לכן יש לנו שיטה סדורה ופשוטה, צעד אחר צעד, לכל סוג פרויקט. מטרת הצעד הראשון היא היכרות בלבד: להבין יחד, היזם והדיירים, האם יש בנכס כדאיות.",
+        contact_h2="מעוניינים שנחזור אליכם?",
+        contact_lead="רכישת דירה, בניין שמתאים להתחדשות עירונית, או התייעצות בכל עניין בנדל״ן. השאירו פרטים ונציג יחזור אליכם בהקדם.",
+        phone="טלפון", email="אימייל", office="משרד", address="דרך בגין 82, בית אופקים, קומה 5, תל אביב 67138", maps="פתיחה במפות", facebook="פייסבוק",
+        f_name="שם מלא", f_phone="טלפון", f_email="אימייל", f_topic="בנוגע ל", f_topic_pick="בחרו נושא",
+        f_topics=["רכישת דירה", "התחדשות עירונית / פינוי־בינוי", "תמ״א 38", "יזמות", "אחר"],
+        f_project="פרויקט (אם רלוונטי)", f_project_none="ללא פרויקט מסוים", f_msg="הודעה",
+        f_consent="אני מאשר/ת יצירת קשר בהתאם ל", f_privacy="מדיניות הפרטיות", f_send="שליחה", f_or="או התקשרו:",
+        f_subject="פנייה חדשה מאתר כרם", f_hp="אין למלא שדה זה",
+        foot_p="חברה משפחתית בבעלות פרטית, מקבוצת וינברג. ארבעה דורות של יזמות נדל״ן, תכנון ובנייה של אלפי יחידות דיור ומסחר.",
+        foot_nav="ניווט", foot_contact="פרטי התקשרות", accessibility="הצהרת נגישות", privacy="מדיניות פרטיות",
+        foot_rights="כל הזכויות שמורות.", foot_note="התמונות וההדמיות להמחשה בלבד",
+        crumb_home="ראשי", crumbs_label="פירורי לחם",
+        p_type="סוג הפרויקט", p_city="עיר", p_floors="קומות", p_units="יחידות דיור", p_shops="מסחר", p_shops_unit="חנויות", p_status="סטטוס",
+        p_about="על הפרויקט", p_render="הדמיה להמחשה בלבד", p_more="פרויקטים נוספים", p_or_call="או התקשרו:",
+        p_ext_note="לפרויקט זה קיים אתר ייעודי נפרד:", p_ext_todo="בהמתנה להחלטה",
+        m_apts="הדירות", m_apts_note="3 דירות בקומה, 2 כיווני אוויר ומרפסת שמש לכל דירה.",
+        m_th=["דירה", "סוג", "חדרים", "שטח", "חוץ", "הערות"],
+        m_notice="הפרטים בדף זה הינם להמחשה ולמסירת מידע בלבד, ואינם מהווים התחייבות מצד החברה. את החברה יחייבו הסכם המכר והמפרט הטכני לפי חוק המכר עליו יחתמו החברה והרוכשים. תכניות המכירה כוללות פרטי ריהוט ומוצרי חשמל להמחשה בלבד, שאינם כלולים בממכר. ט.ל.ח.",
+        m_gallery="הדמיות פנים", m_gallery_note="להמחשה בלבד", m_spec="מפרט טכני",
+        m_spec_items=[
+            "דלת ביטחון מעוצבת בכניסה לדירה, מערכת אינטרקום עם צפייה במעגל סגור במסך צבעוני. דלתות פנים יוניק פרימיום בגובה 2.1 מ׳.",
+            "מערכת מיזוג אוויר VRF.",
+            "חשמל חכם, אביזרי קצה גוויס או ביטיצ׳ינו.",
+            "מטבח מעוצב, גודלו על פי התכנון האדריכלי ותכניות הדירה.",
+            "חדרי אמבטיה: חיפוי עד התקרה, ברזים, אסלות, אמבטיות ומקלחונים וניאגרה סמויה. חמת, גרוהה, אידיאל סטנדרט או גיבריט.",
+            "חלונות וויטרינות קליל או אקסטל, תריסים חשמליים עם מנועי סומפי, זיגוג כפול אקוסטי מבודד, רשתות נגד יתושים בכל הפתחים (למעט ממ״ד, על פי תקן).",
+        ],
+        m_architect="האדריכל", m_architect_name="מאור לוי, לוי לוסטיג אדריכלים",
+        m_architect_p="המשרד עוסק בתכנון ועיצוב בתים ודירות מגורים ובפרויקטי תמ״א 38. מאור לוי הוא אדריכל, בעל תואר שני במנהל עסקים ומוסמך מכון התקנים כמלווה בנייה ירוקה, עם ניסיון רב שנים בבנייה אורבנית ופרטית.",
+        m_lawyer="עורך דין היזם", m_lawyer_name="משרד עו״ד ד״ר משה וינברג",
+        m_lawyer_p="משרד מוביל בתחום האזרחי: תכנון ובנייה, הפשרת קרקעות, פיתוח והפקעת מקרקעין ומשפט אזרחי. המשרד קידם ויזם פיתוח של אלפי יחידות דיור ברחבי הארץ ומקיים קשר שוטף עם רשויות התכנון.",
+        about_title="אודות החברה",
+        about_desc="כרם יזמות נדל״ן והתחדשות עירונית: חברה משפחתית מקבוצת וינברג, עם ניסיון של ארבעה דורות ביזמות, תכנון ובנייה של אלפי יחידות דיור ומסחר.",
+        about_h1="ניסיון של ארבעה דורות ביזמות נדל״ן",
+        about_lead="כרם יזמות נדל״ן והתחדשות עירונית היא חברה מובילה של מומחים, עם ניסיון עשיר של ארבעה דורות ביזמות נדל״ן, תכנון ובנייה של אלפי יחידות דיור ומסחר.",
+        about_body=[
+            "ההתמחות בשנים האחרונות היא בפרויקטי מגורים במרכז העיר: תמ״א 38 ופינוי־בינוי, לצד שימור והשבחה של בניינים היסטוריים בלב תל אביב.",
+            "החברה משפחתית ובבעלות פרטית מלאה של המשפחה. בנוסף מחזיקה המשפחה חברות נוספות המתמחות במוצרים משלימים בתחום הנדל״ן: שירותים משפטיים, תחזוקת נכסים, פיננסים ומלאי דירות להשכרה. כך, כל שלב בפרויקט נשען על ידע וניסיון מתוך הבית.",
+            "מנכ״ל החברה: רני וינברג.",
+        ],
+        about_caption2="רוטשילד 135, הבית על הבימה, תל אביב. הסתיים ואוכלס.",
+        about_mgmt_h2="חברה משפחתית, מנוהלת מקרוב",
+        about_mgmt_lead="כל פרויקט מלווה אישית, מהפגישה הראשונה עם הדיירים ועד מסירת המפתחות.",
+        about_mgmt_p="הקבוצה פועלת בתל אביב, רמת גן ובני ברק, ומשלבת יזמות, תכנון, מימון, ייצוג משפטי וניהול נכסים תחת קורת גג אחת.",
+        about_caption3="דרך יפו 13, תל אביב. שימור ושחזור, הסתיים ואוכלס.",
+        group_h2="חברות נוספות בבעלות המשפחה",
+        how_title="איך מתחילים פרויקט?",
+        how_desc="הצעד הראשון בפרויקט תמ״א 38 או פינוי־בינוי: שיטה סדורה ופשוטה, צעד אחר צעד, בלי חתימות ובלי התחייבות. כך מתחילים עם כרם.",
+        how_h1="כבעלי דירה בבניין, לא פשוט להזיז קדימה דבר כזה",
+        how_lead="״איך מתחילים?״ זה הצעד הראשון, וגם הקשה ביותר. לכן יש לנו שיטה סדורה ופשוטה, צעד אחר צעד, לכל סוג פרויקט.",
+        how_body=[
+            "קשה לאסוף את כל הדיירים ולהגיע להחלטות. קשה להבין מה נכון מול הרבה יזמים, שכל אחד מהם מבטיח הבטחות. וקשה להתנהל מול יזם ומול עורך דין בלי להכיר את המושגים.",
+            "<strong>אבל זה שווה הכול.</strong> בסוף התהליך אתם יושבים בסלון החדש, אוכלים ארוחת ערב משפחתית במרפסת החדשה, ואז החיוך שווה הכול.",
+            "ההתחלה של תהליך לפרויקט תמ״א 38, פינוי־בינוי, כל פרויקט התחדשות עירונית או תכנון וביצוע מסוג אחר בנכס שלכם, היא להבין בדיוק מה רוצים.",
+        ],
+        how_caption="חירות 40, רמת גן. שכונת הגפן, בשלבי תכנון.",
+        how_step_h2="מסע ארוך מתחיל בצעד קטן",
+        how_step_p="״הצעד הראשון״ של התהליך הוא פשוט ופועל בשיטה מסודרת מאוד. מטרתו היא היכרות בלבד:",
+        how_after="רק כשכל הדיירים יסכימו באופן כללי (ולא מחייב בשום אופן) על אופי ההצעה, נמשיך לשלב הבא.",
+        how_small="ההחלטות עצמן, לגבי כל דבר, מתקבלות רק באסיפת דיירים עם נוכחות מלאה של כל הדיירים וזכות הצבעה לדיירים בלבד. בשלב זה לא מדובר בהחלטות, אלא רק באיסוף מידע להבנת הצרכים של הפרויקט.",
+        how_side=[("התחייבות", "לא נדרשת"), ("חתימות", "לא נדרשות"), ("מטרת השלב", "היכרות ובחינת כדאיות")],
+        how_important="<strong>חשוב לדעת:</strong> אנחנו רק בשלב ההיכרות, לבחון האם יש כדאיות. מהצד של הדיירים: האם כדאי כל הבלגן הזה? מהצד של היזם: האם יש רווחיות?",
+        contact_title="צור קשר",
+        contact_desc="נשמח לייעץ, ליזום, לתכנן, לפקח ולהוביל אתכם לפרויקט מוצלח של תמ״א 38, התחדשות עירונית ופינוי־בינוי. טלפון 03-6121314, office@keremltd.co.il.",
+        contact_h1="״איך מתחילים? ומה האסטרטגיה?״",
+        contact_page_lead="נשמח לייעץ, ליזום, לתכנן, לפקח ולהוביל אתכם לפרויקט מוצלח של תמ״א 38, התחדשות עירונית ופינוי־בינוי, וגם להתייעצות בכל עניין בנדל״ן.",
+        contact_address_label="כתובתנו",
+        a11y_title="הצהרת נגישות", a11y_desc="הצהרת הנגישות של אתר כרם יזמות והתחדשות עירונית.",
+        privacy_title="מדיניות פרטיות", privacy_desc="מדיניות הפרטיות של אתר כרם יזמות והתחדשות עירונית.",
+        nf_title="הדף לא נמצא", nf_desc="הדף המבוקש לא נמצא.", nf_lead="ייתכן שהכתובת השתנתה או שהדף הוסר.",
+        og_default="hero-1200",
+    ),
+    "en": dict(
+        dir="ltr", locale="en_US",
+        brand="Kerem Real Estate Development and Urban Renewal",
+        brand_short="Kerem",
+        site_title="Kerem Real Estate Development and Urban Renewal | Four generations of building in Tel Aviv",
+        site_desc="Kerem, part of the Weinberg group: a family-owned developer with four generations of experience in TAMA 38, urban renewal and heritage preservation in Tel Aviv, Ramat Gan and Bnei Brak.",
+        skip="Skip to content", home="Home", about="About", projects="Projects", how="How a project starts", contact="Contact",
+        lang_switch="עב", lang_switch_full="עברית", menu_open="Open menu",
+        cta_projects="All projects", cta_how="How a project starts", cta_contact="Leave your details", cta_steps="All the steps", cta_home="Back to home",
+        hero_eyebrow="Part of the Weinberg group",
+        hero_h1="Rebuilding the city. For four generations.",
+        hero_lead="A privately held family company specialising in TAMA 38, urban renewal and heritage preservation in the city centres of greater Tel Aviv.",
+        hero_caption="Mazeh 71, Tel Aviv-Jaffa. Heritage building in planning.",
+        facts=[("4", "generations in real estate development"), ("{n}", "projects in marketing, planning and occupancy"), ("Thousands", "of residential and commercial units planned and built")],
+        projects_h2="Projects that improve with the years",
+        projects_lead="Buildings in the city centres of greater Tel Aviv: demolition and rebuilding, preservation and upgrading, and new construction, ordered by stage.",
+        groups={"marketing": ("In marketing", "Permits, construction and active sales"), "planning": ("In planning", "Before committee approval. Early-joiner discounts and benefits"), "done": ("Completed", "Delivered and occupied")},
+        about_h2="A family company. Four generations of building.",
+        about_p="Kerem is a team of specialists with four generations of experience in real estate development, planning and construction of thousands of residential and commercial units. In recent years the focus has been residential projects in the city centre: TAMA 38 and urban renewal. The company is fully family owned. CEO: Rani Weinberg.",
+        about_link="About the company and the Weinberg group",
+        about_caption="Hoshea 21+23, Bnei Brak. Demolition and rebuilding, under construction.",
+        spec_h2="What we do",
+        statement_eyebrow="How a project starts",
+        statement_h2="The first step is getting acquainted. No signatures, no commitment.",
+        statement_p1="For apartment owners, moving something like this forward is not simple: gathering all the residents is hard, judging between many developers making promises is hard, and dealing with a developer and a lawyer without knowing the terms is hard.",
+        statement_p2="So we work with a clear, simple method, step by step, for every kind of project. The first step is only about getting acquainted: understanding together, developer and residents, whether the building is a viable project.",
+        contact_h2="Would you like us to call you?",
+        contact_lead="Buying an apartment, a building suited to urban renewal, or advice on any real estate matter. Leave your details and a representative will get back to you shortly.",
+        phone="Phone", email="Email", office="Office", address="82 Begin Road, Beit Ofakim, 5th floor, Tel Aviv 67138", maps="Open in maps", facebook="Facebook",
+        f_name="Full name", f_phone="Phone", f_email="Email", f_topic="Regarding", f_topic_pick="Choose a topic",
+        f_topics=["Buying an apartment", "Urban renewal", "TAMA 38", "Development", "Other"],
+        f_project="Project (if relevant)", f_project_none="No specific project", f_msg="Message",
+        f_consent="I agree to be contacted in accordance with the ", f_privacy="privacy policy", f_send="Send", f_or="or call:",
+        f_subject="New enquiry from keremltd.co.il (EN)", f_hp="Leave this field empty",
+        foot_p="A privately held family company, part of the Weinberg group. Four generations of real estate development, planning and construction of thousands of residential and commercial units.",
+        foot_nav="Navigation", foot_contact="Contact", accessibility="Accessibility statement", privacy="Privacy policy",
+        foot_rights="All rights reserved.", foot_note="Images and renderings are for illustration only",
+        crumb_home="Home", crumbs_label="Breadcrumbs",
+        p_type="Project type", p_city="City", p_floors="Floors", p_units="Apartments", p_shops="Retail", p_shops_unit="shops", p_status="Status",
+        p_about="About the project", p_render="Rendering for illustration only", p_more="More projects", p_or_call="or call:",
+        p_ext_note="This project has a separate dedicated website:", p_ext_todo="pending decision",
+        m_apts="The apartments", m_apts_note="Three apartments per floor, two exposures and a sun balcony for every apartment.",
+        m_th=["Apartment", "Type", "Rooms", "Area", "Outdoor", "Notes"],
+        m_notice="The details on this page are for illustration and information only and do not constitute a commitment by the company. The company is bound only by the sale agreement and the technical specification under the Sale Law, as signed by the company and the buyers. Sales plans include furniture and appliances for illustration only, which are not included in the sale. E&OE.",
+        m_gallery="Interior renderings", m_gallery_note="For illustration only", m_spec="Technical specification",
+        m_spec_items=[
+            "Designed security entrance door, intercom with colour closed-circuit video. Unik Premium interior doors, 2.1 m high.",
+            "VRF air conditioning system.",
+            "Smart electrical system, Gewiss or Bticino fittings.",
+            "Designed kitchen, sized according to the architectural plan of each apartment.",
+            "Bathrooms: tiling to the ceiling, taps, toilets, baths, shower enclosures and concealed cisterns. Hamat, Grohe, Ideal Standard or Geberit.",
+            "Klil or Extal windows and glazing, electric shutters with Somfy motors, acoustic double glazing, insect screens on all openings (except the safe room, per standard).",
+        ],
+        m_architect="Architect", m_architect_name="Maor Levy, Levy Lustig Architects",
+        m_architect_p="The practice designs houses, residential apartments and TAMA 38 projects. Maor Levy is an architect with an MBA, certified by the Standards Institution of Israel as a green building consultant, with many years of experience in urban and private construction.",
+        m_lawyer="Developer's counsel", m_lawyer_name="Dr. Moshe Weinberg Law Offices",
+        m_lawyer_p="A leading civil law firm: planning and construction, land rezoning, real estate development and expropriation, and general civil law. The firm has initiated and advanced the development of thousands of housing units across Israel and works continuously with the planning authorities.",
+        about_title="About",
+        about_desc="Kerem Real Estate Development and Urban Renewal: a family company in the Weinberg group, with four generations of experience in developing, planning and building thousands of residential and commercial units.",
+        about_h1="Four generations of experience in real estate development",
+        about_lead="Kerem is a leading team of specialists with four generations of experience in real estate development, planning and construction of thousands of residential and commercial units.",
+        about_body=[
+            "In recent years the focus has been residential projects in the city centre: TAMA 38 and urban renewal, alongside the preservation and upgrading of historic buildings in the heart of Tel Aviv.",
+            "The company is family run and fully family owned. The family also holds complementary real estate businesses: legal services, property management, finance and a portfolio of rental apartments. Every stage of a project draws on in-house knowledge and experience.",
+            "CEO: Rani Weinberg.",
+        ],
+        about_caption2="Rothschild 135, the House on Habima, Tel Aviv. Completed and occupied.",
+        about_mgmt_h2="A family company, closely managed",
+        about_mgmt_lead="Every project is personally accompanied, from the first meeting with residents to handing over the keys.",
+        about_mgmt_p="The group works in Tel Aviv, Ramat Gan and Bnei Brak, combining development, planning, finance, legal representation and property management under one roof.",
+        about_caption3="Jaffa Road 13, Tel Aviv. Preservation and restoration, completed and occupied.",
+        group_h2="Other family-owned companies",
+        how_title="How a project starts",
+        how_desc="The first step in a TAMA 38 or urban renewal project: a clear, simple method, step by step, with no signatures and no commitment. This is how it starts with Kerem.",
+        how_h1="For apartment owners, moving something like this forward is not simple",
+        how_lead="“How do we start?” is the first step, and the hardest one. So we work with a clear, simple method, step by step, for every kind of project.",
+        how_body=[
+            "Gathering all the residents and reaching decisions is hard. Judging what is right between many developers, each making promises, is hard. And dealing with a developer and a lawyer without knowing the terms is hard.",
+            "<strong>But it is worth everything.</strong> At the end of the process you are sitting in your new living room, having a family dinner on the new balcony, and the smile is worth it all.",
+            "The beginning of any TAMA 38, urban renewal or other planning and construction project in your building is understanding exactly what you want.",
+        ],
+        how_caption="Herut 40, Ramat Gan. Hagefen neighbourhood, in planning.",
+        how_step_h2="A long journey begins with a small step",
+        how_step_p="The first step is simple and follows a very orderly method. Its purpose is only to get acquainted:",
+        how_after="Only when all the residents agree in general (and in no way bindingly) on the nature of the proposal do we move to the next stage.",
+        how_small="Decisions themselves, on any matter, are taken only at a residents' meeting with full attendance, where only residents vote. At this stage there are no decisions, only information gathering to understand the needs of the project.",
+        how_side=[("Commitment", "Not required"), ("Signatures", "Not required"), ("Purpose", "Getting acquainted, testing viability")],
+        how_important="<strong>Good to know:</strong> we are only at the acquaintance stage, testing whether the project is viable. For the residents: is all the upheaval worth it? For the developer: is it profitable?",
+        contact_title="Contact",
+        contact_desc="We would be glad to advise, initiate, plan, supervise and lead you to a successful TAMA 38 or urban renewal project. Phone 03-6121314, office@keremltd.co.il.",
+        contact_h1="“How do we start? What is the strategy?”",
+        contact_page_lead="We would be glad to advise, initiate, plan, supervise and lead you to a successful TAMA 38 or urban renewal project, and to consult on any real estate matter.",
+        contact_address_label="Address",
+        a11y_title="Accessibility statement", a11y_desc="Accessibility statement for the Kerem website.",
+        privacy_title="Privacy policy", privacy_desc="Privacy policy for the Kerem website.",
+        nf_title="Page not found", nf_desc="The requested page was not found.", nf_lead="The address may have changed or the page may have been removed.",
+        og_default="hero-1200",
+    ),
+}
 
 # --------------------------------------------------------------------------
 # Content
 # --------------------------------------------------------------------------
 
+def L(he, en):
+    return {"he": he, "en": en}
+
+
 PROJECTS = [
-    # --- בשיווק ---
-    dict(slug="louis-marshall-11", img="marshall", name="לואי מרשל 11", city="תל אביב", area="הצפון הישן",
-         status="התקבל היתר", group="marketing", type="תמ״א 38/2, הריסה ובנייה",
+    # --- in marketing ---
+    dict(slug="louis-marshall-11", img="marshall",
+         name=L("לואי מרשל 11", "Louis Marshall 11"), city=L("תל אביב", "Tel Aviv"), area=L("הצפון הישן", "Old North"),
+         status=L("התקבל היתר", "Permit granted"), group="marketing", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
          floors="8", units="20", shops=None,
-         short="בניין בוטיק בן 8 קומות בצפון הישן, בין כיכר המדינה לפארק הירקון.",
-         desc=[
+         short=L("בניין בוטיק בן 8 קומות בצפון הישן, בין כיכר המדינה לפארק הירקון.",
+                 "An eight-storey boutique building in the Old North, between Kikar Hamedina and Hayarkon Park."),
+         desc=L([
              "פרויקט מגורים ייחודי בלב תל אביב, ברחוב לואי מרשל השקט, בצפון הישן האיכותי והיוקרתי, בקרבת פארק הירקון, כיכר המדינה ואבן גבירול, ובמרחק הליכה מהים.",
              "הפרויקט מעניק חוויית מגורים בבניין בוטיק בן 8 קומות בעיצוב אדריכלי מודרני ומוקפד ובסטנדרט גבוה, הכולל 20 יחידות דיור בעלות מפרט טכני עשיר.",
              "הדירות כולן מתוכננות בקפידה תוך ניצול מקסימלי של החלל. לכל דירה מרפסת שמש מרווחת, 3 דירות בלבד בקומה ו־2 כיווני אוויר לכל דירה. בקומת הקרקע 2 דירות גן ובקומת הגג 2 דירות פנטהאוז.",
-         ],
+         ], [
+             "A distinctive residential project in the heart of Tel Aviv, on quiet Louis Marshall Street in the prestigious Old North, near Hayarkon Park, Kikar Hamedina and Ibn Gabirol, and within walking distance of the sea.",
+             "A boutique building of eight storeys in a modern, carefully detailed architectural design and a high standard, with 20 apartments and a rich technical specification.",
+             "Every apartment is planned to make the most of its space. Each has a generous sun balcony, only three apartments per floor and two exposures. Two garden apartments on the ground floor and two penthouses on the roof.",
+         ]),
          marshall=True),
-    dict(slug="grofit-3", img="grofit", name="מבוא גרופית 3", city="תל אביב", area="הצפון הישן",
-         status="הבנייה החלה", group="marketing", type="תמ״א 38/2, הריסה ובנייה",
-         external="https://www.grofit3.co.il/",
-         short="חוויית מגורים מושלמת, איכות חיים גבוהה, במיקום נדיר ובאווירה תל אביבית מקורית."),
-    dict(slug="bernstein-11", img="bernstein", name="אדוארד ברנשטיין 11", city="תל אביב", area="",
-         status="אושר בוועדה המקומית", group="marketing", type="תמ״א 38/2, הריסה ובנייה",
-         external="https://eduard11.co.il/",
-         short="פרויקט תמ״א 38/2, הריסה ובנייה מחדש."),
-    dict(slug="arlozorov-53", img="arlozorov", name="ארלוזורוב 53", city="רמת גן", area="שכונת חשמונאים",
-         status="בשיווק", group="marketing", type="בניין מגורים חדש",
-         external="https://arlozorov53.co.il/",
-         short="בניין מגורים חדש בשכונת חשמונאים הוותיקה."),
-    # --- בתכנון ---
-    dict(slug="pinsker-53-55", img="pinsker", name="פינסקר 53+55", city="תל אביב", area="רובע 3, לב העיר",
-         status="בשלבי תכנון", group="planning", type="תמ״א 38/2, הריסה ובנייה",
-         floors="7 + גג", units="37", shops="3",
-         short="7 קומות, 37 דירות ו־5 מיני פנטהאוזים עם בריכה פרטית, במרחק הליכה מכיכר דיזנגוף.",
-         desc=[
+    dict(slug="grofit-3", img="grofit",
+         name=L("מבוא גרופית 3", "Mevo Grofit 3"), city=L("תל אביב", "Tel Aviv"), area=L("צהלה", "Tzahala"),
+         status=L("הבנייה החלה", "Under construction"), group="marketing", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
+         floors=None, units=None, shops=None,
+         short=L("חוויית מגורים מושלמת, איכות חיים גבוהה, במיקום נדיר ובאווירה תל אביבית מקורית.",
+                 "A complete living experience in a rare location, with an authentic Tel Aviv atmosphere."),
+         desc=L([
+             "הבית במבוא גרופית 3 מעניק לדייריו חוויית מגורים מושלמת, איכות חיים גבוהה, במיקום נדיר ובאווירה תל אביבית מקורית. הדירות תוכננו בקפידה עם דגש על עיצוב לנוחות, שלווה ואירוח, וגימור אלגנטי וקלאסי המבוסס על חומרים מהסטנדרט הגבוה ביותר.",
+             "צהלה, בצפון תל אביב, היא מהשכונות הוותיקות והמבוקשות בעיר: בתים פרטיים ודו־קומתיים, קהילה חמה, בית ספר, גני ילדים ומרכז מסחרי שכונתי במרחק הליכה, גינות רבות ופינות טבע, והכול על מדרכות רחבות ומוצלות ברקע נוף ירוק.",
+             "התכנון על ידי משרד אדריכלים מוביל המתמחה במבנים באזור זה של צהלה, בדגש על שטחים מרווחים ומודרניים. הבניין נבנה על פי תקן בנייה ירוקה ותקני החיזוק מפני רעידות אדמה, עם לובי מרווח, מעלית שקטה וגינה מעוצבת על ידי יועץ נוף.",
+         ], [
+             "Mevo Grofit 3 offers its residents a complete living experience in a rare location with an authentic Tel Aviv atmosphere. The apartments are planned with an emphasis on comfort, calm and hosting, with an elegant, classic finish in materials of the highest standard.",
+             "Tzahala, in north Tel Aviv, is one of the city's oldest and most sought-after neighbourhoods: private and two-storey homes, a warm community, a school, kindergartens and a neighbourhood shopping centre within walking distance, and many gardens and green corners along wide, shaded pavements.",
+             "Designed by a leading architectural practice specialising in this part of Tzahala, with spacious, modern layouts. The building is built to green building and earthquake reinforcement standards, with a generous lobby, a quiet lift and a garden designed by a landscape consultant.",
+         ]),
+         extra_img="grofit-interior"),
+    dict(slug="bernstein-11", img="bernstein",
+         name=L("אדוארד ברנשטיין 11", "Eduard Bernstein 11"), city=L("תל אביב", "Tel Aviv"), area=L("המרכז ההיסטורי", "Historic centre"),
+         status=L("אושר בוועדה המקומית", "Approved by local committee"), group="marketing", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
+         floors="6", units="14", shops=None,
+         short=L("בניין חדש בן 6 קומות ו־14 דירות ברחוב שקט במרכז ההיסטורי של תל אביב, דקות מהים.",
+                 "A new six-storey building with 14 apartments on a quiet street in the historic centre of Tel Aviv, minutes from the sea."),
+         desc=L([
+             "הפרויקט כולל הריסת מבנה קיים ובנייה של בניין חדש בן 6 קומות הכולל קומת קרקע ו־14 יחידות דיור, מתוכן 7 דירות למכירה. שתיים או שלוש דירות בקומה, שניים או שלושה כיווני אוויר, מרפסת שמש, גינה רחבה, חניה רובוטית ובנייה ירוקה על פי התקנים.",
+             "חוויית מגורים תל אביבית נדירה ואותנטית, ברחוב שקט ופסטורלי במרכז ההיסטורי של העיר: במרחק הליכה של דקות מהים, מהטיילת, מבריכת גורדון ומהמרינה, ובסביבה נגישה לבתי ספר, גני ילדים וגינות ציבוריות.",
+             "תכנון: קצור־רונן אדריכלים, משרד תל אביבי המתמחה בתכנון מבני מגורים בצפיפות גבוהה ובשימור מבנים היסטוריים.",
+         ], [
+             "The project replaces an existing structure with a new six-storey building of 14 apartments, seven of them for sale. Two or three apartments per floor, two or three exposures, sun balconies, a wide garden, robotic parking and green construction to standard.",
+             "A rare, authentic Tel Aviv living experience on a quiet, pastoral street in the historic centre of the city: a few minutes' walk from the sea, the promenade, the Gordon pool and the marina, with schools, kindergartens and public gardens nearby.",
+             "Design: Katzor-Ronen Architects, a Tel Aviv practice specialising in high-density residential buildings and the preservation of historic structures.",
+         ])),
+    dict(slug="arlozorov-53", img="arlozorov",
+         name=L("ארלוזורוב 53", "Arlozorov 53"), city=L("רמת גן", "Ramat Gan"), area=L("שכונת חשמונאים", "Hashmonaim neighbourhood"),
+         status=L("בשיווק", "In marketing"), group="marketing", type=L("בניין מגורים חדש", "New residential building"),
+         floors="10", units=None, shops=None,
+         short=L("בניין מגורים חדש בן 10 קומות בשכונה ותיקה ומשפחתית, במרחק הליכה מהרכבת הקלה.",
+                 "A new ten-storey residential building in an established family neighbourhood, a short walk from the light rail."),
+         desc=L([
+             "הזדמנות מגורים חדשה בלב הפועם של רמת גן, במרחק הליכה מתחנת הרכבת הקלה בצומת עלית. הבית בארלוזורוב 53 מעניק לדייריו חוויית מגורים מושלמת, איכות חיים גבוהה, עיצוב לנוחות ושלווה, באווירה שכונתית מקורית.",
+             "השכונה ותיקה ומשפחתית, ממש על גבול תל אביב: סמוך למוקדי הבילוי והתרבות של רמת גן, למרכזי העסקים ולמוסדות החינוך המובילים, במרחק הליכה מרחוב ביאליק וממתחם הבורסה המתחדש, ועם יציאה מהירה לנתיבי איילון, ז׳בוטינסקי ואבא הלל.",
+             "הבניין החדש בן 10 קומות ו־4 קומות מרתף, עם 2 מעליות שקטות, לובי מרווח בעיצוב אדריכלי וגינה מעוצבת על ידי אדריכל נוף. הבנייה על פי תקן בנייה ירוקה ותקני החיזוק מפני רעידות אדמה.",
+         ], [
+             "A new home in the beating heart of Ramat Gan, a short walk from the Elite Junction light rail station. Arlozorov 53 offers its residents a complete living experience, designed for comfort and calm, in an authentic neighbourhood atmosphere.",
+             "An established family neighbourhood right on the Tel Aviv border: close to Ramat Gan's leisure and cultural centres, business districts and leading schools, a walk from Bialik Street and the renewed Bursa district, with quick access to the Ayalon, Jabotinsky and Abba Hillel roads.",
+             "The new building has ten storeys and four basement levels, two quiet lifts, a generous architect-designed lobby and a garden designed by a landscape architect. Built to green building and earthquake reinforcement standards.",
+         ]),
+         extra_img="arlozorov-interior"),
+    # --- in planning ---
+    dict(slug="pinsker-53-55", img="pinsker",
+         name=L("פינסקר 53+55", "Pinsker 53+55"), city=L("תל אביב", "Tel Aviv"), area=L("לב העיר", "City centre"),
+         status=L("בשלבי תכנון", "In planning"), group="planning", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
+         floors=L("7 + גג", "7 + roof"), units="37", shops="3",
+         short=L("7 קומות, 37 דירות ו־5 מיני פנטהאוזים עם בריכה פרטית, במרחק הליכה מכיכר דיזנגוף.",
+                 "Seven storeys, 37 apartments and five mini penthouses with private pools, a short walk from Dizengoff Square."),
+         desc=L([
              "הפרויקט ממוקם ברובע 3 במרכז תל אביב, בסביבה עירונית נעימה, במרחק הליכה מכיכר דיזנגוף, דיזנגוף סנטר ורחוב בוגרשוב השוקק, וכמה דקות הליכה מהים, מבתי הקפה והמסעדות. נגישות נוחה לכל שירותי היום־יום: בהליכה, באופניים, בתחבורה ציבורית וברכב.",
              "אנחנו מקדמים מבנה חדש בגובה 7 קומות + גג, הכולל 37 דירות, מתוכן 5 מיני פנטהאוזים עם בריכה פרטית על הגג לכל יחידה, ושלוש חנויות בקומת הקרקע.",
-         ]),
-    dict(slug="cordovero-22", img="cordovero", name="קורדובירו 22", city="תל אביב", area="פלורנטין",
-         status="בשלבי תכנון", group="planning", type="תמ״א 38/2, הריסה ובנייה",
-         floors="4 + גג", units="18", shops="2",
-         short="4 קומות ו־18 דירות במדרחוב בלב פלורנטין, כולל פנטהאוז עם בריכה על הגג.",
-         desc=[
+         ], [
+             "The project sits in District 3 in central Tel Aviv, in a pleasant urban setting within walking distance of Dizengoff Square, Dizengoff Center and bustling Bograshov Street, and a few minutes from the sea, cafes and restaurants. Everyday services are easily reached on foot, by bicycle, public transport or car.",
+             "We are advancing a new building of seven storeys plus roof, with 37 apartments, five of them mini penthouses with a private rooftop pool each, and three shops on the ground floor.",
+         ])),
+    dict(slug="cordovero-22", img="cordovero",
+         name=L("קורדובירו 22", "Cordovero 22"), city=L("תל אביב", "Tel Aviv"), area=L("פלורנטין", "Florentin"),
+         status=L("בשלבי תכנון", "In planning"), group="planning", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
+         floors=L("4 + גג", "4 + roof"), units="18", shops="2",
+         short=L("4 קומות ו־18 דירות במדרחוב בלב פלורנטין, כולל פנטהאוז עם בריכה על הגג.",
+                 "Four storeys and 18 apartments on a pedestrian street in the heart of Florentin, including a penthouse with a rooftop pool."),
+         desc=L([
              "בלב שכונת פלורנטין התוססת, במדרחוב, במרחק הליכה מבתי קפה, מסעדות, גלריות וחיי רחוב מלאי אופי. השילוב המושלם בין קצב עירוני לאיכות חיים.",
              "אנחנו מקדמים מבנה חדש בגובה 4 קומות + גג, הכולל 18 דירות, מתוכן פנטהאוז עם בריכה על הגג, ושתי חנויות בקומת הקרקע.",
-         ]),
-    dict(slug="weisburg-4", img="weisburg4", name="ויסבורג 4", city="תל אביב", area="צהלה",
-         status="בשלבי תכנון", group="planning", type="תמ״א 38/2, הריסה ובנייה",
+         ], [
+             "In the heart of lively Florentin, on a pedestrian street, within walking distance of cafes, restaurants, galleries and street life full of character. The perfect balance of urban pace and quality of life.",
+             "We are advancing a new building of four storeys plus roof, with 18 apartments, including a penthouse with a rooftop pool, and two shops on the ground floor.",
+         ])),
+    dict(slug="weisburg-4", img="weisburg4",
+         name=L("ויסבורג 4", "Weisburg 4"), city=L("תל אביב", "Tel Aviv"), area=L("צהלה", "Tzahala"),
+         status=L("בשלבי תכנון", "In planning"), group="planning", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
          floors="5", units="14", shops=None,
-         short="בניין בן 5 קומות ו־14 יחידות דיור בלב צהלה.",
-         desc=["בלב הפועם של צהלה יוקם בניין בן 5 קומות, הכולל 14 יחידות דיור."]),
-    dict(slug="weisburg-6", img="weisburg6", name="ויסבורג 6", city="תל אביב", area="צהלה",
-         status="בשלבי תכנון", group="planning", type="תמ״א 38/2, הריסה ובנייה",
+         short=L("בניין בן 5 קומות ו־14 יחידות דיור בלב צהלה.", "A five-storey building with 14 apartments in the heart of Tzahala."),
+         desc=L(["בלב הפועם של צהלה יוקם בניין בן 5 קומות, הכולל 14 יחידות דיור."],
+                ["In the heart of Tzahala, a five-storey building with 14 apartments will be built."])),
+    dict(slug="weisburg-6", img="weisburg6",
+         name=L("ויסבורג 6", "Weisburg 6"), city=L("תל אביב", "Tel Aviv"), area=L("צהלה", "Tzahala"),
+         status=L("בשלבי תכנון", "In planning"), group="planning", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
          floors="5", units="9", shops=None,
-         short="בניין בן 5 קומות ו־9 יחידות דיור ברחוב שקט בצהלה.",
-         desc=["בלב צהלה, ברחוב שקט, יוקם בניין בן חמש קומות הכולל 9 יחידות דיור."]),
-    dict(slug="nahmani-64", img="nahmani", name="נחמני 64", city="תל אביב", area="לב העיר, פינת בגין 27",
-         status="בשלבי תכנון", group="planning", type="שימור והשבחה",
-         floors="3", units="13 ← 32", shops="10 ← 9",
-         short="בניין לשימור בלב מרכז העסקים של תל אביב: מ־13 דירות ו־10 חנויות ל־32 דירות ו־9 חנויות.",
-         desc=[
+         short=L("בניין בן 5 קומות ו־9 יחידות דיור ברחוב שקט בצהלה.", "A five-storey building with nine apartments on a quiet street in Tzahala."),
+         desc=L(["בלב צהלה, ברחוב שקט, יוקם בניין בן חמש קומות הכולל 9 יחידות דיור."],
+                ["In the heart of Tzahala, on a quiet street, a five-storey building with nine apartments will be built."])),
+    dict(slug="nahmani-64", img="nahmani",
+         name=L("נחמני 64", "Nahmani 64"), city=L("תל אביב", "Tel Aviv"), area=L("לב העיר, פינת בגין 27", "City centre, corner of Begin 27"),
+         status=L("בשלבי תכנון", "In planning"), group="planning", type=L("שימור והשבחה", "Preservation and upgrading"),
+         floors="3", units=L("מ־13 ל־32", "13 to 32"), shops=L("מ־10 ל־9", "10 to 9"),
+         short=L("בניין לשימור בלב מרכז העסקים של תל אביב: מ־13 דירות ו־10 חנויות ל־32 דירות ו־9 חנויות.",
+                 "A heritage building in the heart of Tel Aviv's business district: from 13 apartments and 10 shops to 32 apartments and 9 shops."),
+         desc=L([
              "בניין מגורים בן 3 קומות, הכולל 13 דירות מעל קומת מסחר ובה 10 חנויות (חלקן מחוברות) וקומת מרתף חלקית. הבניין מוגדר לשימור עם הגבלות מחמירות במסגרת תכנית השימור של תל אביב, בלב מרכז העסקים הראשי של העיר.",
              "בשלב הנוכחי אנו מקדמים תכנית להשביח את הבניין הקיים מ־13 דירות ו־10 חנויות ל־32 דירות ו־9 חנויות.",
-         ]),
-    dict(slug="mazeh-71", img="mazeh", name="מזא״ה 71", city="תל אביב–יפו", area="לב העיר",
-         status="בשלבי תכנון", group="planning", type="שימור והשבחה",
-         floors=None, units="18 ← 30", shops=None,
-         short="בניין לשימור בלב תל אביב: השבחה מ־18 ל־30 דירות, חצרות וגגות.",
-         desc=[
+         ], [
+             "A three-storey residential building with 13 apartments above a commercial floor of 10 shops (some combined) and a partial basement. The building is listed for preservation with strict restrictions under Tel Aviv's preservation plan, in the heart of the city's main business district.",
+             "We are currently advancing a plan to upgrade the existing building from 13 apartments and 10 shops to 32 apartments and 9 shops.",
+         ])),
+    dict(slug="mazeh-71", img="mazeh",
+         name=L("מזא״ה 71", "Mazeh 71"), city=L("תל אביב-יפו", "Tel Aviv-Jaffa"), area=L("לב העיר", "City centre"),
+         status=L("בשלבי תכנון", "In planning"), group="planning", type=L("שימור והשבחה", "Preservation and upgrading"),
+         floors=None, units=L("מ־18 ל־30", "18 to 30"), shops=None,
+         short=L("בניין לשימור בלב תל אביב: השבחה מ־18 ל־30 דירות, חצרות וגגות.",
+                 "A heritage building in the heart of Tel Aviv: upgrading from 18 to 30 apartments, courtyards and roofs."),
+         desc=L([
              "בניין מגורים הכולל 18 דירות, המוגדר לשימור ללא הגבלות מחמירות במסגרת תכנית השימור של העיר תל אביב.",
              "בשלב הנוכחי אנו מקדמים תכנית להשביח את הבניין הקיים מ־18 דירות ל־30 דירות, חצרות וגגות.",
-         ]),
-    dict(slug="herut-40", img="herut", name="חירות 40", city="רמת גן", area="שכונת הגפן",
-         status="בשלבי תכנון", group="planning", type="תמ״א 38/2, הריסה ובנייה",
+         ], [
+             "A residential building of 18 apartments, listed for preservation without strict restrictions under Tel Aviv's preservation plan.",
+             "We are currently advancing a plan to upgrade the existing building from 18 to 30 apartments, with courtyards and roofs.",
+         ])),
+    dict(slug="herut-40", img="herut",
+         name=L("חירות 40", "Herut 40"), city=L("רמת גן", "Ramat Gan"), area=L("שכונת הגפן", "Hagefen neighbourhood"),
+         status=L("בשלבי תכנון", "In planning"), group="planning", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
          floors="9", units="21", shops=None,
-         short="בניין בן 9 קומות ו־21 דירות בלב שכונת הגפן הפסטורלית.",
-         desc=[
+         short=L("בניין בן 9 קומות ו־21 דירות בלב שכונת הגפן הפסטורלית.", "A nine-storey building with 21 apartments in the heart of the pastoral Hagefen neighbourhood."),
+         desc=L([
              "בניין בן 9 קומות, סה״כ 21 דירות, בלב שכונת הגפן הפסטורלית, בקרבת גני ילדים ובית ספר, ובמרחק קצר מפארק הירקון ומקניון איילון. הבניין ממוקם באחד המיקומים המבוקשים והנחשקים באזור.",
              "סטטוס: הפרויקט בשלבי תכנון מול העירייה.",
-         ]),
-    dict(slug="talpiot-30", img="talpiot", name="תלפיות 30", city="רמת גן", area="מרכז העיר",
-         status="בשלבי תכנון", group="planning", type="תמ״א 38/2, הריסה ובנייה",
+         ], [
+             "A nine-storey building with 21 apartments in the heart of the pastoral Hagefen neighbourhood, near kindergartens and a school, and a short distance from Hayarkon Park and the Ayalon Mall. One of the most sought-after locations in the area.",
+             "Status: in planning with the municipality.",
+         ])),
+    dict(slug="talpiot-30", img="talpiot",
+         name=L("תלפיות 30", "Talpiot 30"), city=L("רמת גן", "Ramat Gan"), area=L("מרכז העיר", "City centre"),
+         status=L("בשלבי תכנון", "In planning"), group="planning", type=L("תמ״א 38/2, הריסה ובנייה", "TAMA 38/2, demolition and rebuilding"),
          floors="9", units="22", shops=None,
-         short="בניין בן 9 קומות ו־22 דירות במרכז העיר השוקק של רמת גן.",
-         desc=[
+         short=L("בניין בן 9 קומות ו־22 דירות במרכז העיר השוקק של רמת גן.", "A nine-storey building with 22 apartments in the bustling centre of Ramat Gan."),
+         desc=L([
              "בניין בן 9 קומות, סה״כ 22 דירות, במיקום מושלם בלב העיר רמת גן, במרכז העיר השוקק. במרחק דקות ספורות ונגיש לכל שירותי הקהילה: חנויות, גני ילדים, בתי ספר, שירותי ציבור וגינות.",
              "סטטוס: הפרויקט בשלבי תכנון מול העירייה.",
-         ]),
-    # --- הסתיימו ---
-    dict(slug="jaffa-road-13", img="yafo", name="דרך יפו 13", city="תל אביב", area="לב העיר, ליד רוטשילד",
-         status="הסתיים ואוכלס", group="done", type="שימור ושחזור",
+         ], [
+             "A nine-storey building with 22 apartments in a perfect location in the bustling centre of Ramat Gan, minutes from all community services: shops, kindergartens, schools, public services and gardens.",
+             "Status: in planning with the municipality.",
+         ])),
+    # --- completed ---
+    dict(slug="jaffa-road-13", img="yafo",
+         name=L("דרך יפו 13", "Jaffa Road 13"), city=L("תל אביב", "Tel Aviv"), area=L("לב העיר, ליד רוטשילד", "City centre, near Rothschild"),
+         status=L("הסתיים ואוכלס", "Completed and occupied"), group="done", type=L("שימור ושחזור", "Preservation and restoration"),
          floors="4", units="35", shops="10",
-         short="אחד הבניינים המרהיבים מימיה הראשונים של תל אביב, משוחזר ומודרני. 35 דירות ו־10 חנויות.",
-         desc=[
+         short=L("אחד הבניינים המרהיבים מימיה הראשונים של תל אביב, משוחזר ומודרני. 35 דירות ו־10 חנויות.",
+                 "One of the most striking buildings from Tel Aviv's earliest days, restored and modern. 35 apartments and 10 shops."),
+         desc=L([
              "בניין לשימור בן 4 קומות, סה״כ 35 דירות ו־10 חנויות. הבניין הוכרז לשימור, ועם סיום הפרויקט נחשף אחד הבניינים המרהיבים של תל אביב מימיה הראשונים של העיר: מבנה משוחזר ומודרני, עם כל הפינוקים.",
              "במרתף חלל משותף גדול עם מכונות כביסה ומייבשים לשימוש הדיירים. הבניין בקרבת שדרות רוטשילד ורחוב לילינבלום, ובמרחק דקות ספורות על קורקינט מהים.",
              "סטטוס: הפרויקט הסתיים ואוכלס.",
-         ]),
-    dict(slug="rothschild-135", img="rothschild", name="רוטשילד 135", city="תל אביב", area="הבית על הבימה",
-         status="הסתיים ואוכלס", group="done", type="בניין בוטיק",
+         ], [
+             "A listed four-storey building with 35 apartments and 10 shops. On completion, one of the most striking buildings from Tel Aviv's earliest days was revealed: a restored, modern structure with every comfort.",
+             "The basement holds a large shared laundry space for residents. The building is near Rothschild Boulevard and Lilienblum Street, and a few minutes by scooter from the sea.",
+             "Status: completed and occupied.",
+         ])),
+    dict(slug="rothschild-135", img="rothschild",
+         name=L("רוטשילד 135", "Rothschild 135"), city=L("תל אביב", "Tel Aviv"), area=L("הבית על הבימה", "The House on Habima"),
+         status=L("הסתיים ואוכלס", "Completed and occupied"), group="done", type=L("בניין בוטיק", "Boutique building"),
          floors="5", units="15", shops=None,
-         short="הבית על הבימה: בניין בוטיק בן 5 קומות עם דירות יוקרה ופנטהאוז ענק.",
-         desc=[
+         short=L("הבית על הבימה: בניין בוטיק בן 5 קומות עם דירות יוקרה ופנטהאוז ענק.",
+                 "The House on Habima: a five-storey boutique building with luxury apartments and a vast penthouse."),
+         desc=L([
              "בניין בן 5 קומות, סה״כ 15 דירות, בלב תל אביב. הבית על הבימה הוא בניין בוטיק המציע דירות יוקרה ופנטהאוז ענק, ומעניק חוויית מגורים מושלמת: איכות חיים גבוהה, מיקום ייחודי מסוגו, עיצוב לנוחות, שלווה וחברותא, באווירה תל אביבית מקורית.",
              "סטטוס: הפרויקט הסתיים ואוכלס.",
-         ]),
-    dict(slug="hoshea-21-23", img="hoshea", name="הושע 21+23", city="בני ברק", area="",
-         status="בביצוע", group="done", type="הריסה ובנייה מחדש",
+         ], [
+             "A five-storey building with 15 apartments in the heart of Tel Aviv. The House on Habima is a boutique building of luxury apartments and a vast penthouse, offering a complete living experience: a unique location, design for comfort, calm and company, in an authentic Tel Aviv atmosphere.",
+             "Status: completed and occupied.",
+         ])),
+    dict(slug="hoshea-21-23", img="hoshea",
+         name=L("הושע 21+23", "Hoshea 21+23"), city=L("בני ברק", "Bnei Brak"), area=L("", ""),
+         status=L("בביצוע", "Under construction"), group="done", type=L("הריסה ובנייה מחדש", "Demolition and rebuilding"),
          floors=None, units="41", shops=None,
-         short="41 דירות חדשות להשכרה לטווח ארוך, וקומת קרקע עם 3 גני ילדים חדשים.",
-         desc=[
-             "פרויקט הריסה ובנייה מחדש: 41 דירות מגורים חדשות להשכרה לטווח ארוך, ובנוסף קומת קרקע עם 3 גני ילדים חדשים.",
-         ],
+         short=L("41 דירות חדשות להשכרה לטווח ארוך, וקומת קרקע עם 3 גני ילדים חדשים.",
+                 "41 new apartments for long-term rental, and a ground floor with three new kindergartens."),
+         desc=L(["פרויקט הריסה ובנייה מחדש: 41 דירות מגורים חדשות להשכרה לטווח ארוך, ובנוסף קומת קרקע עם 3 גני ילדים חדשים."],
+                ["A demolition and rebuilding project: 41 new apartments for long-term rental, plus a ground floor with three new kindergartens."]),
          extra_img="hoshea-2"),
-    dict(slug="bat-shua-8", img="batshua", name="בת שוע 8", city="רמת גן", area="",
-         status="השיווק הסתיים", group="done", type="בניין מגורים",
-         short="בניין מגורים חדש ברמת גן. השיווק הסתיים.",
-         desc=["בניין מגורים חדש ברמת גן. שיווק הדירות בפרויקט הסתיים."]),
+    dict(slug="bat-shua-8", img="batshua",
+         name=L("בת שוע 8", "Bat Shua 8"), city=L("רמת גן", "Ramat Gan"), area=L("", ""),
+         status=L("השיווק הסתיים", "Sold out"), group="done", type=L("בניין מגורים", "Residential building"),
+         floors=None, units=None, shops=None,
+         short=L("בניין מגורים חדש ברמת גן. השיווק הסתיים.", "A new residential building in Ramat Gan. Sold out."),
+         desc=L(["בניין מגורים חדש ברמת גן. שיווק הדירות בפרויקט הסתיים."],
+                ["A new residential building in Ramat Gan. All apartments have been sold."])),
 ]
-BY_SLUG = {p["slug"]: p for p in PROJECTS}
-GROUPS = [
-    ("marketing", "פרויקטים בשיווק", "היתרים, בנייה ושיווק פעיל"),
-    ("planning", "פרויקטים בתכנון", "לפני החלטת ועדה: מחירי הנחה והטבות למצטרפים מוקדם"),
-    ("done", "פרויקטים שהסתיימו", "מסירה ואכלוס"),
-]
+GROUP_ORDER = ["marketing", "planning", "done"]
 
-SPECIALTIES = [
+SPECIALTIES = L([
     ("ייזום ותכנון", "מהתכנון ועד המסירה",
      "אנו מטפלים בפרויקטי נדל״ן בשני מסלולים: רכישה של הפרויקט כולו, או ניהול רכיב היזמות לאורך כל הפרויקט, מהתכנון דרך הביצוע ועד המסירה."),
     ("התחדשות עירונית", "פינוי־בינוי ושימור במרכזי הערים",
      "תחום זה הוא בליבת העשייה שלנו: פרויקטי נדל״ן בתוך מרכזי הערים, כולל בניינים לשימור, שבהם נדרשת רגישות אדריכלית לצד יכולת ביצוע."),
     ("תמ״א 38", "הריסה ובנייה מחדש",
      "החברה מציעה את שירותיה וניסיונה כיזם בפרויקטי תמ״א 38/2, עם התחייבות לתהליך אישי, שקוף ומסודר מול הדיירים."),
-]
+], [
+    ("Development and planning", "From planning to handover",
+     "We handle real estate projects in two ways: acquiring the entire project, or managing the development component throughout, from planning through construction to handover."),
+    ("Urban renewal", "Renewal and preservation in city centres",
+     "This is the core of our work: real estate projects inside city centres, including listed buildings, where architectural sensitivity has to go together with the ability to deliver."),
+    ("TAMA 38", "Demolition and rebuilding",
+     "The company offers its services and experience as developer in TAMA 38/2 projects, with a commitment to a personal, transparent and orderly process with residents."),
+])
 
-GROUP_COMPANIES = [
+GROUP_COMPANIES = L([
     ("אחזקת נכסים", "מעגן בע״מ",
      "חברת הניהול והאחזקה של נכסי המשפחה ונכסים נוספים. עוסקת בניהול שוטף של נכסים רבים, כולל השכרת דירות למגורים ותחזוקתן."),
     ("שירותים משפטיים", "ד״ר משה וינברג ושות׳, עורכי דין ונוטריון",
@@ -171,21 +477,37 @@ GROUP_COMPANIES = [
      "פועלת מול גופי המימון למימון נדל״ן, יחד עם כל מערכת הפיננסים בישראל: בנקים, חברות ביטוח, חברות מימון ושוק ההון."),
     ("מלאי דירות להשכרה", "רכישה, השבחה וניהול",
      "התמחות בדירות להשכרה ליד תחבורה ציבורית בגוש דן (רכבת קלה, מטרו, נת״צ): זיהוי הזדמנויות, רכישה והשבחה, תחזוקה ומימוש בעיתוי הנכון."),
-]
+], [
+    ("Property management", "Maagan Ltd.",
+     "The management and maintenance company for the family's properties and others. Manages a large portfolio day to day, including residential lettings and their upkeep."),
+    ("Legal services", "Dr. Moshe Weinberg and Co., Advocates and Notary",
+     "Main practice areas: planning and construction, land rezoning, real estate development and expropriation, property, general civil law and litigation. The firm has advanced the development of thousands of housing units across Israel."),
+    ("Finance", "M.W. Investments Ltd.",
+     "Works with lenders on real estate finance across Israel's financial system: banks, insurance companies, finance companies and the capital market."),
+    ("Rental portfolio", "Acquisition, upgrading and management",
+     "Specialises in rental apartments near public transport in greater Tel Aviv (light rail, metro, bus lanes): spotting opportunities, acquiring and upgrading, maintaining and realising at the right time."),
+])
 
-FIRST_STEP = [
+FIRST_STEP = L([
     "שולחים לנו שם של איש קשר. אנו יוצרים קשר טלפוני ומתאמים פגישה ראשונה להיכרות כללית.",
     "יחד נכין רשימה של הדיירים בנכס עם פרטי התקשרות.",
     "מאתרים דייר אחד דומיננטי שמוביל את הצעד הראשון בנכס. זה מקל מאוד על ההתקדמות בשלב זה. בהמשך, כשהפרויקט יתקדם, תיבחר נציגות של 3 דיירים.",
     "נפגשים יחד עם כל הדיירים לאסיפת דיירים ראשונית להיכרות.",
     "רק לאחר אסיפת הדיירים נוכל להבין יחד, היזם והדיירים, האם יש בנכס כדאיות לפרויקט, ונכין רשימה של שלבים להתקדמות.",
     "נעשה שיעורי בית מול הרשות המקומית והצוות הפנימי שלנו, נחזור אליכם ונציג לדיירים הצעה התפורה לנכס שבבעלותם, ונתקדם לפי התייחסויות הדיירים.",
-]
+], [
+    "Send us the name of a contact person. We call and arrange a first meeting to get acquainted.",
+    "Together we prepare a list of the residents in the building with contact details.",
+    "We identify one lead resident to drive the first step. It makes progress at this stage much easier. Later, as the project advances, a committee of three residents is chosen.",
+    "We meet all the residents at an initial residents' meeting.",
+    "Only after that meeting can we understand together, developer and residents, whether the building is a viable project, and prepare a list of steps forward.",
+    "We do our homework with the municipality and our in-house team, come back to you with a proposal tailored to your building, and proceed according to the residents' feedback.",
+])
 
-MARSHALL_APTS = [
+MARSHALL_APTS = L([
     ("דירה 1", "דירת גן", "2 חדרים", "67 מ״ר", "55 מ״ר גן", ""),
     ("דירה 2", "דירה", "3 חדרים", "70 מ״ר", "11 מ״ר מרפסת", "מבצע לזמן מוגבל"),
-    ("דירה 3", "דירה", "3 חדרים", "76 מ״ר", "11 מ״ר מרפסת", "4,820,300 ₪ · מבצע לזמן מוגבל"),
+    ("דירה 3", "דירה", "3 חדרים", "76 מ״ר", "11 מ״ר מרפסת", "4,820,300 ₪, מבצע לזמן מוגבל"),
     ("דירה 4", "דירה", "3 חדרים", "62 מ״ר", "14 מ״ר מרפסת", "נמכרה"),
     ("דירה 5", "דירה", "3 חדרים", "70 מ״ר", "11 מ״ר מרפסת", "מבצע לזמן מוגבל"),
     ("דירה 17", "פנטהאוז", "3 חדרים", "80 מ״ר", "50 מ״ר מרפסת", ""),
@@ -193,7 +515,19 @@ MARSHALL_APTS = [
     ("דירה 19", "דירה", "3 חדרים", "73 מ״ר", "6 מ״ר מרפסת", ""),
     ("דירה 20", "דירה", "2 חדרים", "56 מ״ר", "5.5 מ״ר מרפסת", ""),
     ("איחוד 19+20", "פנטהאוז", "4 חדרים", "120 מ״ר", "20 מ״ר מרפסת", ""),
-]
+], [
+    ("Apt. 1", "Garden apartment", "2 rooms", "67 sqm", "55 sqm garden", ""),
+    ("Apt. 2", "Apartment", "3 rooms", "70 sqm", "11 sqm balcony", "Limited-time offer"),
+    ("Apt. 3", "Apartment", "3 rooms", "76 sqm", "11 sqm balcony", "NIS 4,820,300, limited-time offer"),
+    ("Apt. 4", "Apartment", "3 rooms", "62 sqm", "14 sqm balcony", "Sold"),
+    ("Apt. 5", "Apartment", "3 rooms", "70 sqm", "11 sqm balcony", "Limited-time offer"),
+    ("Apt. 17", "Penthouse", "3 rooms", "80 sqm", "50 sqm terrace", ""),
+    ("Apt. 18", "Mini penthouse", "2 rooms", "60 sqm", "21 sqm terrace", "Sold"),
+    ("Apt. 19", "Apartment", "3 rooms", "73 sqm", "6 sqm balcony", ""),
+    ("Apt. 20", "Apartment", "2 rooms", "56 sqm", "5.5 sqm balcony", ""),
+    ("19+20 combined", "Penthouse", "4 rooms", "120 sqm", "20 sqm terrace", ""),
+])
+SOLD = {"he": "נמכרה", "en": "Sold"}
 
 # --------------------------------------------------------------------------
 # Helpers
@@ -203,11 +537,29 @@ def esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
-def picture(name, alt, sizes, cls="", eager=False, aspect=None):
+def v(x, lang):
+    """Return the language variant of a bilingual value (or the value itself)."""
+    if isinstance(x, dict) and "he" in x:
+        return x[lang]
+    return x
+
+
+def pfx(lang):
+    return "/en" if lang == "en" else ""
+
+
+def alt_path(path, lang):
+    """Path of the same page in the other language."""
+    if lang == "he":
+        return "/en" + path if path != "/404.html" else "/en/404.html"
+    return path[3:] or "/"
+
+
+def picture(name, alt, sizes, cls="", eager=False):
     m = IMAGES[name]
     variants = m["sizes"]
-    avif = ", ".join(f"/assets/img/{name}-{v['w']}.avif {v['w']}w" for v in variants)
-    webp = ", ".join(f"/assets/img/{name}-{v['w']}.webp {v['w']}w" for v in variants)
+    avif = ", ".join(f"/assets/img/{name}-{s['w']}.avif {s['w']}w" for s in variants)
+    webp = ", ".join(f"/assets/img/{name}-{s['w']}.webp {s['w']}w" for s in variants)
     largest = variants[-1]
     fallback = variants[min(1, len(variants) - 1)]
     attrs = 'fetchpriority="high" decoding="async"' if eager else 'loading="lazy" decoding="async"'
@@ -222,123 +574,142 @@ def picture(name, alt, sizes, cls="", eager=False, aspect=None):
 
 def preload(name, sizes):
     m = IMAGES[name]
-    srcset = ", ".join(f"/assets/img/{name}-{v['w']}.avif {v['w']}w" for v in m["sizes"])
+    srcset = ", ".join(f"/assets/img/{name}-{s['w']}.avif {s['w']}w" for s in m["sizes"])
     return f'<link rel="preload" as="image" fetchpriority="high" type="image/avif" imagesrcset="{srcset}" imagesizes="{sizes}">'
 
 
-def card(p, eager=False):
-    href = p.get("external") or f"/projects/{p['slug']}/"
-    ext = ' target="_blank" rel="noopener"' if p.get("external") else ""
-    city = p["city"] + (f" · {p['area']}" if p.get("area") else "")
-    return f"""<a class="card rv-img" href="{href}"{ext} data-status="{p['group']}">
-  <div class="frame">{picture(p['img'], f"{p['name']}, {p['city']}", "(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw", eager=eager)}</div>
+def place(p, lang):
+    city, area = v(p["city"], lang), v(p["area"], lang)
+    return f"{city}, {area}" if area else city
+
+
+def card(p, lang):
+    return f"""<a class="card rv-img" href="{pfx(lang)}/projects/{p['slug']}/" data-status="{p['group']}">
+  <div class="frame">{picture(p['img'], f"{v(p['name'], lang)}, {v(p['city'], lang)}", "(max-width:560px) 92vw, (max-width:900px) 46vw, 30vw")}</div>
   <div class="meta">
-    <h3>{esc(p['name'])}</h3>{'<span class="ext"> · אתר הפרויקט ↗</span>' if p.get('external') else ''}
-    <div class="sub"><span>{esc(city)}</span><span class="status">{esc(p['status'])}</span></div>
+    <h3>{esc(v(p['name'], lang))}</h3>
+    <div class="sub"><span>{esc(place(p, lang))}</span><span class="status">{esc(v(p['status'], lang))}</span></div>
   </div>
 </a>"""
 
 
-def cards(items, cols):
-    return f'<div class="cards cards--{cols}">\n' + "\n".join(card(p) for p in items) + "\n</div>"
+def cards(items, cols, lang):
+    return f'<div class="cards cards--{cols}">\n' + "\n".join(card(p, lang) for p in items) + "\n</div>"
 
 
-def project_groups(cols_by_group=None):
-    cols_by_group = cols_by_group or {"marketing": 2, "planning": 4, "done": 4}
+def project_groups(lang, cols):
+    t = T[lang]
     out = []
-    for key, title, note in GROUPS:
+    for key in GROUP_ORDER:
+        title, note = t["groups"][key]
         items = [p for p in PROJECTS if p["group"] == key]
         out.append(f"""<div class="group" id="{key}">
-  <div class="group-head"><h3>{title}</h3><span class="note">{note} · {len(items)}</span></div>
-  {cards(items, cols_by_group[key])}
+  <div class="group-head"><h3>{title}</h3><span class="note">{note}</span></div>
+  {cards(items, cols[key], lang)}
 </div>""")
     return "\n".join(out)
 
 
-def head(title, desc, path, extra="", og_image="hero-1200"):
-    full = f"{title} | {BRAND}" if path != "/" else f"{BRAND} | ארבעה דורות של יזמות נדל״ן בגוש דן"
+def rows(items):
+    return "".join(
+        f"""<div class="row rv"><span class="num">0{i + 1}</span><h3>{a}<small>{b}</small></h3><p>{c}</p></div>"""
+        for i, (a, b, c) in enumerate(items))
+
+
+def head(lang, title, desc, path, extra="", og_image=None):
+    t = T[lang]
+    full = t["site_title"] if path in ("/", "/en/") else f"{title} | {t['brand_short']}"
+    other = alt_path(path, lang)
+    he_path, en_path = (path, other) if lang == "he" else (other, path)
     return f"""<!DOCTYPE html>
-<html lang="he" dir="rtl" class="no-js">
+<html lang="{lang}" dir="{t['dir']}" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(full)}</title>
 <meta name="description" content="{esc(desc)}">
 <link rel="canonical" href="{SITE}{path}">
+<link rel="alternate" hreflang="he" href="{SITE}{he_path}">
+<link rel="alternate" hreflang="en" href="{SITE}{en_path}">
+<link rel="alternate" hreflang="x-default" href="{SITE}{he_path}">
 <meta property="og:type" content="website">
-<meta property="og:locale" content="he_IL">
-<meta property="og:site_name" content="{esc(BRAND)}">
+<meta property="og:locale" content="{t['locale']}">
+<meta property="og:site_name" content="{esc(t['brand'])}">
 <meta property="og:title" content="{esc(full)}">
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:url" content="{SITE}{path}">
-<meta property="og:image" content="{SITE}/assets/img/{og_image}.webp">
+<meta property="og:image" content="{SITE}/assets/img/{og_image or t['og_default']}.webp">
 <meta name="theme-color" content="#f6f4ef">
 <link rel="icon" href="/favicon.png" type="image/png">
-<link rel="preload" href="/assets/fonts/plex-hebrew-300-hebrew.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/plex-hebrew-400-hebrew.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/plex-hebrew-300-{'hebrew' if lang == 'he' else 'latin'}.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/plex-hebrew-400-{'hebrew' if lang == 'he' else 'latin'}.woff2" as="font" type="font/woff2" crossorigin>
 {extra}
 <style>{CSS}</style>
 <script>document.documentElement.classList.remove('no-js')</script>
 </head>
 <body>
-<a class="skip" href="#main">דלג לתוכן</a>
+<a class="skip" href="#main">{t['skip']}</a>
 """
 
 
-def header(current):
-    items = [("/", "ראשי"), ("/about/", "אודות החברה"), ("/projects/", "פרויקטים"),
-             ("/how-we-start/", "איך מתחילים פרויקט"), ("/contact/", "צור קשר")]
+def header(lang, current, path):
+    t = T[lang]
+    px = pfx(lang)
+    items = [(px + "/", t["home"]), (px + "/about/", t["about"]), (px + "/projects/", t["projects"]),
+             (px + "/how-we-start/", t["how"]), (px + "/contact/", t["contact"])]
     links = "".join(
-        f'<a href="{h}"{" aria-current=" + chr(34) + "page" + chr(34) if h == current else ""}>{t}</a>' for h, t in items)
+        f'<a href="{h}"{" aria-current=" + chr(34) + "page" + chr(34) if h == current else ""}>{lbl}</a>' for h, lbl in items)
+    other_lang = "en" if lang == "he" else "he"
     return f"""<header class="site-head">
   <div class="wrap head-row">
-    <a class="brand" href="/" aria-label="{esc(BRAND)} - דף הבית"><img src="/assets/img/logo.png" width="150" height="43" alt="{esc(BRAND)}"></a>
-    <nav class="menu" id="menu" aria-label="ניווט ראשי">
+    <a class="brand" href="{px}/" aria-label="{esc(t['brand'])}"><img src="/assets/img/logo.png" width="150" height="43" alt="{esc(t['brand'])}"></a>
+    <nav class="menu" id="menu" aria-label="{'ניווט ראשי' if lang == 'he' else 'Main navigation'}">
       {links}
-      <a href="{EN_SITE}" lang="en" hreflang="en">EN</a>
+      <a class="lang" href="{alt_path(path, lang)}" lang="{other_lang}" hreflang="{other_lang}">{t['lang_switch']}</a>
       <a class="menu-phone" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a>
     </nav>
     <a class="head-phone" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a>
-    <button class="burger" type="button" aria-controls="menu" aria-expanded="false" aria-label="פתיחת תפריט"><span></span></button>
+    <button class="burger" type="button" aria-controls="menu" aria-expanded="false" aria-label="{t['menu_open']}"><span></span></button>
   </div>
 </header>
 <main id="main">
 """
 
 
-def footer():
+def footer(lang, path):
+    t = T[lang]
+    px = pfx(lang)
+    other_lang = "en" if lang == "he" else "he"
     return f"""</main>
 <footer class="site-foot">
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
         <img src="/assets/img/logo.png" width="150" height="43" alt="" loading="lazy">
-        <p>חברה משפחתית בבעלות פרטית, מקבוצת וינברג. ארבעה דורות של יזמות נדל״ן, תכנון ובנייה של אלפי יחידות דיור ומסחר.</p>
+        <p>{t['foot_p']}</p>
       </div>
       <div class="foot-col">
-        <p class="foot-h">ניווט</p>
-        <a href="/about/">אודות החברה</a>
-        <a href="/projects/">פרויקטים</a>
-        <a href="/how-we-start/">איך מתחילים פרויקט</a>
-        <a href="/contact/">צור קשר</a>
-        <a href="{EN_SITE}" lang="en">English</a>
+        <p class="foot-h">{t['foot_nav']}</p>
+        <a href="{px}/about/">{t['about']}</a>
+        <a href="{px}/projects/">{t['projects']}</a>
+        <a href="{px}/how-we-start/">{t['how']}</a>
+        <a href="{px}/contact/">{t['contact']}</a>
+        <a href="{px}/accessibility/">{t['accessibility']}</a>
+        <a href="{px}/privacy/">{t['privacy']}</a>
+        <a href="{alt_path(path, lang)}" lang="{other_lang}">{t['lang_switch_full']}</a>
       </div>
-      <div class="foot-col">
-        <p class="foot-h">מידע</p>
-        <a href="/accessibility/">הצהרת נגישות</a>
-        <a href="/privacy/">מדיניות פרטיות</a>
-        <a href="{FACEBOOK}" target="_blank" rel="noopener">פייסבוק</a>
-      </div>
-      <div class="foot-col">
-        <p class="foot-h">פרטי התקשרות</p>
-        <a href="tel:{PHONE_TEL}" dir="ltr" style="text-align:start">{PHONE}</a>
+      <div class="foot-col foot-col--wide">
+        <p class="foot-h">{t['foot_contact']}</p>
+        <a href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a>
         <a href="mailto:{EMAIL}">{EMAIL}</a>
-        <span style="display:block;padding:4px 0">{ADDRESS}</span>
+        <span>{t['address']}</span>
+        <a href="{FACEBOOK}" target="_blank" rel="noopener">{t['facebook']}</a>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© {date.today().year} {BRAND}. כל הזכויות שמורות.</span>
-      <span>התמונות וההדמיות להמחשה בלבד</span>
+      <span>© {date.today().year} {t['brand']}. {t['foot_rights']}</span>
+      <span>{t['foot_note']}</span>
     </div>
   </div>
 </footer>
@@ -349,52 +720,62 @@ def footer():
 """
 
 
-def contact_form(project_field=True, compact=False):
-    proj = ""
-    if project_field:
-        opts = "".join(f'<option value="{esc(p["name"])}">{esc(p["name"])}, {esc(p["city"])}</option>' for p in PROJECTS)
-        proj = f"""<div class="full"><label for="f-topic">בנוגע ל</label>
-      <select id="f-topic" name="topic"><option value="">בחרו נושא</option><option>רכישת דירה</option><option>התחדשות עירונית / פינוי־בינוי</option><option>תמ״א 38</option><option>יזמות</option><option>אחר</option></select></div>
-    <div class="full"><label for="f-project">פרויקט (אם רלוונטי)</label>
-      <select id="f-project" name="project"><option value="">ללא פרויקט מסוים</option>{opts}</select></div>"""
+def contact_form(lang):
+    t = T[lang]
+    px = pfx(lang)
+    topics = "".join(f"<option>{esc(x)}</option>" for x in t["f_topics"])
+    opts = "".join(f'<option value="{esc(v(p["name"], lang))}">{esc(v(p["name"], lang))}, {esc(v(p["city"], lang))}</option>' for p in PROJECTS)
     return f"""<form class="form" action="https://api.web3forms.com/submit" method="POST" novalidate>
     <input type="hidden" name="access_key" value="{WEB3FORMS_KEY}">
-    <input type="hidden" name="subject" value="פנייה חדשה מאתר כרם">
+    <input type="hidden" name="subject" value="{t['f_subject']}">
     <input type="hidden" name="from_name" value="keremltd.co.il">
-    <label class="hp" aria-hidden="true">אין למלא שדה זה <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label>
-    <div><label for="f-name">שם מלא</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
-    <div><label for="f-phone">טלפון</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required></div>
-    <div class="full"><label for="f-email">אימייל</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
-    {proj}
-    {'' if compact else '<div class="full"><label for="f-msg">הודעה</label><textarea id="f-msg" name="message"></textarea></div>'}
-    <label class="consent"><input type="checkbox" name="consent" value="כן" required><span>אני מאשר/ת יצירת קשר בהתאם ל<a href="/privacy/" class="link">מדיניות הפרטיות</a>.</span></label>
-    <div class="actions"><button class="btn" type="submit">שליחה</button><span class="small muted">או התקשרו: <a href="tel:{PHONE_TEL}" dir="ltr" class="link">{PHONE}</a></span></div>
+    <label class="hp" aria-hidden="true">{t['f_hp']} <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label>
+    <div><label for="f-name">{t['f_name']}</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
+    <div><label for="f-phone">{t['f_phone']}</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required></div>
+    <div class="full"><label for="f-email">{t['f_email']}</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
+    <div class="full"><label for="f-topic">{t['f_topic']}</label>
+      <select id="f-topic" name="topic"><option value="">{t['f_topic_pick']}</option>{topics}</select></div>
+    <div class="full"><label for="f-project">{t['f_project']}</label>
+      <select id="f-project" name="project"><option value="">{t['f_project_none']}</option>{opts}</select></div>
+    <div class="full"><label for="f-msg">{t['f_msg']}</label><textarea id="f-msg" name="message"></textarea></div>
+    <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>{t['f_consent']}<a href="{px}/privacy/" class="link">{t['f_privacy']}</a>.</span></label>
+    <div class="actions"><button class="btn" type="submit">{t['f_send']}</button><span class="small muted">{t['f_or']} <a href="tel:{PHONE_TEL}" dir="ltr" class="link">{PHONE}</a></span></div>
     <p class="form__msg" aria-live="polite"></p>
   </form>"""
 
 
-def contact_section():
+def contact_section(lang):
+    t = T[lang]
     return f"""<section class="section rule" id="contact">
   <div class="wrap grid">
     <div class="contact-info rv">
-      <span class="eyebrow">צור קשר</span>
-      <h2>מעוניינים שנחזור אליכם?</h2>
-      <p class="lead">רכישת דירה, בניין שמתאים להתחדשות עירונית, או התייעצות בכל עניין בנדל״ן. השאירו פרטים ונציג יחזור אליכם בהקדם.</p>
+      <h2>{t['contact_h2']}</h2>
+      <p class="lead">{t['contact_lead']}</p>
       <dl class="dl">
-        <div><dt>טלפון</dt><dd><a href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a></dd></div>
-        <div><dt>אימייל</dt><dd><a href="mailto:{EMAIL}">{EMAIL}</a></dd></div>
-        <div><dt>משרד</dt><dd>{ADDRESS}</dd></div>
+        <div><dt>{t['phone']}</dt><dd><a href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a></dd></div>
+        <div><dt>{t['email']}</dt><dd><a href="mailto:{EMAIL}">{EMAIL}</a></dd></div>
+        <div><dt>{t['office']}</dt><dd>{t['address']}</dd></div>
       </dl>
     </div>
-    <div class="contact-form rv">{contact_form()}</div>
+    <div class="contact-form rv">{contact_form(lang)}</div>
   </div>
 </section>"""
 
 
+def crumbs(lang, *items):
+    t = T[lang]
+    parts = [f'<a href="{pfx(lang)}/">{t["crumb_home"]}</a>']
+    for i, (label, href) in enumerate(items):
+        parts.append("<span>/</span>")
+        parts.append(f'<a href="{href}">{label}</a>' if href else f"<span>{esc(label)}</span>")
+    return f'<nav class="crumbs" aria-label="{t["crumbs_label"]}">{"".join(parts)}</nav>'
+
+
 def write(path, html):
-    full = os.path.join(WWW, path.strip("/"), "index.html") if path != "/" else os.path.join(WWW, "index.html")
     if path.endswith(".html"):
         full = os.path.join(WWW, path.strip("/"))
+    else:
+        full = os.path.join(WWW, path.strip("/"), "index.html") if path.strip("/") else os.path.join(WWW, "index.html")
     os.makedirs(os.path.dirname(full), exist_ok=True)
     with open(full, "w", encoding="utf-8", newline="\n") as f:
         f.write(html)
@@ -405,93 +786,84 @@ def write(path, html):
 # Pages
 # --------------------------------------------------------------------------
 
-def page_home():
-    hero_sizes = "(max-width:900px) 92vw, 48vw"
+def page_home(lang):
+    t = T[lang]
+    px = pfx(lang)
+    path = px + "/"
+    hero_sizes = "(max-width:900px) 92vw, 52vw"
     marketing = [p for p in PROJECTS if p["group"] == "marketing"]
     planning = [p for p in PROJECTS if p["group"] == "planning"]
     done = [p for p in PROJECTS if p["group"] == "done"]
-    specialties = "".join(f"""<div class="row rv"><span class="num">0{i+1}</span><h3>{t}<small>{s}</small></h3><p>{d}</p></div>""" for i, (t, s, d) in enumerate(SPECIALTIES))
-    steps = "".join(f"<li>{s}</li>" for s in FIRST_STEP[:4])
-    html = head(BRAND, "כרם יזמות והתחדשות עירונית, מקבוצת וינברג: חברה משפחתית עם ניסיון של ארבעה דורות ביזמות נדל״ן, תמ״א 38, פינוי־בינוי ושימור בתל אביב, רמת גן ובני ברק.", "/", preload("hero", hero_sizes))
-    html += header("/")
+    facts = "".join(f"<div><b>{a.replace('{n}', str(len(PROJECTS)))}</b><span>{b}</span></div>" for a, b in t["facts"])
+    steps = "".join(f"<li>{s}</li>" for s in v(FIRST_STEP, lang)[:4])
+    html = head(lang, t["brand"], t["site_desc"], path, preload("hero", hero_sizes))
+    html += header(lang, path, path)
     html += f"""<section class="hero">
   <div class="wrap grid">
     <div class="hero-text">
-      <span class="eyebrow">כרם יזמות והתחדשות עירונית · מקבוצת וינברג</span>
-      <h1>בונים את העיר מחדש.<br>כבר ארבעה דורות.</h1>
-      <p class="lead">חברה משפחתית בבעלות פרטית, המתמחה בפרויקטי מגורים במרכזי הערים: תמ״א 38, פינוי־בינוי ושימור, בתל אביב, רמת גן ובני ברק.</p>
-      <div class="cta-row"><a class="btn" href="/projects/">לפרויקטים</a><a class="btn btn--ghost" href="/how-we-start/">איך מתחילים פרויקט</a></div>
+      <span class="eyebrow">{t['hero_eyebrow']}</span>
+      <h1>{t['hero_h1']}</h1>
+      <p class="lead">{t['hero_lead']}</p>
+      <div class="cta-row"><a class="btn" href="{px}/projects/">{t['cta_projects']}</a><a class="btn btn--ghost" href="{px}/how-we-start/">{t['cta_how']}</a></div>
     </div>
     <div class="hero-media">
       <figure>
-        <div class="frame">{picture("hero", "הדמיית מזא״ה 71, תל אביב: בניין לשימור שעובר השבחה", hero_sizes, eager=True)}</div>
-        <figcaption><span>מזא״ה 71, תל אביב–יפו · בניין לשימור</span><span>בשלבי תכנון</span></figcaption>
+        <div class="frame">{picture("hero", t['hero_caption'], hero_sizes, eager=True)}</div>
+        <figcaption>{t['hero_caption']}</figcaption>
       </figure>
     </div>
   </div>
 </section>
 
 <section class="wrap section--tight">
-  <div class="facts rv">
-    <div><b>4</b><span>דורות של יזמות נדל״ן</span></div>
-    <div><b>{len(PROJECTS)}</b><span>פרויקטים בשיווק, בתכנון ובאכלוס</span></div>
-    <div><b>אלפי</b><span>יחידות דיור ומסחר שתוכננו ונבנו</span></div>
-    <div><b>3</b><span>ערים: תל אביב, רמת גן, בני ברק</span></div>
-  </div>
+  <div class="facts rv">{facts}</div>
 </section>
 
 <section class="section" id="projects">
   <div class="wrap">
-    <div class="sec-head rv"><h2>פרויקטים המשתבחים עם השנים</h2><a class="link aside" href="/projects/">כל הפרויקטים</a></div>
+    <div class="sec-head rv"><h2>{t['projects_h2']}</h2><a class="link" href="{px}/projects/">{t['cta_projects']}</a></div>
     <div class="group">
-      <div class="group-head"><h3>בשיווק</h3><span class="note">היתרים, בנייה ושיווק פעיל · {len(marketing)}</span></div>
-      {cards(marketing, 2)}
+      <div class="group-head"><h3>{t['groups']['marketing'][0]}</h3><span class="note">{t['groups']['marketing'][1]}</span></div>
+      {cards(marketing, 2, lang)}
     </div>
     <div class="group">
-      <div class="group-head"><h3>בתכנון</h3><span class="note">לפני החלטת ועדה: מחירי הנחה והטבות · {len(planning)}</span></div>
-      {cards(planning[:4], 4)}
+      <div class="group-head"><h3>{t['groups']['planning'][0]}</h3><span class="note">{t['groups']['planning'][1]}</span></div>
+      {cards(planning[:4], 4, lang)}
     </div>
     <div class="group">
-      <div class="group-head"><h3>הסתיימו</h3><span class="note">מסירה ואכלוס · {len(done)}</span></div>
-      {cards(done, 4)}
+      <div class="group-head"><h3>{t['groups']['done'][0]}</h3><span class="note">{t['groups']['done'][1]}</span></div>
+      {cards(done, 4, lang)}
     </div>
-    <div class="cta-row" style="justify-content:flex-start"><a class="btn btn--ghost" href="/projects/">לרשימת הפרויקטים המלאה</a></div>
   </div>
 </section>
 
-<section class="section rule">
-  <div class="wrap grid split">
-    <div class="split-text rv">
-      <span class="eyebrow">אודות החברה</span>
-      <h2>חברה משפחתית. ארבעה דורות של בנייה.</h2>
-      <p>כרם יזמות נדל״ן והתחדשות עירונית היא חברה של מומחים, עם ניסיון של ארבעה דורות ביזמות נדל״ן, תכנון ובנייה של אלפי יחידות דיור ומסחר. ההתמחות בשנים האחרונות היא בפרויקטי מגורים במרכז העיר: תמ״א 38 ופינוי־בינוי.</p>
-      <p>החברה בבעלות פרטית מלאה של המשפחה, המחזיקה גם חברות משלימות בתחומי המשפט, אחזקת הנכסים והמימון. מנכ״ל החברה: רני וינברג.</p>
-      <div class="cta-row"><a class="link" href="/about/">על החברה ועל קבוצת וינברג</a></div>
-    </div>
-    <div class="split-media rv-img">
-      <figure>
-        <div class="frame" style="aspect-ratio:3/2">{picture("yafo", "דרך יפו 13, תל אביב: בניין לשימור משוחזר, הסתיים ואוכלס", "(max-width:900px) 92vw, 48vw")}</div>
-        <figcaption><span>דרך יפו 13, תל אביב · בניין לשימור, משוחזר</span><span>הסתיים ואוכלס</span></figcaption>
-      </figure>
-    </div>
+<section class="bleed rv-img">
+  <figure>
+    <div class="frame">{picture("hoshea", t['about_caption'], "100vw")}</div>
+    <figcaption class="wrap">{t['about_caption']}</figcaption>
+  </figure>
+  <div class="wrap bleed-text rv">
+    <h2>{t['about_h2']}</h2>
+    <p>{t['about_p']}</p>
+    <p><a class="link" href="{px}/about/">{t['about_link']}</a></p>
   </div>
 </section>
 
 <section class="section rule">
   <div class="wrap">
-    <div class="sec-head rv"><h2>תחומי ההתמחות</h2><span class="aside">מגורים · תמ״א 38 · פינוי־בינוי · שימור</span></div>
-    <div class="rows">{specialties}</div>
+    <div class="sec-head rv"><h2>{t['spec_h2']}</h2></div>
+    <div class="rows">{rows(v(SPECIALTIES, lang))}</div>
   </div>
 </section>
 
 <section class="band band--navy statement">
   <div class="wrap grid">
     <div class="statement-text rv">
-      <span class="eyebrow">איך מתחילים פרויקט?</span>
-      <h2>הצעד הראשון הוא היכרות. בלי חתימות, בלי התחייבות.</h2>
-      <p>כבעלי דירה בבניין, לא פשוט להזיז קדימה דבר כזה: קשה לאסוף את כל הדיירים, קשה להבין מה נכון מול הרבה יזמים שמבטיחים הבטחות, וקשה להתנהל מול יזם ועורך דין בלי להכיר את המושגים.</p>
-      <p>לכן יש לנו שיטה סדורה ופשוטה, צעד אחר צעד, לכל סוג פרויקט. מטרת הצעד הראשון היא היכרות בלבד: להבין יחד, היזם והדיירים, האם יש בנכס כדאיות.</p>
-      <div class="cta-row"><a class="btn btn--light" href="/how-we-start/">כל השלבים</a><a class="btn btn--outline-light" href="/contact/">שולחים שם של איש קשר</a></div>
+      <span class="eyebrow">{t['statement_eyebrow']}</span>
+      <h2>{t['statement_h2']}</h2>
+      <p>{t['statement_p1']}</p>
+      <p>{t['statement_p2']}</p>
+      <div class="cta-row"><a class="btn btn--light" href="{px}/how-we-start/">{t['cta_steps']}</a><a class="btn btn--outline-light" href="{px}/contact/">{t['cta_contact']}</a></div>
     </div>
     <div class="statement-aside rv">
       <ol>{steps}</ol>
@@ -499,218 +871,213 @@ def page_home():
   </div>
 </section>
 
-{contact_section()}
+{contact_section(lang)}
 """
-    html += footer()
-    write("/", html)
+    html += footer(lang, path)
+    write(path, html)
 
 
-def page_projects():
-    html = head("פרויקטים", "כל הפרויקטים של כרם יזמות והתחדשות עירונית: בשיווק, בתכנון ואחרי אכלוס. תמ״א 38, פינוי־בינוי ושימור בתל אביב, רמת גן ובני ברק.", "/projects/")
-    html += header("/projects/")
+def page_projects(lang):
+    t = T[lang]
+    px = pfx(lang)
+    path = px + "/projects/"
+    html = head(lang, t["projects"], t["projects_lead"], path)
+    html += header(lang, path, path)
     html += f"""<section class="wrap page-head">
-  <nav class="crumbs" aria-label="פירורי לחם"><a href="/">ראשי</a><span>/</span><span>פרויקטים</span></nav>
-  <h1>פרויקטים המשתבחים עם השנים</h1>
-  <p class="lead">בניינים במרכזי הערים של גוש דן: הריסה ובנייה מחדש, שימור והשבחה, ופרויקטים חדשים. מסודרים לפי שלב.</p>
+  {crumbs(lang, (t['projects'], None))}
+  <h1>{t['projects_h2']}</h1>
+  <p class="lead">{t['projects_lead']}</p>
 </section>
 <section class="wrap" style="padding-bottom:var(--section)">
-  {project_groups({"marketing": 2, "planning": 4, "done": 4})}
+  {project_groups(lang, {"marketing": 2, "planning": 4, "done": 4})}
 </section>
-{contact_section()}
+{contact_section(lang)}
 """
-    html += footer()
-    write("/projects/", html)
+    html += footer(lang, path)
+    write(path, html)
 
 
-def page_project(p):
-    title = f"{p['name']}, {p['city']}"
-    desc = p.get("short", "")
-    html = head(title, desc, f"/projects/{p['slug']}/", preload(p["img"], "(max-width:1280px) 92vw, 1184px"), og_image=f"{p['img']}-1200")
-    html += header("/projects/")
-    facts = []
-    if p.get("type"):
-        facts.append(("סוג הפרויקט", p["type"]))
-    facts.append(("עיר", p["city"] + (f", {p['area']}" if p.get("area") else "")))
+def page_project(p, lang):
+    t = T[lang]
+    px = pfx(lang)
+    path = f"{px}/projects/{p['slug']}/"
+    name, city = v(p["name"], lang), v(p["city"], lang)
+    title = f"{name}, {city}"
+    html = head(lang, title, v(p["short"], lang), path, preload(p["img"], "(max-width:1280px) 92vw, 1184px"), og_image=f"{p['img']}-1200")
+    html += header(lang, px + "/projects/", path)
+
+    facts = [(t["p_type"], v(p["type"], lang)), (t["p_city"], place(p, lang))]
     if p.get("floors"):
-        facts.append(("קומות", p["floors"]))
+        facts.append((t["p_floors"], v(p["floors"], lang)))
     if p.get("units"):
-        facts.append(("יחידות דיור", p["units"]))
+        facts.append((t["p_units"], v(p["units"], lang)))
     if p.get("shops"):
-        facts.append(("מסחר", p["shops"] + " חנויות"))
-    facts.append(("סטטוס", p["status"]))
-    spec = "".join(f"<div><dt>{k}</dt><dd>{esc(v)}</dd></div>" for k, v in facts)
-    body = "".join(f"<p>{esc(d)}</p>" for d in p.get("desc", [p.get("short", "")]))
+        facts.append((t["p_shops"], f"{v(p['shops'], lang)} {t['p_shops_unit']}"))
+    facts.append((t["p_status"], v(p["status"], lang)))
+    spec = "".join(f"<div><dt>{k}</dt><dd>{esc(val)}</dd></div>" for k, val in facts)
+    body = "".join(f"<p>{esc(d)}</p>" for d in v(p["desc"], lang))
 
-    # neighbours: next 3 projects in list order (wrap around)
     idx = PROJECTS.index(p)
     others = [PROJECTS[(idx + i) % len(PROJECTS)] for i in range(1, 4)]
 
-    extra = ""
+    ext = ""
+    if p["slug"] in EXTERNAL_SITES:
+        ext = f"""<p class="ext-note"><span>{t['p_ext_note']}</span> <span dir="ltr">{EXTERNAL_SITES[p['slug']]}</span> <em>({t['p_ext_todo']})</em></p>"""
+
+    extra_fig = ""
+    if p.get("extra_img"):
+        extra_fig = f"""<figure class="rv-img extra-fig"><div class="frame">{picture(p['extra_img'], f"{name}, {city}", "(max-width:900px) 92vw, 58vw")}</div></figure>"""
+
+    marshall = ""
     if p.get("marshall"):
-        rows = "".join(
-            f'<tr class="{"sold" if n == "נמכרה" else ""}"><td>{a}</td><td>{t}</td><td>{r}</td><td>{s}</td><td>{o}</td><td>{"<span class=tag>" + n + "</span>" if n and n != "נמכרה" else n}</td></tr>'
-            for a, t, r, s, o, n in MARSHALL_APTS)
+        sold = SOLD[lang]
+        trs = "".join(
+            f'<tr class="{"sold" if n == sold else ""}"><td>{a}</td><td>{ty}</td><td>{r}</td><td>{s}</td><td>{o}</td><td>{"<span class=tag>" + n + "</span>" if n and n != sold else n}</td></tr>'
+            for a, ty, r, s, o, n in v(MARSHALL_APTS, lang))
         gallery = "".join(
-            f'<figure class="rv-img"><div class="frame">{picture(f"apt-{i}", f"הדמיית פנים, לואי מרשל 11, תמונה {i}", "(max-width:640px) 92vw, 48vw")}</div></figure>'
+            f'<figure class="rv-img"><div class="frame">{picture(f"apt-{i}", f"{name}: {t['m_gallery']} {i}", "(max-width:640px) 92vw, 48vw")}</div></figure>'
             for i in range(1, 9))
-        extra = f"""
+        spec_items = "".join(f"<li>{x}</li>" for x in t["m_spec_items"])
+        marshall = f"""
 <section class="wrap section rule">
-  <div class="sec-head rv"><h2>הדירות</h2><span class="aside">3 דירות בקומה · 2 כיווני אוויר · מרפסת שמש לכל דירה</span></div>
-  <div style="overflow-x:auto"><table class="apts">
-    <thead><tr><th>דירה</th><th>סוג</th><th>חדרים</th><th>שטח</th><th>חוץ</th><th>הערות</th></tr></thead>
-    <tbody>{rows}</tbody>
+  <div class="sec-head rv"><h2>{t['m_apts']}</h2></div>
+  <p class="rv" style="margin-top:-16px;margin-bottom:24px">{t['m_apts_note']}</p>
+  <div class="table-wrap"><table class="apts">
+    <thead><tr>{"".join(f"<th>{h}</th>" for h in t['m_th'])}</tr></thead>
+    <tbody>{trs}</tbody>
   </table></div>
-  <p class="notice">הפרטים בדף זה הינם להמחשה ולמסירת מידע בלבד, ואינם מהווים התחייבות מצד החברה. את החברה יחייבו הסכם המכר והמפרט הטכני לפי חוק המכר עליו יחתמו החברה והרוכשים. תכניות המכירה כוללות פרטי ריהוט ומוצרי חשמל להמחשה בלבד, שאינם כלולים בממכר. ט.ל.ח.</p>
+  <p class="notice">{t['m_notice']}</p>
 </section>
 <section class="wrap section rule">
-  <div class="sec-head rv"><h2>הדמיות פנים</h2><span class="aside">להמחשה בלבד</span></div>
+  <div class="sec-head rv"><h2>{t['m_gallery']}</h2><span class="small muted">{t['m_gallery_note']}</span></div>
   <div class="gallery">{gallery}</div>
 </section>
 <section class="wrap section rule">
   <div class="grid">
     <div class="proj-body prose rv">
-      <span class="eyebrow">מפרט טכני</span>
-      <h2 style="margin-top:0">מרווח, מוקפד, ברמה הגבוהה ביותר</h2>
-      <ul>
-        <li>דלת ביטחון מעוצבת בכניסה לדירה, מערכת אינטרקום עם צפייה במעגל סגור במסך צבעוני. דלתות פנים יוניק פרימיום בגובה 2.1 מ׳.</li>
-        <li>מערכת מיזוג אוויר VRF.</li>
-        <li>חשמל חכם, אביזרי קצה גוויס או ביטיצ׳ינו.</li>
-        <li>מטבח מעוצב, גודלו על פי התכנון האדריכלי ותכניות הדירה.</li>
-        <li>חדרי אמבטיה: חיפוי עד התקרה, ברזים, אסלות, אמבטיות ומקלחונים וניאגרה סמויה. חמת, גרוהה, אידיאל סטנדרט או גיבריט.</li>
-        <li>חלונות וויטרינות קליל או אקסטל, תריסים חשמליים עם מנועי סומפי, זיגוג כפול אקוסטי מבודד, רשתות נגד יתושים בכל הפתחים (למעט ממ״ד, על פי תקן).</li>
-      </ul>
+      <h2 style="margin-top:0">{t['m_spec']}</h2>
+      <ul>{spec_items}</ul>
     </div>
     <div class="proj-side rv">
-      <div class="people" style="grid-template-columns:1fr">
-        <div><p class="role">האדריכל</p><h3>מאור לוי, לוי לוסטיג אדריכלים</h3><p class="small muted">המשרד עוסק בתכנון ועיצוב בתים ודירות מגורים ובפרויקטי תמ״א 38. מאור לוי הוא אדריכל, בעל תואר שני במנהל עסקים ומוסמך מכון התקנים כמלווה בנייה ירוקה, עם ניסיון רב שנים בבנייה אורבנית ופרטית.</p></div>
-        <div><p class="role">עורך דין היזם</p><h3>משרד עו״ד ד״ר משה וינברג</h3><p class="small muted">משרד מוביל בתחום האזרחי: תכנון ובנייה, הפשרת קרקעות, פיתוח והפקעת מקרקעין ומשפט אזרחי. המשרד קידם ויזם פיתוח של אלפי יחידות דיור ברחבי הארץ ומקיים קשר שוטף עם רשויות התכנון.</p></div>
+      <div class="people">
+        <div><p class="role">{t['m_architect']}</p><h3>{t['m_architect_name']}</h3><p class="small muted">{t['m_architect_p']}</p></div>
+        <div><p class="role">{t['m_lawyer']}</p><h3>{t['m_lawyer_name']}</h3><p class="small muted">{t['m_lawyer_p']}</p></div>
       </div>
     </div>
   </div>
 </section>"""
 
-    extra_fig = ""
-    if p.get("extra_img"):
-        extra_fig = f"""<figure class="rv-img" style="margin:40px 0 0"><div class="frame" style="overflow:hidden;background:var(--bg-2)">{picture(p['extra_img'], f"{p['name']}, {p['city']}: הדמיה נוספת", "(max-width:900px) 92vw, 58vw")}</div></figure>"""
-
     html += f"""<section class="wrap page-head">
-  <nav class="crumbs" aria-label="פירורי לחם"><a href="/">ראשי</a><span>/</span><a href="/projects/">פרויקטים</a><span>/</span><span>{esc(p['name'])}</span></nav>
-  <span class="eyebrow">{esc(p['status'])} · {esc(p.get('type',''))}</span>
-  <h1>{esc(p['name'])}, {esc(p['city'])}</h1>
-  {'<p class="lead">' + esc(p['short']) + '</p>' if p.get('short') else ''}
+  {crumbs(lang, (t['projects'], px + '/projects/'), (name, None))}
+  <span class="eyebrow">{esc(v(p['status'], lang))}. {esc(v(p['type'], lang))}</span>
+  <h1>{esc(name)}, {esc(city)}</h1>
+  <p class="lead">{esc(v(p['short'], lang))}</p>
 </section>
 <section class="wrap proj-hero">
-  <figure style="margin:0">
-    <div class="frame">{picture(p['img'], f"הדמיית {p['name']}, {p['city']}", "(max-width:1280px) 92vw, 1184px", eager=True)}</div>
-    <figcaption>הדמיה להמחשה בלבד</figcaption>
+  <figure>
+    <div class="frame">{picture(p['img'], f"{name}, {city}", "(max-width:1280px) 92vw, 1184px", eager=True)}</div>
+    <figcaption>{t['p_render']}</figcaption>
   </figure>
 </section>
 <section class="wrap section">
   <div class="grid">
     <div class="proj-body prose rv">
-      <span class="eyebrow">על הפרויקט</span>
+      <h2 style="margin-top:0">{t['p_about']}</h2>
       {body}
+      {ext}
       {extra_fig}
     </div>
     <aside class="proj-side rv">
       <dl class="spec">{spec}</dl>
-      <div class="cta-row"><a class="btn" href="/contact/">מעוניינים בפרטים נוספים</a></div>
-      <p class="small muted" style="margin-top:14px">או התקשרו: <a class="link" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a></p>
+      <div class="cta-row"><a class="btn" href="{px}/contact/">{t['cta_contact']}</a></div>
+      <p class="small muted" style="margin-top:14px">{t['p_or_call']} <a class="link" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a></p>
     </aside>
   </div>
 </section>
-{extra}
+{marshall}
 <section class="wrap section rule">
-  <div class="sec-head rv"><h2>פרויקטים נוספים</h2><a class="link aside" href="/projects/">כל הפרויקטים</a></div>
-  {cards(others, 3)}
+  <div class="sec-head rv"><h2>{t['p_more']}</h2><a class="link" href="{px}/projects/">{t['cta_projects']}</a></div>
+  {cards(others, 3, lang)}
 </section>
-{contact_section()}
+{contact_section(lang)}
 """
-    html += footer()
-    write(f"/projects/{p['slug']}/", html)
+    html += footer(lang, path)
+    write(path, html)
 
 
-def page_about():
-    specialties = "".join(f"""<div class="row rv"><span class="num">0{i+1}</span><h3>{t}<small>{s}</small></h3><p>{d}</p></div>""" for i, (t, s, d) in enumerate(SPECIALTIES))
-    companies = "".join(f"""<div class="row rv"><span class="num">0{i+1}</span><h3>{t}<small>{s}</small></h3><p>{d}</p></div>""" for i, (t, s, d) in enumerate(GROUP_COMPANIES))
-    html = head("אודות החברה", "כרם יזמות נדל״ן והתחדשות עירונית: חברה משפחתית מקבוצת וינברג, עם ניסיון של ארבעה דורות ביזמות, תכנון ובנייה של אלפי יחידות דיור ומסחר.", "/about/")
-    html += header("/about/")
+def page_about(lang):
+    t = T[lang]
+    px = pfx(lang)
+    path = px + "/about/"
+    body = "".join(f"<p>{x}</p>" for x in t["about_body"])
+    html = head(lang, t["about_title"], t["about_desc"], path)
+    html += header(lang, path, path)
     html += f"""<section class="wrap page-head">
-  <nav class="crumbs" aria-label="פירורי לחם"><a href="/">ראשי</a><span>/</span><span>אודות החברה</span></nav>
-  <span class="eyebrow">אודות החברה</span>
-  <h1>ניסיון של ארבעה דורות ביזמות נדל״ן</h1>
-  <p class="lead">כרם יזמות נדל״ן והתחדשות עירונית היא חברה מובילה של מומחים, עם ניסיון עשיר של ארבעה דורות ביזמות נדל״ן, תכנון ובנייה של אלפי יחידות דיור ומסחר.</p>
+  {crumbs(lang, (t['about'], None))}
+  <h1>{t['about_h1']}</h1>
+  <p class="lead">{t['about_lead']}</p>
 </section>
 <section class="wrap" style="padding-bottom:var(--section)">
   <div class="grid split">
-    <div class="split-text prose rv">
-      <p>ההתמחות בשנים האחרונות היא בפרויקטי מגורים במרכז העיר: תמ״א 38 ופינוי־בינוי, לצד שימור והשבחה של בניינים היסטוריים בלב תל אביב.</p>
-      <p>החברה משפחתית ובבעלות פרטית מלאה של המשפחה. בנוסף מחזיקה המשפחה חברות נוספות המתמחות במוצרים משלימים בתחום הנדל״ן: שירותים משפטיים, תחזוקת נכסים, פיננסים ומלאי דירות להשכרה. כך, כל שלב בפרויקט נשען על ידע וניסיון מתוך הבית.</p>
-      <p>מנכ״ל החברה: רני וינברג.</p>
-    </div>
+    <div class="split-text prose rv">{body}</div>
     <div class="split-media rv-img">
       <figure>
-        <div class="frame" style="aspect-ratio:3/2">{picture("rothschild", "רוטשילד 135, הבית על הבימה, תל אביב", "(max-width:900px) 92vw, 48vw")}</div>
-        <figcaption><span>רוטשילד 135, הבית על הבימה · תל אביב</span><span>הסתיים ואוכלס</span></figcaption>
+        <div class="frame" style="aspect-ratio:3/2">{picture("rothschild", t['about_caption2'], "(max-width:900px) 92vw, 48vw")}</div>
+        <figcaption>{t['about_caption2']}</figcaption>
       </figure>
     </div>
   </div>
 </section>
-<section class="section rule">
-  <div class="wrap grid split">
-    <div class="split-text rv">
-      <span class="eyebrow">מקבוצת וינברג</span>
-      <h2>חברה משפחתית, מנוהלת מקרוב</h2>
-      <p class="lead">כל פרויקט מלווה אישית, מהפגישה הראשונה עם הדיירים ועד מסירת המפתחות.</p>
-      <p>הקבוצה פועלת בתל אביב, רמת גן ובני ברק, ומשלבת יזמות, תכנון, מימון, ייצוג משפטי וניהול נכסים תחת קורת גג אחת. מנכ״ל החברה: רני וינברג.</p>
-    </div>
-    <div class="split-media rv-img">
-      <figure>
-        <div class="frame" style="aspect-ratio:3/2">{picture("yafo", "דרך יפו 13, תל אביב: בניין לשימור משוחזר", "(max-width:900px) 92vw, 48vw")}</div>
-        <figcaption><span>דרך יפו 13, תל אביב · שימור ושחזור</span><span>הסתיים ואוכלס</span></figcaption>
-      </figure>
-    </div>
+<section class="bleed rv-img">
+  <figure>
+    <div class="frame">{picture("yafo", t['about_caption3'], "100vw")}</div>
+    <figcaption class="wrap">{t['about_caption3']}</figcaption>
+  </figure>
+  <div class="wrap bleed-text rv">
+    <h2>{t['about_mgmt_h2']}</h2>
+    <p class="lead">{t['about_mgmt_lead']}</p>
+    <p>{t['about_mgmt_p']}</p>
   </div>
 </section>
 <section class="section rule">
   <div class="wrap">
-    <div class="sec-head rv"><h2>תחומי ההתמחות</h2><span class="aside">מתמחים בפרויקטים של מגורים, תמ״א 38 ופינוי־בינוי</span></div>
-    <div class="rows">{specialties}</div>
+    <div class="sec-head rv"><h2>{t['spec_h2']}</h2></div>
+    <div class="rows">{rows(v(SPECIALTIES, lang))}</div>
   </div>
 </section>
 <section class="section rule">
   <div class="wrap">
-    <div class="sec-head rv"><h2>חברות נוספות בבעלות המשפחה</h2><span class="aside">מוצרים משלימים בתחום הנדל״ן</span></div>
-    <div class="rows">{companies}</div>
+    <div class="sec-head rv"><h2>{t['group_h2']}</h2></div>
+    <div class="rows">{rows(v(GROUP_COMPANIES, lang))}</div>
   </div>
 </section>
-{contact_section()}
+{contact_section(lang)}
 """
-    html += footer()
-    write("/about/", html)
+    html += footer(lang, path)
+    write(path, html)
 
 
-def page_how():
-    steps = "".join(f"<li>{s}</li>" for s in FIRST_STEP)
-    html = head("איך מתחילים פרויקט?", "הצעד הראשון בפרויקט תמ״א 38 או פינוי־בינוי: שיטה סדורה ופשוטה, צעד אחר צעד, בלי חתימות ובלי התחייבות. כך מתחילים עם כרם.", "/how-we-start/")
-    html += header("/how-we-start/")
+def page_how(lang):
+    t = T[lang]
+    px = pfx(lang)
+    path = px + "/how-we-start/"
+    steps = "".join(f"<li>{s}</li>" for s in v(FIRST_STEP, lang))
+    body = "".join(f"<p>{x}</p>" for x in t["how_body"])
+    side = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in t["how_side"])
+    html = head(lang, t["how_title"], t["how_desc"], path)
+    html += header(lang, path, path)
     html += f"""<section class="wrap page-head">
-  <nav class="crumbs" aria-label="פירורי לחם"><a href="/">ראשי</a><span>/</span><span>איך מתחילים פרויקט</span></nav>
-  <span class="eyebrow">איך מתחילים פרויקט?</span>
-  <h1>כבעלי דירה בבניין, לא פשוט להזיז קדימה דבר כזה</h1>
-  <p class="lead">״איך מתחילים?״ זה הצעד הראשון, וגם הקשה ביותר. לכן יש לנו שיטה סדורה ופשוטה, צעד אחר צעד, לכל סוג פרויקט.</p>
+  {crumbs(lang, (t['how'], None))}
+  <h1>{t['how_h1']}</h1>
+  <p class="lead">{t['how_lead']}</p>
 </section>
 <section class="wrap" style="padding-bottom:var(--section)">
   <div class="grid split">
-    <div class="split-text prose rv">
-      <p>קשה לאסוף את כל הדיירים ולהגיע להחלטות. קשה להבין מה נכון מול הרבה יזמים, שכל אחד מהם מבטיח הבטחות. וקשה להתנהל מול יזם ומול עורך דין בלי להכיר את המושגים.</p>
-      <p><strong>אבל זה שווה הכול.</strong> בסוף התהליך אתם יושבים בסלון החדש, אוכלים ארוחת ערב משפחתית במרפסת החדשה, ואז החיוך שווה הכול.</p>
-      <p>ההתחלה של תהליך לפרויקט תמ״א 38, פינוי־בינוי, כל פרויקט התחדשות עירונית או תכנון וביצוע מסוג אחר בנכס שלכם, היא להבין בדיוק מה רוצים.</p>
-    </div>
+    <div class="split-text prose rv">{body}</div>
     <div class="split-media rv-img">
       <figure>
-        <div class="frame" style="aspect-ratio:3/2">{picture("herut", "הדמיית חירות 40, רמת גן", "(max-width:900px) 92vw, 48vw")}</div>
-        <figcaption><span>חירות 40, רמת גן · שכונת הגפן</span><span>בשלבי תכנון</span></figcaption>
+        <div class="frame" style="aspect-ratio:3/2">{picture("herut", t['how_caption'], "(max-width:900px) 92vw, 48vw")}</div>
+        <figcaption>{t['how_caption']}</figcaption>
       </figure>
     </div>
   </div>
@@ -718,101 +1085,81 @@ def page_how():
 <section class="section rule">
   <div class="wrap grid">
     <div class="proj-body prose rv">
-      <span class="eyebrow">הצעד הראשון</span>
-      <h2 style="margin-top:0">מסע ארוך מתחיל בצעד קטן</h2>
-      <p>״הצעד הראשון״ של התהליך הוא פשוט ופועל בשיטה מסודרת מאוד. מטרתו היא היכרות בלבד:</p>
+      <h2 style="margin-top:0">{t['how_step_h2']}</h2>
+      <p>{t['how_step_p']}</p>
       <ol>{steps}</ol>
-      <p style="margin-top:24px">רק כשכל הדיירים יסכימו באופן כללי (ולא מחייב בשום אופן) על אופי ההצעה, נמשיך לשלב הבא.</p>
-      <p class="small muted">ההחלטות עצמן, לגבי כל דבר, מתקבלות רק באסיפת דיירים עם נוכחות מלאה של כל הדיירים וזכות הצבעה לדיירים בלבד. בשלב זה לא מדובר בהחלטות, אלא רק באיסוף מידע להבנת הצרכים של הפרויקט.</p>
+      <p style="margin-top:24px">{t['how_after']}</p>
+      <p class="small muted">{t['how_small']}</p>
     </div>
     <aside class="proj-side rv">
-      <dl class="spec">
-        <div><dt>התחייבות</dt><dd>לא נדרשת</dd></div>
-        <div><dt>חתימות</dt><dd>לא נדרשות</dd></div>
-        <div><dt>מטרת השלב</dt><dd>היכרות ובחינת כדאיות</dd></div>
-      </dl>
-      <p style="margin-top:22px"><strong>חשוב לדעת:</strong> אנחנו רק בשלב ההיכרות, לבחון האם יש כדאיות. מהצד של הדיירים: האם כדאי כל הבלגן הזה? מהצד של היזם: האם יש רווחיות?</p>
-      <div class="cta-row"><a class="btn" href="/contact/">שולחים שם של איש קשר</a></div>
+      <dl class="spec">{side}</dl>
+      <p style="margin-top:22px">{t['how_important']}</p>
+      <div class="cta-row"><a class="btn" href="{px}/contact/">{t['cta_contact']}</a></div>
     </aside>
   </div>
 </section>
-{contact_section()}
+{contact_section(lang)}
 """
-    html += footer()
-    write("/how-we-start/", html)
+    html += footer(lang, path)
+    write(path, html)
 
 
-def page_contact():
-    html = head("צור קשר", "נשמח לייעץ, ליזום, לתכנן, לפקח ולהוביל אתכם לפרויקט מוצלח של תמ״א 38, התחדשות עירונית ופינוי־בינוי. טלפון 03-6121314, office@keremltd.co.il.", "/contact/")
-    html += header("/contact/")
+def page_contact(lang):
+    t = T[lang]
+    px = pfx(lang)
+    path = px + "/contact/"
+    html = head(lang, t["contact_title"], t["contact_desc"], path)
+    html += header(lang, path, path)
     html += f"""<section class="wrap page-head">
-  <nav class="crumbs" aria-label="פירורי לחם"><a href="/">ראשי</a><span>/</span><span>צור קשר</span></nav>
-  <span class="eyebrow">צור קשר</span>
-  <h1>״איך מתחילים? ומה האסטרטגיה?״</h1>
-  <p class="lead">נשמח לייעץ, ליזום, לתכנן, לפקח ולהוביל אתכם לפרויקט מוצלח של תמ״א 38, התחדשות עירונית ופינוי־בינוי, וגם להתייעצות בכל עניין בנדל״ן.</p>
+  {crumbs(lang, (t['contact'], None))}
+  <h1>{t['contact_h1']}</h1>
+  <p class="lead">{t['contact_page_lead']}</p>
 </section>
 <section class="wrap" style="padding-bottom:var(--section)">
   <div class="grid">
     <div class="contact-info rv">
       <dl class="dl" style="margin-top:0">
-        <div><dt>טלפון</dt><dd><a href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a></dd></div>
-        <div><dt>אימייל</dt><dd><a href="mailto:{EMAIL}">{EMAIL}</a></dd></div>
-        <div><dt>כתובתנו</dt><dd>{ADDRESS}<br><a class="small" href="https://www.google.com/maps/search/?api=1&query=%D7%93%D7%A8%D7%9A+%D7%9E%D7%A0%D7%97%D7%9D+%D7%91%D7%92%D7%99%D7%9F+82+%D7%AA%D7%9C+%D7%90%D7%91%D7%99%D7%91" target="_blank" rel="noopener">פתיחה במפות ↗</a></dd></div>
-        <div><dt>פייסבוק</dt><dd><a href="{FACEBOOK}" target="_blank" rel="noopener">facebook.com/keremltd</a></dd></div>
+        <div><dt>{t['phone']}</dt><dd><a href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a></dd></div>
+        <div><dt>{t['email']}</dt><dd><a href="mailto:{EMAIL}">{EMAIL}</a></dd></div>
+        <div><dt>{t['contact_address_label']}</dt><dd>{t['address']}<br><a class="small" href="{MAPS}" target="_blank" rel="noopener">{t['maps']}</a></dd></div>
+        <div><dt>{t['facebook']}</dt><dd><a href="{FACEBOOK}" target="_blank" rel="noopener">facebook.com/keremltd</a></dd></div>
       </dl>
     </div>
-    <div class="contact-form rv">{contact_form()}</div>
+    <div class="contact-form rv">{contact_form(lang)}</div>
   </div>
 </section>
 """
-    html += footer()
-    write("/contact/", html)
+    html += footer(lang, path)
+    write(path, html)
 
 
-def page_accessibility():
-    html = head("הצהרת נגישות", "הצהרת הנגישות של אתר כרם יזמות והתחדשות עירונית.", "/accessibility/")
-    html += header("/accessibility/")
-    html += f"""<section class="wrap page-head">
-  <nav class="crumbs" aria-label="פירורי לחם"><a href="/">ראשי</a><span>/</span><span>הצהרת נגישות</span></nav>
-  <span class="eyebrow">נגישות</span>
-  <h1>הצהרת נגישות</h1>
-</section>
-<section class="wrap prose" style="padding-bottom:var(--section)">
-  <p>אנו בכרם יזמות והתחדשות עירונית משקיעים ככל שניתן כדי לספק לכל לקוחותינו שירות שוויוני ונגיש, ולאפשר חוויית גלישה נוחה לכלל האוכלוסייה, לרבות אנשים עם מוגבלויות, בהתאם לחוק שוויון זכויות לאנשים עם מוגבלות.</p>
+ACCESSIBILITY = {
+    "he": """<p>אנו בכרם יזמות והתחדשות עירונית משקיעים ככל שניתן כדי לספק לכל לקוחותינו שירות שוויוני ונגיש, ולאפשר חוויית גלישה נוחה לכלל האוכלוסייה, לרבות אנשים עם מוגבלויות, בהתאם לחוק שוויון זכויות לאנשים עם מוגבלות.</p>
   <p>באתר זה בוצעו התאמות נגישות על פי דרישות תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע״ג-2013, בצורה קפדנית ככל שניתן. ההתאמות בוצעו על פי המלצות התקן הישראלי (ת״י 5568) לנגישות תכנים באינטרנט ברמת AA ומסמך WCAG 2.0 הבינלאומי.</p>
   <h2>מידע על נגישות האתר</h2>
   <p>באתר מוטמע תפריט נגישות, הנפתח באמצעות כפתור הנגישות בתחתית המסך. התפריט כולל:</p>
-  <ul>
-    <li>הגדלת טקסט והקטנת טקסט</li>
-    <li>גווני אפור</li>
-    <li>ניגודיות גבוהה וניגודיות הפוכה</li>
-    <li>רקע בהיר</li>
-    <li>הדגשת קישורים</li>
-    <li>פונט קריא</li>
-    <li>איפוס ההגדרות</li>
-  </ul>
+  <ul><li>הגדלת טקסט והקטנת טקסט</li><li>גווני אפור</li><li>ניגודיות גבוהה וניגודיות הפוכה</li><li>רקע בהיר</li><li>הדגשת קישורים</li><li>פונט קריא</li><li>איפוס ההגדרות</li></ul>
   <p>בנוסף, האתר נבנה עם מבנה כותרות תקין, ניווט מלא באמצעות מקלדת, טקסט חלופי לתמונות, תמיכה בהעדפת הפחתת תנועה (Reduced Motion) ותגיות ARIA בתפריטים ובטפסים.</p>
   <h2>פנייה בנושא נגישות</h2>
   <p>אנו ממשיכים לפעול לשיפור נגישות האתר כחלק ממחויבותנו לאפשר לכלל האוכלוסייה לקבל שירות שווה והוגן. אם נתקלתם בבעיה כלשהי בנושא הנגישות, נשמח שתעדכנו אותנו ונעשה כל מאמץ למצוא פתרון מתאים ולטפל בבעיה בהקדם.</p>
-  <p>טלפון: <a class="link" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a><br>דוא״ל: <a class="link" href="mailto:{EMAIL}">{EMAIL}</a></p>
+  <p>טלפון: <a class="link" href="tel:{tel}" dir="ltr">{phone}</a><br>דוא״ל: <a class="link" href="mailto:{email}">{email}</a></p>
   <h2>פרסום הצהרת הנגישות</h2>
-  <p>הצהרת הנגישות עודכנה ביום {TODAY}.</p>
-</section>
-"""
-    html += footer()
-    write("/accessibility/", html)
+  <p>הצהרת הנגישות עודכנה ביום {today}.</p>""",
+    "en": """<p>At Kerem we invest as much as possible in providing all our customers with equal and accessible service, and in making the site comfortable to use for everyone, including people with disabilities, in accordance with the Equal Rights for Persons with Disabilities Law.</p>
+  <p>Accessibility adjustments were made to this site as strictly as possible under the Equal Rights for Persons with Disabilities Regulations (Service Accessibility Adjustments), 2013, following the Israeli Standard (SI 5568) for web content accessibility at level AA and the international WCAG 2.0 guidelines.</p>
+  <h2>Site accessibility</h2>
+  <p>The site includes an accessibility menu, opened with the accessibility button at the bottom of the screen. The menu includes:</p>
+  <ul><li>Increase and decrease text size</li><li>Greyscale</li><li>High contrast and inverted contrast</li><li>Light background</li><li>Highlight links</li><li>Readable font</li><li>Reset settings</li></ul>
+  <p>In addition, the site is built with a proper heading structure, full keyboard navigation, alternative text for images, support for the reduced motion preference and ARIA attributes in menus and forms.</p>
+  <h2>Accessibility enquiries</h2>
+  <p>We continue to work on improving the accessibility of the site as part of our commitment to equal and fair service. If you encounter any accessibility problem, please let us know and we will make every effort to find a suitable solution promptly.</p>
+  <p>Phone: <a class="link" href="tel:{tel}" dir="ltr">{phone}</a><br>Email: <a class="link" href="mailto:{email}">{email}</a></p>
+  <h2>Publication</h2>
+  <p>This accessibility statement was updated on {today}.</p>""",
+}
 
-
-def page_privacy():
-    html = head("מדיניות פרטיות", "מדיניות הפרטיות של אתר כרם יזמות והתחדשות עירונית.", "/privacy/")
-    html += header("/privacy/")
-    html += f"""<section class="wrap page-head">
-  <nav class="crumbs" aria-label="פירורי לחם"><a href="/">ראשי</a><span>/</span><span>מדיניות פרטיות</span></nav>
-  <span class="eyebrow">משפטי</span>
-  <h1>מדיניות פרטיות</h1>
-</section>
-<section class="wrap prose" style="padding-bottom:var(--section)">
-  <p>המידע המוצג להלן נועד לעזור למשתמש להבין מה המידע הנאסף על ידי כרם יזמות והתחדשות עירונית במהלך השימוש באתר האינטרנט שהיא מנהלת ומפעילה בכתובת keremltd.co.il (להלן: ״האתר״), מה השימושים שאנו עשויים לעשות במידע ומהם הכלים הטכנולוגיים שבהם אנו עשויים לעשות שימוש באתר.</p>
+PRIVACY = {
+    "he": """<p>המידע המוצג להלן נועד לעזור למשתמש להבין מה המידע הנאסף על ידי כרם יזמות והתחדשות עירונית במהלך השימוש באתר האינטרנט שהיא מנהלת ומפעילה בכתובת keremltd.co.il (להלן: ״האתר״), מה השימושים שאנו עשויים לעשות במידע ומהם הכלים הטכנולוגיים שבהם אנו עשויים לעשות שימוש באתר.</p>
   <p>במדיניות פרטיות זו: ״משתמש״: כל אדם העושה שימוש כלשהו באתר, לרבות צפייה, גלישה, קריאה וכיו״ב. ״מידע אישי״: נתון הנוגע לאדם מזוהה או לאדם הניתן לזיהוי. ״עיבוד״, ״שימוש״ במידע: כל פעולה שמבוצעת על מידע, לרבות קבלתו, איסופו, אחסונו, העתקתו, עיון בו, העברתו או מתן גישה אליו. מדיניות פרטיות זו כתובה בלשון זכר מטעמי נוחות בלבד, והיא מתייחסת באופן שווה לכל המינים.</p>
   <h2>הסכמה למסירת מידע</h2>
   <p>בכפוף להוראות הדין, השימוש באתר מהווה הסכמה שלך למסירת מידע ושימוש בו למטרות המפורטות במדיניות פרטיות זו. בהתאם לחוק, לא חלה עליך חובה למסור לנו מידע. עם זאת, ככל שתבחר לא למסור לנו מידע, ייתכן שלא תוכל לעשות שימוש באתר ובשירותיו. ככל שתבחר למסור לנו מידע, הנך מצהיר ומאשר כי הפרטים נמסרים מרצונך החופשי ובהסכמתך. בנוסף, השימוש באתר מהווה הסכמה שלך לאיסוף, עיבוד, שימוש, העברה ושמירה של מידע שיתקבל על ידינו בהתאם למדיניות פרטיות זו.</p>
@@ -838,35 +1185,87 @@ def page_privacy():
   <h2>הזכויות שלך</h2>
   <p>בכפוף להוראות הדין, תוכל לעיין במידע אישי אודותיך שיימצא במאגרי המידע של חברתנו ולבקש לתקן או למחוק מידע זה אם אינו נכון, שלם, ברור או מעודכן. כמו כן תוכל לבקש למחוק מידע אישי אודותיך ככל שהתקבל, נמסר או נאסף בניגוד להוראות הדין, או ככל שאינו נחוץ עוד למטרות שלשמן נאסף. כדי לממש זכויות אלו ניתן לפנות אלינו דרך <a class="link" href="/contact/">דף צור קשר</a>.</p>
   <h2>שונות</h2>
-  <p>מדיניות הפרטיות והשימוש באתר כפופים לחוקי מדינת ישראל. סמכות השיפוט הבלעדית בכל מחלוקת שתתעורר תהיה בבתי המשפט בתל אביב–יפו. בעלת האתר רשאית לשנות מדיניות זו מעת לעת ותודיע על כך באמצעות פרסום מדיניות מתוקנת באתר עם תאריך עדכון. המשך השימוש באתר לאחר עדכון יהווה הסכמה למדיניות המתוקנת.</p>
+  <p>מדיניות הפרטיות והשימוש באתר כפופים לחוקי מדינת ישראל. סמכות השיפוט הבלעדית בכל מחלוקת שתתעורר תהיה בבתי המשפט בתל אביב-יפו. בעלת האתר רשאית לשנות מדיניות זו מעת לעת ותודיע על כך באמצעות פרסום מדיניות מתוקנת באתר עם תאריך עדכון. המשך השימוש באתר לאחר עדכון יהווה הסכמה למדיניות המתוקנת.</p>
   <h2>דרכי יצירת קשר</h2>
-  <p>בכל שאלה ובקשה הנוגעת למדיניות פרטיות זו, ניתן לפנות אלינו בטלפון <a class="link" href="tel:{PHONE_TEL}" dir="ltr">{PHONE}</a> או בדוא״ל <a class="link" href="mailto:{EMAIL}">{EMAIL}</a>.</p>
-  <p class="small muted">תאריך עדכון: {TODAY}</p>
+  <p>בכל שאלה ובקשה הנוגעת למדיניות פרטיות זו, ניתן לפנות אלינו בטלפון <a class="link" href="tel:{tel}" dir="ltr">{phone}</a> או בדוא״ל <a class="link" href="mailto:{email}">{email}</a>.</p>
+  <p class="small muted">תאריך עדכון: {today}</p>""",
+    "en": """<p>This policy explains what information Kerem Real Estate Development and Urban Renewal collects while you use the website it operates at keremltd.co.il (the "Site"), how we may use that information, and which technologies we may use on the Site.</p>
+  <p>In this policy, "user" means anyone who uses the Site in any way, including viewing, browsing or reading. "Personal information" means data relating to an identified or identifiable person. "Processing" or "use" means any operation performed on information, including receiving, collecting, storing, copying, reviewing, transferring or granting access to it.</p>
+  <h2>Consent</h2>
+  <p>Subject to law, using the Site constitutes your consent to providing information and to its use for the purposes set out in this policy. You are under no legal obligation to provide us with information. If you choose not to, you may not be able to use the Site and its services. Where you do provide information, you confirm that it is provided of your own free will and with your consent, and you agree to its collection, processing, use, transfer and storage in accordance with this policy.</p>
+  <h2>Information we collect</h2>
+  <p>In general, you can browse the Site without providing any personal information. The personal information we may collect is what you choose to give us when contacting us through the Site (such as name, email address and phone number). We may also collect analytical and statistical information about how our services are used (pages visited, links clicked and so on) and about how you connect (approximate location, IP address, browser type, language preference, landing pages, device and so on), either ourselves or through third-party services and monitoring tools such as cookies.</p>
+  <h2>How we use information</h2>
+  <p>We may use personal information you provide to contact you, for example to offer services we provide, to improve the quality of our services and to respond to you. Such information is disclosed to employees or service providers only to the extent necessary for contacting you and for operating, maintaining and supporting the Site. Statistical information is used to improve the Site and our services, subject to law.</p>
+  <h2>Cookies</h2>
+  <p>This Site does not set tracking cookies and does not use third-party analytics tools. The accessibility menu stores the preferences you choose (such as text size or contrast) in your browser's local storage only. This information is not sent to us and does not identify you.</p>
+  <h2>Sharing with third parties</h2>
+  <ul>
+    <li>Information may be shared with third parties in accordance with this policy, proportionately and for the defined purposes, and limited to what is relevant for that purpose.</li>
+    <li>We may share information with third parties that provide us with services such as information security, IT, data storage (including the form delivery service), legal advice and other professional services.</li>
+    <li>We may also disclose information where a court order requires it; in disputes or legal proceedings between you and us; in the event of a transfer of ownership, merger or change of control; and where we believe disclosure is needed to prevent or reduce harm.</li>
+  </ul>
+  <h2>Security and limitation of liability</h2>
+  <p>We take reasonable, customary technical and physical measures to protect the privacy and security of information. However, transmission over the internet cannot be completely secure, and we do not guarantee that the Site will operate without interruption or that the Site, our databases and the data collected will be entirely immune from unauthorised access. Use of the Site is conditional on your agreement that information is provided at your own risk. If you suspect a security breach, please contact us as soon as possible.</p>
+  <p>The Site may contain links to other websites that are not under our control. Use of third-party sites is subject to their terms, and we accept no liability for any damage or loss arising from their use.</p>
+  <h2>Retention</h2>
+  <p>We keep information for as long as needed for the purposes set out in this policy, unless a longer retention period is required by law.</p>
+  <h2>Information about third parties</h2>
+  <p>If you provide us with personal information about third parties, you must ensure that you have obtained the consent required by law.</p>
+  <h2>Your rights</h2>
+  <p>Subject to law, you may review personal information about you held in our databases and ask us to correct or delete it if it is inaccurate, incomplete, unclear or out of date. You may also ask us to delete personal information that was obtained or collected contrary to law, or that is no longer needed for the purposes for which it was collected. To exercise these rights, contact us through the <a class="link" href="/en/contact/">contact page</a>.</p>
+  <h2>General</h2>
+  <p>This policy and use of the Site are governed by the laws of the State of Israel. The courts of Tel Aviv-Jaffa have exclusive jurisdiction over any dispute. The Site owner may change this policy from time to time and will publish an updated policy on the Site with a revision date. Continued use of the Site after an update constitutes acceptance of the revised policy.</p>
+  <h2>Contact</h2>
+  <p>For any question or request about this policy, call <a class="link" href="tel:{tel}" dir="ltr">{phone}</a> or email <a class="link" href="mailto:{email}">{email}</a>.</p>
+  <p class="small muted">Last updated: {today}</p>""",
+}
+
+
+def page_legal(lang, key, title_key, desc_key, body_map):
+    t = T[lang]
+    px = pfx(lang)
+    path = f"{px}/{key}/"
+    body = body_map[lang].format(tel=PHONE_TEL, phone=PHONE, email=EMAIL, today=TODAY)
+    html = head(lang, t[title_key], t[desc_key], path)
+    html += header(lang, path, path)
+    html += f"""<section class="wrap page-head">
+  {crumbs(lang, (t[title_key], None))}
+  <h1>{t[title_key]}</h1>
+</section>
+<section class="wrap prose" style="padding-bottom:var(--section)">
+  {body}
 </section>
 """
-    html += footer()
-    write("/privacy/", html)
+    html += footer(lang, path)
+    write(path, html)
 
 
-def page_404():
-    html = head("הדף לא נמצא", "הדף המבוקש לא נמצא.", "/404.html")
-    html += header("")
-    html += """<section class="wrap err">
+def page_404(lang):
+    t = T[lang]
+    px = pfx(lang)
+    path = px + "/404.html"
+    html = head(lang, t["nf_title"], t["nf_desc"], path)
+    html += header(lang, "", path)
+    html += f"""<section class="wrap err">
   <div>
     <span class="eyebrow">404</span>
-    <h1>הדף לא נמצא</h1>
-    <p class="lead">ייתכן שהכתובת השתנתה או שהדף הוסר.</p>
-    <div class="cta-row" style="justify-content:center"><a class="btn" href="/">לדף הבית</a><a class="btn btn--ghost" href="/projects/">לפרויקטים</a></div>
+    <h1>{t['nf_title']}</h1>
+    <p class="lead">{t['nf_lead']}</p>
+    <div class="cta-row" style="justify-content:center"><a class="btn" href="{px}/">{t['cta_home']}</a><a class="btn btn--ghost" href="{px}/projects/">{t['cta_projects']}</a></div>
   </div>
 </section>
 """
-    html += footer()
-    write("/404.html", html)
+    html += footer(lang, path)
+    write(path, html)
 
 
 def sitemap():
-    urls = ["/", "/about/", "/projects/", "/how-we-start/", "/contact/", "/accessibility/", "/privacy/"]
-    urls += [f"/projects/{p['slug']}/" for p in PROJECTS if not p.get("external") and p.get("desc")]
+    urls = []
+    for lang in ("he", "en"):
+        px = pfx(lang)
+        urls += [px + "/", px + "/about/", px + "/projects/", px + "/how-we-start/", px + "/contact/", px + "/accessibility/", px + "/privacy/"]
+        urls += [f"{px}/projects/{p['slug']}/" for p in PROJECTS]
     today = date.today().isoformat()
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     xml += "".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{today}</lastmod></url>\n" for u in urls)
@@ -878,17 +1277,17 @@ def sitemap():
 
 
 def main():
-    page_home()
-    page_projects()
-    for p in PROJECTS:
-        if not p.get("external") and p.get("desc"):
-            page_project(p)
-    page_about()
-    page_how()
-    page_contact()
-    page_accessibility()
-    page_privacy()
-    page_404()
+    for lang in ("he", "en"):
+        page_home(lang)
+        page_projects(lang)
+        for p in PROJECTS:
+            page_project(p, lang)
+        page_about(lang)
+        page_how(lang)
+        page_contact(lang)
+        page_legal(lang, "accessibility", "a11y_title", "a11y_desc", ACCESSIBILITY)
+        page_legal(lang, "privacy", "privacy_title", "privacy_desc", PRIVACY)
+        page_404(lang)
     sitemap()
 
 

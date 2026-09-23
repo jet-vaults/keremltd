@@ -1,7 +1,7 @@
-/* Kerem — minimal progressive enhancement, no dependencies */
+/* Kerem: minimal progressive enhancement, no dependencies */
 (function () {
   'use strict';
-  var d = document, b = d.body;
+  var d = document, b = d.body, EN = d.documentElement.lang === 'en';
 
   /* mobile menu */
   var burger = d.querySelector('.burger');
@@ -30,16 +30,16 @@
       var msg = form.querySelector('.form__msg'), btn = form.querySelector('button[type=submit]');
       var fd = new FormData(form);
       if (fd.get('botcheck')) return;
-      btn.disabled = true; btn.dataset.t = btn.textContent; btn.textContent = 'שולח…';
+      btn.disabled = true; btn.dataset.t = btn.textContent; btn.textContent = EN ? 'Sending…' : 'שולח…';
       msg.className = 'form__msg';
       fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(Object.fromEntries(fd)) })
         .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.success, j: j }; }); })
         .then(function (r) {
-          if (r.ok) { form.reset(); msg.textContent = 'תודה, פנייתכם התקבלה. נציג יחזור אליכם בהקדם.'; msg.className = 'form__msg ok'; }
+          if (r.ok) { form.reset(); msg.textContent = EN ? 'Thank you, your enquiry has been received. We will get back to you shortly.' : 'תודה, פנייתכם התקבלה. נציג יחזור אליכם בהקדם.'; msg.className = 'form__msg ok'; }
           else throw new Error(r.j && r.j.message);
         })
         .catch(function () {
-          msg.innerHTML = 'לא הצלחנו לשלוח את הטופס כרגע. ניתן להתקשר אלינו: <a href="tel:+97236121314" dir="ltr">03-6121314</a> או לכתוב ל-<a href="mailto:office@keremltd.co.il">office@keremltd.co.il</a>';
+          msg.innerHTML = (EN ? 'We could not send the form right now. Call us at <a href="tel:+97236121314" dir="ltr">03-6121314</a> or write to ' : 'לא הצלחנו לשלוח את הטופס כרגע. ניתן להתקשר אלינו: <a href="tel:+97236121314" dir="ltr">03-6121314</a> או לכתוב ל-') + '<a href="mailto:office@keremltd.co.il">office@keremltd.co.il</a>';
           msg.className = 'form__msg err';
         })
         .finally(function () { btn.disabled = false; btn.textContent = btn.dataset.t; });
