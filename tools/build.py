@@ -958,7 +958,7 @@ def page_project(p, lang):
         sold = SOLD[lang]
         trs = "".join(
             f'<tr class="{"sold" if n == sold else ""}"><td>{a}</td><td>{ty}</td><td>{r}</td><td>{s}</td><td>{o}</td><td>{"<span class=tag>" + n + "</span>" if n and n != sold else n}</td>'
-            f'<td><a class="pdf" href="/assets/pdf/louis-marshall-11/{pdf}.pdf" download aria-label="{t["m_pdf_label"]}: {a}">{t["m_pdf"]}</a></td></tr>'
+            f'<td><a class="pdf" href="/assets/pdf/louis-marshall-11/{pdf}.pdf" download aria-label="{t["m_pdf"]}, {t["m_pdf_label"]}: {a}">{t["m_pdf"]}</a></td></tr>'
             for (a, ty, r, s, o, n), pdf in zip(v(MARSHALL_APTS, lang), MARSHALL_PDFS))
         tours = f"""
 <section class="wrap section rule">
