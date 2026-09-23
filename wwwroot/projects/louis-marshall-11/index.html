@@ -258,42 +258,25 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero--v5 figcaption{padding-top:10px;font-size:var(--fs-small);color:var(--muted)}
 @media (max-width:900px){.hero--v5 .v5-band{padding-bottom:110px}.hero--v5 .v5-media{margin-top:-80px}.hero--v5 .v5-media .frame{aspect-ratio:4/3}}
 
-/* apartments on mobile: three preview layouts (desktop keeps the table) */
+/* apartments on mobile: accordion (desktop keeps the table) */
 .apts-cards{display:none}
 @media (max-width:640px){
-  .apts-v1 .table-wrap,.apts-v1 .table-hint,.apts-v2 .table-wrap,.apts-v2 .table-hint,.apts-v3 .table-wrap,.apts-v3 .table-hint{display:none}
-  .apts-v1 .apts-cards,.apts-v2 .apts-cards,.apts-v3 .apts-cards{display:block;border-top:1px solid var(--line-strong)}
+  .apts-v3 .table-wrap,.apts-v3 .table-hint{display:none}
+  .apts-v3 .apts-cards{display:block;border-top:1px solid var(--line-strong)}
   .apt{border-bottom:1px solid var(--line)}
-  .apt summary{list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:16px 0;cursor:default}
+  .apt summary{list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:16px 0;padding-inline-end:28px;cursor:pointer;position:relative}
   .apt summary::-webkit-details-marker{display:none}
+  .apt summary::after{content:"+";position:absolute;inset-inline-end:0;top:14px;font-size:1.3rem;font-weight:300;color:var(--blue-text)}
+  .apt[open] summary::after{content:"\2212"}
   .apt-name{font-weight:500;color:var(--navy)}
   .apt-name .sold-tag{margin-inline-start:8px}
   .apt-key{font-size:var(--fs-small);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
   .apt.sold .apt-name,.apt.sold .apt-key{color:var(--muted)}
-  .apt-body dl{margin:0}
+  .apt-body{padding:0 0 18px}
+  .apt-body dl{display:grid;grid-template-columns:1fr 1fr;gap:10px var(--gap);margin:0}
+  .apt-body dt{font-size:.75rem;color:var(--muted)}
+  .apt-body dd{margin:2px 0 0}
   .apt-body .pdf{display:inline-block;margin-top:12px;padding:8px 14px;border:1px solid var(--line-strong);font-size:.85rem;font-weight:500;color:var(--navy)}
-  /* 1: open blocks, two-column details, full-width PDF */
-  .apts-v1 .apt-body{padding:0 0 18px}
-  .apts-v1 .apt-body dl{display:grid;grid-template-columns:1fr 1fr;gap:10px var(--gap)}
-  .apts-v1 .apt-body dt{font-size:.75rem;color:var(--muted)}
-  .apts-v1 .apt-body dd{margin:2px 0 0;color:var(--ink)}
-  .apts-v1 .apt-body .pdf{display:block;text-align:center;margin-top:14px}
-  /* 2: compact, one line of details */
-  .apts-v2 .apt summary{padding:12px 0 4px}
-  .apts-v2 .apt-body{padding:0 0 12px;font-size:var(--fs-small);color:var(--muted)}
-  .apts-v2 .apt-body dl{display:flex;flex-wrap:wrap;gap:4px 14px}
-  .apts-v2 .apt-body dt{display:none}
-  .apts-v2 .apt-body dd{margin:0}
-  .apts-v2 .apt-body dd:not(:last-child)::after{content:"·";margin-inline-start:14px;color:var(--line-strong)}
-  .apts-v2 .apt-body .pdf{margin-top:8px;padding:4px 10px;font-size:.78rem}
-  /* 3: accordion */
-  .apts-v3 .apt summary{cursor:pointer;padding-inline-end:28px;position:relative}
-  .apts-v3 .apt summary::after{content:"+";position:absolute;inset-inline-end:0;top:14px;font-size:1.3rem;font-weight:300;color:var(--blue-text)}
-  .apts-v3 .apt[open] summary::after{content:"\2212"}
-  .apts-v3 .apt-body{padding:0 0 18px}
-  .apts-v3 .apt-body dl{display:grid;grid-template-columns:1fr 1fr;gap:10px var(--gap)}
-  .apts-v3 .apt-body dt{font-size:.75rem;color:var(--muted)}
-  .apts-v3 .apt-body dd{margin:2px 0 0}
 }
 
 /* sticky contact bar */
@@ -581,7 +564,7 @@ input[type=tel]{direction:ltr;text-align:right}
   </div>
 </section>
 
-<section class="wrap section rule apts-wrap apts-v0" id="apts">
+<section class="wrap section rule apts-wrap apts-v3" id="apts">
   <div class="sec-head rv"><h2>הדירות</h2></div>
   <p class="rv" style="margin-top:-16px;margin-bottom:24px">3 דירות בקומה, 2 כיווני אוויר ומרפסת שמש לכל דירה.</p>
   <p class="table-hint">ניתן לגלול את הטבלה לצדדים</p>
@@ -589,34 +572,34 @@ input[type=tel]{direction:ltr;text-align:right}
     <thead><tr><th>דירה</th><th>סוג</th><th>חדרים</th><th>שטח</th><th>חוץ</th><th>הערות</th><th>תכנית</th></tr></thead>
     <tbody><tr class=""><td>דירה 1</td><td>דירת גן</td><td>2 חדרים</td><td>67 מ״ר</td><td>55 מ״ר גן</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-1.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 1">PDF</a></td></tr><tr class=""><td>דירה 2</td><td>דירה</td><td>3 חדרים</td><td>70 מ״ר</td><td>11 מ״ר מרפסת</td><td><span class=tag>מבצע לזמן מוגבל</span></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-2.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 2">PDF</a></td></tr><tr class=""><td>דירה 3</td><td>דירה</td><td>3 חדרים</td><td>76 מ״ר</td><td>11 מ״ר מרפסת</td><td><span class=tag>4,820,300 ₪, מבצע לזמן מוגבל</span></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-3.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 3">PDF</a></td></tr><tr class="sold"><td>דירה 4 <span class="sold-tag">נמכרה</span></td><td>דירה</td><td>3 חדרים</td><td>62 מ״ר</td><td>14 מ״ר מרפסת</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-4.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 4">PDF</a></td></tr><tr class=""><td>דירה 5</td><td>דירה</td><td>3 חדרים</td><td>70 מ״ר</td><td>11 מ״ר מרפסת</td><td><span class=tag>מבצע לזמן מוגבל</span></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-5.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 5">PDF</a></td></tr><tr class=""><td>דירה 17</td><td>פנטהאוז</td><td>3 חדרים</td><td>80 מ״ר</td><td>50 מ״ר מרפסת</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-17.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 17">PDF</a></td></tr><tr class="sold"><td>דירה 18 <span class="sold-tag">נמכרה</span></td><td>מיני פנטהאוז</td><td>2 חדרים</td><td>60 מ״ר</td><td>21 מ״ר מרפסת</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-18.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 18">PDF</a></td></tr><tr class=""><td>דירה 19</td><td>דירה</td><td>3 חדרים</td><td>73 מ״ר</td><td>6 מ״ר מרפסת</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-19.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 19">PDF</a></td></tr><tr class=""><td>דירה 20</td><td>דירה</td><td>2 חדרים</td><td>56 מ״ר</td><td>5.5 מ״ר מרפסת</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-20.pdf" download aria-label="PDF, הורדת תכנית הדירה: דירה 20">PDF</a></td></tr><tr class=""><td>איחוד 19+20</td><td>פנטהאוז</td><td>4 חדרים</td><td>120 מ״ר</td><td>20 מ״ר מרפסת</td><td></td><td><a class="pdf" href="/assets/pdf/louis-marshall-11/penthouse-19-20.pdf" download aria-label="PDF, הורדת תכנית הדירה: איחוד 19+20">PDF</a></td></tr></tbody>
   </table></div>
-  <div class="apts-cards"><details class="apt" open>
+  <div class="apts-cards"><details class="apt">
   <summary><span class="apt-name">דירה 1</span><span class="apt-key">2 חדרים · 67 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>דירת גן</dd></div><div><dt>חוץ</dt><dd>55 מ״ר גן</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-1.pdf" download>PDF · הורדת תכנית הדירה</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">דירה 2</span><span class="apt-key">3 חדרים · 70 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>דירה</dd></div><div><dt>חוץ</dt><dd>11 מ״ר מרפסת</dd></div><div><dt>הערות</dt><dd>מבצע לזמן מוגבל</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-2.pdf" download>PDF · הורדת תכנית הדירה</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">דירה 3</span><span class="apt-key">3 חדרים · 76 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>דירה</dd></div><div><dt>חוץ</dt><dd>11 מ״ר מרפסת</dd></div><div><dt>הערות</dt><dd>4,820,300 ₪, מבצע לזמן מוגבל</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-3.pdf" download>PDF · הורדת תכנית הדירה</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">דירה 4<span class="sold-tag">נמכרה</span></span><span class="apt-key">3 חדרים · 62 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>דירה</dd></div><div><dt>חוץ</dt><dd>14 מ״ר מרפסת</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-4.pdf" download>PDF · הורדת תכנית הדירה</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">דירה 5</span><span class="apt-key">3 חדרים · 70 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>דירה</dd></div><div><dt>חוץ</dt><dd>11 מ״ר מרפסת</dd></div><div><dt>הערות</dt><dd>מבצע לזמן מוגבל</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-5.pdf" download>PDF · הורדת תכנית הדירה</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">דירה 17</span><span class="apt-key">3 חדרים · 80 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>פנטהאוז</dd></div><div><dt>חוץ</dt><dd>50 מ״ר מרפסת</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-17.pdf" download>PDF · הורדת תכנית הדירה</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">דירה 18<span class="sold-tag">נמכרה</span></span><span class="apt-key">2 חדרים · 60 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>מיני פנטהאוז</dd></div><div><dt>חוץ</dt><dd>21 מ״ר מרפסת</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-18.pdf" download>PDF · הורדת תכנית הדירה</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">דירה 19</span><span class="apt-key">3 חדרים · 73 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>דירה</dd></div><div><dt>חוץ</dt><dd>6 מ״ר מרפסת</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-19.pdf" download>PDF · הורדת תכנית הדירה</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">דירה 20</span><span class="apt-key">2 חדרים · 56 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>דירה</dd></div><div><dt>חוץ</dt><dd>5.5 מ״ר מרפסת</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/apt-20.pdf" download>PDF · הורדת תכנית הדירה</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">איחוד 19+20</span><span class="apt-key">4 חדרים · 120 מ״ר</span></summary>
   <div class="apt-body"><dl><div><dt>סוג</dt><dd>פנטהאוז</dd></div><div><dt>חוץ</dt><dd>20 מ״ר מרפסת</dd></div></dl><a class="pdf" href="/assets/pdf/louis-marshall-11/penthouse-19-20.pdf" download>PDF · הורדת תכנית הדירה</a></div>
 </details></div>

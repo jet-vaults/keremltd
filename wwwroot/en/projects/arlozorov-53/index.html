@@ -258,42 +258,25 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero--v5 figcaption{padding-top:10px;font-size:var(--fs-small);color:var(--muted)}
 @media (max-width:900px){.hero--v5 .v5-band{padding-bottom:110px}.hero--v5 .v5-media{margin-top:-80px}.hero--v5 .v5-media .frame{aspect-ratio:4/3}}
 
-/* apartments on mobile: three preview layouts (desktop keeps the table) */
+/* apartments on mobile: accordion (desktop keeps the table) */
 .apts-cards{display:none}
 @media (max-width:640px){
-  .apts-v1 .table-wrap,.apts-v1 .table-hint,.apts-v2 .table-wrap,.apts-v2 .table-hint,.apts-v3 .table-wrap,.apts-v3 .table-hint{display:none}
-  .apts-v1 .apts-cards,.apts-v2 .apts-cards,.apts-v3 .apts-cards{display:block;border-top:1px solid var(--line-strong)}
+  .apts-v3 .table-wrap,.apts-v3 .table-hint{display:none}
+  .apts-v3 .apts-cards{display:block;border-top:1px solid var(--line-strong)}
   .apt{border-bottom:1px solid var(--line)}
-  .apt summary{list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:16px 0;cursor:default}
+  .apt summary{list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:16px 0;padding-inline-end:28px;cursor:pointer;position:relative}
   .apt summary::-webkit-details-marker{display:none}
+  .apt summary::after{content:"+";position:absolute;inset-inline-end:0;top:14px;font-size:1.3rem;font-weight:300;color:var(--blue-text)}
+  .apt[open] summary::after{content:"\2212"}
   .apt-name{font-weight:500;color:var(--navy)}
   .apt-name .sold-tag{margin-inline-start:8px}
   .apt-key{font-size:var(--fs-small);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
   .apt.sold .apt-name,.apt.sold .apt-key{color:var(--muted)}
-  .apt-body dl{margin:0}
+  .apt-body{padding:0 0 18px}
+  .apt-body dl{display:grid;grid-template-columns:1fr 1fr;gap:10px var(--gap);margin:0}
+  .apt-body dt{font-size:.75rem;color:var(--muted)}
+  .apt-body dd{margin:2px 0 0}
   .apt-body .pdf{display:inline-block;margin-top:12px;padding:8px 14px;border:1px solid var(--line-strong);font-size:.85rem;font-weight:500;color:var(--navy)}
-  /* 1: open blocks, two-column details, full-width PDF */
-  .apts-v1 .apt-body{padding:0 0 18px}
-  .apts-v1 .apt-body dl{display:grid;grid-template-columns:1fr 1fr;gap:10px var(--gap)}
-  .apts-v1 .apt-body dt{font-size:.75rem;color:var(--muted)}
-  .apts-v1 .apt-body dd{margin:2px 0 0;color:var(--ink)}
-  .apts-v1 .apt-body .pdf{display:block;text-align:center;margin-top:14px}
-  /* 2: compact, one line of details */
-  .apts-v2 .apt summary{padding:12px 0 4px}
-  .apts-v2 .apt-body{padding:0 0 12px;font-size:var(--fs-small);color:var(--muted)}
-  .apts-v2 .apt-body dl{display:flex;flex-wrap:wrap;gap:4px 14px}
-  .apts-v2 .apt-body dt{display:none}
-  .apts-v2 .apt-body dd{margin:0}
-  .apts-v2 .apt-body dd:not(:last-child)::after{content:"·";margin-inline-start:14px;color:var(--line-strong)}
-  .apts-v2 .apt-body .pdf{margin-top:8px;padding:4px 10px;font-size:.78rem}
-  /* 3: accordion */
-  .apts-v3 .apt summary{cursor:pointer;padding-inline-end:28px;position:relative}
-  .apts-v3 .apt summary::after{content:"+";position:absolute;inset-inline-end:0;top:14px;font-size:1.3rem;font-weight:300;color:var(--blue-text)}
-  .apts-v3 .apt[open] summary::after{content:"\2212"}
-  .apts-v3 .apt-body{padding:0 0 18px}
-  .apts-v3 .apt-body dl{display:grid;grid-template-columns:1fr 1fr;gap:10px var(--gap)}
-  .apts-v3 .apt-body dt{font-size:.75rem;color:var(--muted)}
-  .apts-v3 .apt-body dd{margin:2px 0 0}
 }
 
 /* sticky contact bar */
@@ -581,7 +564,7 @@ input[type=tel]{direction:ltr;text-align:right}
   </div>
 </section>
 
-<section class="wrap section rule apts-wrap apts-v0" id="apts">
+<section class="wrap section rule apts-wrap apts-v3" id="apts">
   <div class="sec-head rv"><h2>The apartments</h2></div>
   <p class="rv" style="margin-top:-16px;margin-bottom:24px">Two- to five-room apartments, a garden apartment on the ground floor and two penthouses facing the Tel Aviv skyline. Two exposures for every apartment.</p>
   <p class="table-hint">Scroll the table sideways</p>
@@ -589,61 +572,61 @@ input[type=tel]{direction:ltr;text-align:right}
     <thead><tr><th>Apartment</th><th>Floor</th><th>Rooms</th><th>Area</th><th>Plan</th></tr></thead>
     <tbody><tr class=""><td>Apt. 1</td><td>-1</td><td>4 rooms</td><td>103 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-1.pdf" download aria-label="PDF, Download the apartment plan: Apt. 1">PDF</a></td></tr><tr class=""><td>Apt. 2</td><td>Ground</td><td>2 rooms</td><td>62.7 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-2.pdf" download aria-label="PDF, Download the apartment plan: Apt. 2">PDF</a></td></tr><tr class=""><td>Apt. 3</td><td>Ground</td><td>2 rooms</td><td>64.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-3.pdf" download aria-label="PDF, Download the apartment plan: Apt. 3">PDF</a></td></tr><tr class="sold"><td>Apt. 6 <span class="sold-tag">Sold</span></td><td>1</td><td>3 rooms</td><td>69 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-6.pdf" download aria-label="PDF, Download the apartment plan: Apt. 6">PDF</a></td></tr><tr class="sold"><td>Apt. 9 <span class="sold-tag">Sold</span></td><td>2</td><td>2 rooms</td><td>51.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-9.pdf" download aria-label="PDF, Download the apartment plan: Apt. 9">PDF</a></td></tr><tr class=""><td>Apt. 10</td><td>2</td><td>4 rooms</td><td>98.3 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-10.pdf" download aria-label="PDF, Download the apartment plan: Apt. 10">PDF</a></td></tr><tr class="sold"><td>Apt. 11 <span class="sold-tag">Sold</span></td><td>2</td><td>2 rooms</td><td>58.8 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-11.pdf" download aria-label="PDF, Download the apartment plan: Apt. 11">PDF</a></td></tr><tr class="sold"><td>Apt. 15 <span class="sold-tag">Sold</span></td><td>4</td><td>3 rooms</td><td>63.3 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-15.pdf" download aria-label="PDF, Download the apartment plan: Apt. 15">PDF</a></td></tr><tr class="sold"><td>Apt. 18 <span class="sold-tag">Sold</span></td><td>5</td><td>3 rooms</td><td>63.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-18.pdf" download aria-label="PDF, Download the apartment plan: Apt. 18">PDF</a></td></tr><tr class="sold"><td>Apt. 22 <span class="sold-tag">Sold</span></td><td>6</td><td>2 rooms</td><td>62.6 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-22.pdf" download aria-label="PDF, Download the apartment plan: Apt. 22">PDF</a></td></tr><tr class=""><td>Apt. 23</td><td>6</td><td>5 rooms</td><td>111.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-23.pdf" download aria-label="PDF, Download the apartment plan: Apt. 23">PDF</a></td></tr><tr class=""><td>Apt. 24</td><td>7</td><td>4 rooms</td><td>99.4 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-24.pdf" download aria-label="PDF, Download the apartment plan: Apt. 24">PDF</a></td></tr><tr class="sold"><td>Apt. 25 <span class="sold-tag">Sold</span></td><td>7</td><td>2 rooms</td><td>63 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-25.pdf" download aria-label="PDF, Download the apartment plan: Apt. 25">PDF</a></td></tr><tr class=""><td>Apt. 26</td><td>7</td><td>5 rooms</td><td>111.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-26.pdf" download aria-label="PDF, Download the apartment plan: Apt. 26">PDF</a></td></tr><tr class=""><td>Apt. 27</td><td>8</td><td>3 rooms</td><td>78 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-27.pdf" download aria-label="PDF, Download the apartment plan: Apt. 27">PDF</a></td></tr><tr class="sold"><td>Apt. 28 <span class="sold-tag">Sold</span></td><td>8</td><td>3 rooms</td><td>73.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-28.pdf" download aria-label="PDF, Download the apartment plan: Apt. 28">PDF</a></td></tr><tr class=""><td>Apt. 29</td><td>8</td><td>4.5 rooms</td><td>94.6 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-29.pdf" download aria-label="PDF, Download the apartment plan: Apt. 29">PDF</a></td></tr><tr class=""><td>Apt. 30</td><td>9</td><td>3 rooms</td><td>66.2 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-30.pdf" download aria-label="PDF, Download the apartment plan: Apt. 30">PDF</a></td></tr><tr class=""><td>Apt. 31</td><td>9</td><td>3 rooms</td><td>86.3 sqm</td><td><a class="pdf" href="/assets/pdf/arlozorov-53/apt-31.pdf" download aria-label="PDF, Download the apartment plan: Apt. 31">PDF</a></td></tr></tbody>
   </table></div>
-  <div class="apts-cards"><details class="apt" open>
+  <div class="apts-cards"><details class="apt">
   <summary><span class="apt-name">Apt. 1</span><span class="apt-key">4 rooms · 103 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>-1</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-1.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 2</span><span class="apt-key">2 rooms · 62.7 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>Ground</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-2.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 3</span><span class="apt-key">2 rooms · 64.2 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>Ground</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-3.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">Apt. 6<span class="sold-tag">Sold</span></span><span class="apt-key">3 rooms · 69 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>1</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-6.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">Apt. 9<span class="sold-tag">Sold</span></span><span class="apt-key">2 rooms · 51.2 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>2</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-9.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 10</span><span class="apt-key">4 rooms · 98.3 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>2</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-10.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">Apt. 11<span class="sold-tag">Sold</span></span><span class="apt-key">2 rooms · 58.8 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>2</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-11.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">Apt. 15<span class="sold-tag">Sold</span></span><span class="apt-key">3 rooms · 63.3 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>4</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-15.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">Apt. 18<span class="sold-tag">Sold</span></span><span class="apt-key">3 rooms · 63.2 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>5</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-18.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">Apt. 22<span class="sold-tag">Sold</span></span><span class="apt-key">2 rooms · 62.6 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>6</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-22.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 23</span><span class="apt-key">5 rooms · 111.2 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>6</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-23.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 24</span><span class="apt-key">4 rooms · 99.4 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>7</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-24.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">Apt. 25<span class="sold-tag">Sold</span></span><span class="apt-key">2 rooms · 63 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>7</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-25.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 26</span><span class="apt-key">5 rooms · 111.2 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>7</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-26.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 27</span><span class="apt-key">3 rooms · 78 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>8</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-27.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt sold" open>
+</details><details class="apt sold">
   <summary><span class="apt-name">Apt. 28<span class="sold-tag">Sold</span></span><span class="apt-key">3 rooms · 73.2 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>8</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-28.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 29</span><span class="apt-key">4.5 rooms · 94.6 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>8</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-29.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 30</span><span class="apt-key">3 rooms · 66.2 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>9</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-30.pdf" download>PDF · Download the apartment plan</a></div>
-</details><details class="apt" open>
+</details><details class="apt">
   <summary><span class="apt-name">Apt. 31</span><span class="apt-key">3 rooms · 86.3 sqm</span></summary>
   <div class="apt-body"><dl><div><dt>Floor</dt><dd>9</dd></div></dl><a class="pdf" href="/assets/pdf/arlozorov-53/apt-31.pdf" download>PDF · Download the apartment plan</a></div>
 </details></div>

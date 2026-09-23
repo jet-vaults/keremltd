@@ -1182,13 +1182,13 @@ def page_projects(lang):
     write(path, html)
 
 
-def page_project(p, lang, table_variant=0):
+def page_project(p, lang):
     t = T[lang]
     px = pfx(lang)
-    path = f"{px}/projects/{p['slug']}/" if not table_variant else f"{px}/table/{table_variant}/"
+    path = f"{px}/projects/{p['slug']}/"
     name, city = v(p["name"], lang), v(p["city"], lang)
     title = f"{name}, {city}"
-    html = head(lang, title, v(p["short"], lang), path, preload(p["img"], "(max-width:1280px) 92vw, 1184px") + ('\n<meta name="robots" content="noindex">' if table_variant else ""), og_image=f"{p['img']}-1200")
+    html = head(lang, title, v(p["short"], lang), path, preload(p["img"], "(max-width:1280px) 92vw, 1184px"), og_image=f"{p['img']}-1200")
     html += header(lang, px + "/projects/", path)
 
     facts = [(t["p_type"], v(p["type"], lang)), (t["p_city"], place(p, lang))]
@@ -1230,7 +1230,7 @@ def page_project(p, lang, table_variant=0):
             sold = f' <span class="sold-tag">{SOLD[lang]}</span>' if row.get("sold") else ""
             cells = cells.replace("</td>", sold + "</td>", 1)
             trs += f'<tr class="{"sold" if row.get("sold") else ""}">{cells}</tr>'
-        # mobile cards (used by the /table/N/ previews; the default keeps the scrolling table)
+        # mobile accordion (desktop keeps the table)
         heads = list(v(r["head"], lang))
         cards_html = ""
         for row in r["rows"]:
@@ -1243,12 +1243,12 @@ def page_project(p, lang, table_variant=0):
             dl = "".join(f"<div><dt>{esc(k)}</dt><dd>{esc(val)}</dd></div>" for k, val in rest)
             plan = (f'<a class="pdf" href="{pdf_dir}/{row["pdf"]}.pdf" download>{t["m_pdf"]} · {t["m_pdf_label"]}</a>' if row.get("pdf") else "")
             sold = f'<span class="sold-tag">{SOLD[lang]}</span>' if row.get("sold") else ""
-            cards_html += f"""<details class="apt{' sold' if row.get('sold') else ''}"{' open' if table_variant != 3 else ''}>
+            cards_html += f"""<details class="apt{' sold' if row.get('sold') else ''}">
   <summary><span class="apt-name">{esc(cells[0])}{sold}</span><span class="apt-key">{esc(' · '.join(key_parts))}</span></summary>
   <div class="apt-body"><dl>{dl}</dl>{plan}</div>
 </details>"""
         rich_html += f"""
-<section class="wrap section rule apts-wrap apts-v{table_variant}" id="apts">
+<section class="wrap section rule apts-wrap apts-v3" id="apts">
   <div class="sec-head rv"><h2>{t['m_apts']}</h2></div>
   <p class="rv" style="margin-top:-16px;margin-bottom:24px">{v(r['note'], lang)}</p>
   <p class="table-hint">{t['m_scroll_hint']}</p>
@@ -1598,26 +1598,6 @@ def page_404(lang):
     write(path, html)
 
 
-def page_table_index(lang):
-    t = T[lang]
-    px = pfx(lang)
-    path = f"{px}/table/"
-    names = {1: "כרטיסים פתוחים: כל דירה כבלוק עם פרטים בשתי עמודות וכפתור PDF",
-             2: "שורות דחוסות: שורה אחת לכל דירה, הפרטים בשורה שנייה קטנה",
-             3: "אקורדיון: שם, חדרים ושטח; לחיצה פותחת את הפרטים ואת ה-PDF"}
-    items = "".join(f'<li><a class="link" href="{px}/table/{n}/#apts">אפשרות {n}</a><p class="small muted">{d}</p></li>' for n, d in names.items())
-    html = head(lang, "Table options", "Mobile table options for review.", path, '<meta name="robots" content="noindex">')
-    html += header(lang, "", path)
-    html += f"""<section class="wrap page-head">
-  <h1>שלוש אפשרויות לטבלת הדירות בנייד</h1>
-  <p class="lead">פתחו בטלפון. בדסקטופ הטבלה נשארת כפי שהיא בכל האפשרויות.</p>
-</section>
-<section class="wrap prose" style="padding-bottom:var(--section)"><ol class="hero-list">{items}</ol></section>
-"""
-    html += footer(lang, path)
-    write(path, html)
-
-
 def sitemap():
     urls = []
     for lang in ("he", "en"):
@@ -1644,10 +1624,6 @@ def main():
         for n in HERO_VARIANTS:
             page_home(lang, n)
         page_hero_index(lang)
-        if lang == "he":
-            for n in (1, 2, 3):
-                page_project(BY_SLUG["louis-marshall-11"], lang, n)
-            page_table_index(lang)
         page_projects(lang)
         for p in PROJECTS:
             if not p.get("redirect"):
