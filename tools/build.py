@@ -47,7 +47,8 @@ T = {
         hero_h1="בונים את העיר מחדש. כבר ארבעה דורות.",
         hero_lead="חברה משפחתית בבעלות פרטית, המתמחה בתמ״א 38, פינוי־בינוי ושימור במרכזי הערים של גוש דן.",
         hero_caption="מזא״ה 71, תל אביב-יפו. בניין לשימור בשלבי תכנון.",
-        facts=[("4", "דורות של יזמות נדל״ן"), ("{n}", "פרויקטים בשיווק, בתכנון ובאכלוס"), ("אלפי", "יחידות דיור ומסחר שתוכננו ונבנו")],
+        claim="<em>ארבעה דורות</em> של יזמות ובנייה. <em>{n}&nbsp;פרויקטים</em> בשיווק, בתכנון ובאכלוס. <em>אלפי</em> יחידות דיור ומסחר במרכזי הערים.",
+        claim_sub="תל אביב, רמת גן ובני ברק",
         projects_h2="פרויקטים המשתבחים עם השנים",
         projects_lead="בניינים במרכזי הערים של גוש דן: הריסה ובנייה מחדש, שימור והשבחה ופרויקטים חדשים, מסודרים לפי שלב.",
         groups={"marketing": ("בשיווק", "היתרים, בנייה ושיווק פעיל"), "planning": ("בתכנון", "לפני החלטת ועדה. מחירי הנחה והטבות למצטרפים מוקדם"), "done": ("בביצוע ואכלוס", "בנייה, מסירה ואכלוס")},
@@ -152,7 +153,8 @@ T = {
         hero_h1="Rebuilding the city. For four generations.",
         hero_lead="A privately held family company specialising in TAMA 38, urban renewal and heritage preservation in the city centres of greater Tel Aviv.",
         hero_caption="Mazeh 71, Tel Aviv-Jaffa. Heritage building in planning.",
-        facts=[("4", "generations in real estate development"), ("{n}", "projects in marketing, planning and occupancy"), ("Thousands", "of residential and commercial units planned and built")],
+        claim="<em>Four generations</em> of development and building. <em>{n}&nbsp;projects</em> in marketing, planning and occupancy. <em>Thousands</em> of residential and commercial units in the city centres.",
+        claim_sub="Tel Aviv, Ramat Gan and Bnei Brak",
         projects_h2="Projects that improve with the years",
         projects_lead="Buildings in the city centres of greater Tel Aviv: demolition and rebuilding, preservation and upgrading, and new construction, ordered by stage.",
         groups={"marketing": ("In marketing", "Permits, construction and active sales"), "planning": ("In planning", "Before committee approval. Early-joiner discounts and benefits"), "done": ("Under construction and occupied", "Construction, delivery and occupancy")},
@@ -930,7 +932,6 @@ def page_home(lang):
     marketing = [p for p in PROJECTS if p["group"] == "marketing"]
     planning = [p for p in PROJECTS if p["group"] == "planning"]
     done = [p for p in PROJECTS if p["group"] == "done"]
-    facts = "".join(f"<div><b>{a.replace('{n}', str(len(PROJECTS)))}</b><span>{b}</span></div>" for a, b in t["facts"])
     steps = "".join(f"<li>{s}</li>" for s in v(FIRST_STEP, lang)[:4])
     html = head(lang, t["brand"], t["site_desc"], path, preload("hero", hero_sizes))
     html += header(lang, path, path)
@@ -951,8 +952,9 @@ def page_home(lang):
   </div>
 </section>
 
-<section class="wrap section--tight">
-  <div class="facts rv">{facts}</div>
+<section class="wrap claim">
+  <p class="claim-text rv">{t['claim'].replace('{n}', str(len(PROJECTS)))}</p>
+  <p class="claim-sub rv">{t['claim_sub']}</p>
 </section>
 
 <section class="section" id="projects">
