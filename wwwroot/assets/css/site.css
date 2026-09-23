@@ -168,18 +168,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .hero-media{margin-top:36px}
 }
 
-/* one-line facts strip under the hero */
-.strip{display:flex;justify-content:space-between;gap:var(--gap);margin-top:clamp(8px,2vw,24px);padding:16px 0;border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line);font-size:var(--fs-small);color:var(--muted)}
-.strip li{position:relative;flex:1;text-align:center;padding-inline:8px}
-.strip li:first-child{text-align:start;padding-inline-start:0}
-.strip li:last-child{text-align:end;padding-inline-end:0}
-.strip li + li::before{content:"";position:absolute;inset-inline-start:0;top:.2em;bottom:.2em;width:1px;background:var(--line)}
-@media (max-width:700px){
-  .strip{flex-direction:column;gap:10px;text-align:start}
-  .strip li,.strip li:first-child,.strip li:last-child{text-align:start;padding:0}
-  .strip li + li::before{display:none}
-}
-
 /* sticky contact bar */
 body{padding-bottom:var(--stick-h,0px)}
 body.has-stick{--stick-h:72px}

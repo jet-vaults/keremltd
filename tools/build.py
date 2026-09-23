@@ -47,7 +47,6 @@ T = {
         hero_h1="בונים את העיר מחדש. כבר ארבעה דורות.",
         hero_lead="חברה משפחתית בבעלות פרטית, המתמחה בתמ״א 38, פינוי־בינוי ושימור במרכזי הערים של גוש דן.",
         hero_caption="מזא״ה 71, תל אביב-יפו. בניין לשימור בשלבי תכנון.",
-        strip=["ארבעה דורות של יזמות ובנייה", "{n} פרויקטים בשיווק, בתכנון ובאכלוס", "תל אביב, רמת גן ובני ברק"],
         stick_title="מעוניינים שנחזור אליכם?", stick_name="שם מלא", stick_phone="טלפון", stick_send="השאירו פרטים", stick_close="סגירה",
         projects_h2="פרויקטים המשתבחים עם השנים",
         projects_lead="בניינים במרכזי הערים של גוש דן: הריסה ובנייה מחדש, שימור והשבחה ופרויקטים חדשים, מסודרים לפי שלב.",
@@ -153,7 +152,6 @@ T = {
         hero_h1="Rebuilding the city. For four generations.",
         hero_lead="A privately held family company specialising in TAMA 38, urban renewal and heritage preservation in the city centres of greater Tel Aviv.",
         hero_caption="Mazeh 71, Tel Aviv-Jaffa. Heritage building in planning.",
-        strip=["Four generations of development and building", "{n} projects in marketing, planning and occupancy", "Tel Aviv, Ramat Gan and Bnei Brak"],
         stick_title="Would you like us to call you?", stick_name="Full name", stick_phone="Phone", stick_send="Leave your details", stick_close="Close",
         projects_h2="Projects that improve with the years",
         projects_lead="Buildings in the city centres of greater Tel Aviv: demolition and rebuilding, preservation and upgrading, and new construction, ordered by stage.",
@@ -968,10 +966,6 @@ def page_home(lang):
       </figure>
     </div>
   </div>
-</section>
-
-<section class="wrap">
-  <ul class="strip rv">{"".join(f"<li>{x.replace('{n}', str(len(PROJECTS)))}</li>" for x in t['strip'])}</ul>
 </section>
 
 <section class="section" id="projects">
